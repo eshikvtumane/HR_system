@@ -1,0 +1,7 @@
+.idea/
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+*.pyc
+sqlite3
+migrations/

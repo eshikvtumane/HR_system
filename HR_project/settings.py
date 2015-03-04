@@ -39,6 +39,7 @@ INSTALLED_APPS = (
 
     'main',
     'applicants',
+    'vacancies'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -87,7 +88,8 @@ STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,'templates'),
-    os.path.join(BASE_DIR,"main/templates/main")
+    os.path.join(BASE_DIR,"main/templates/main"),
+    os.path.join(BASE_DIR,"vacancies/templates/vacancies")
 )
 
 STATICFILES_DIRS = (

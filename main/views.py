@@ -6,3 +6,4 @@ class MainPageView(View):
     template = 'main.html'
     def get(self, request):
         return render_to_response(self.template)
+

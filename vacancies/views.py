@@ -8,7 +8,7 @@ class AddVacancy(View):
     template = 'vacancy_add.html'
     def get(self,request):
         form = VacancyForm()
-        c = RequestContext(request,{'form':form})
+        c = RequestContext(request,{'vacancy_form':form})
         return render_to_response(self.template,c)
 
 

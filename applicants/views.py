@@ -13,7 +13,6 @@ class ApplicantAddView(View):
     def get(self, request):
         form = ApplicantForm()
         edu_form = ApplicantEducationForm
-
         args = {}
         args['applicant_form'] = form
         args['edu_form'] = edu_form

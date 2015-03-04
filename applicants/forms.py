@@ -28,13 +28,14 @@ class ApplicantForm(forms.ModelForm):
             'first_name': forms.TextInput(),
             'last_name': forms.TextInput(),
             'middle_name': forms.TextInput(),
-            'birthday': forms.DateInput(format='%d-%m-%Y', attrs={'class':''})
+            'birthday': forms.DateInput(format='%d-%m-%Y', attrs={'class':''}),
+            'photo': forms.FileInput(attrs={'accept':'.jpg, .jpeg, .png, .gif'})
         }
 
 class ApplicantEducationForm(forms.ModelForm):
 
-    education = forms.ModelChoiceField(queryset=Education.objects.all())
-    major = forms.ModelChoiceField(queryset=Major.objects.all())
+    education = forms.ModelChoiceField(queryset=Education.objects.all(), label='Образование', widget=forms.Select(attrs={'class':'select-color'}))
+    major = forms.ModelChoiceField(queryset=Major.objects.all(), label='Специальность', widget=forms.Select(attrs={'class':'select-color'}))
 
 
     class Meta:

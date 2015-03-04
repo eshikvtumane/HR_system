@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'bootstrapform',
 
     'main',
     'applicants',
@@ -89,8 +90,10 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,'templates'),
     os.path.join(BASE_DIR,"main/templates/main"),
+    os.path.join(BASE_DIR,"applicants/templates/applicants"),
     os.path.join(BASE_DIR,"vacancies/templates/vacancies")
-)
+
+)   
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR,'static'),

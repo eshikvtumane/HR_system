@@ -1,6 +1,7 @@
 #-*- coding:utf8 -*-
 from django.shortcuts import render, render_to_response
 from django.views.generic import View
+from django.template import RequestContext
 
 from forms import ApplicantForm, ApplicantEducationForm
 
@@ -15,4 +16,5 @@ class ApplicantAddView(View):
         args = {}
         args['applicant_form'] = form
         args['edu_form'] = edu_form
-        return render_to_response(self.template, args)
+        rc = RequestContext(request, args)
+        return render_to_response(self.template, rc)

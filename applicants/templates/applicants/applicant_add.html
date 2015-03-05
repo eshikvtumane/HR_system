@@ -5,6 +5,19 @@
     Добавление кандидата
 {% endblock %}
 
+{% block styles %}
+    <!-- Стили для datepicker -->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}"/ >
+{% endblock %}
+
+{% block scripts %}
+<!-- Скрипт работы для datepicker -->
+    <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
+<!-- Добавление формы для выбора образования -->
+    <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
+<!-- Инициализация элементов при загрузке страницы -->
+    <script src="{% static 'js/appliments/form_init.js' %}"></script>
+{% endblock %}
 
 {% block content %}
       <!-- Right side column. Contains the navbar and content of the page -->
@@ -34,95 +47,183 @@
                 <div class="box-header">
 
                     {% load bootstrap %}
-                    {{ applicant_form|bootstrap }}
 
+                    <div>
+                        <label>Фамилия</label>
+                        <div>
+                            <input type="text" name="first_name">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Имя</label>
+                        <div>
+                            <input type="text" name="last_name">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Отчество</label>
+                        <div>
+                            <input type="text" name="middle_name">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Дата рождения</label>
+                        <div>
+                            <input type="text" id="birthday" name="birthday">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Стаж</label>
+                        <div>
+                            <input type="number" name="experience">
+                        </div>
+                    </div>
 
                 </div>
 
               </div><!-- /.форма добавления пользователя -->
 
+                <!-- Контакты -->
+                <div class="box box-success">
+                    <div class="box-header">
+                        <h2>Контактные данные</h2>
+
+                        <div>
+                            <label>Телефон</label>
+                            <div>
+                                <input type="number" name="phone">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label>Email</label>
+                            <div>
+                                <input type="email" name="email">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label>Skype</label>
+                            <div>
+                                <input type="text" name="skype">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label>ICQ</label>
+                            <div>
+                                <input type="number" name="icq">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./Контакты -->
 
             </section><!-- /.Left col -->
             <!-- right col (We are only adding the ID to make the widgets sortable)-->
             <section class="col-lg-5 connectedSortable">
 
+                <div class="box box-solid">
+
+                <div class="box-body" id="edu_forms">
+                    <div>
+                        <label>Фото кандидата</label>
+                        <div>
+                            <input type="file" name="photo">
+                        </div>
+                    </div>
+                </div>
+
+
               <!-- Форма ввода образования -->
               <div class="box box-solid bg-light-blue-gradient">
 
-                <div class="box-body">
-                  {{ edu_form }}
+                <div class="box-body" id="edu_forms">
+                    <div id="edu_1">
+                        {{ edu_form.as_p }}
+                    </div>
+
                 </div><!-- /.Форма ввода образования-->
 
+                  <style rel="stylesheet">
+                      .select-color{
+                        color: black;
+                      }
+                  </style>
+                  <button class="btn btn-success" id="add_form" value="1" onclick="addEducationForm('edu_forms');">
+                      <label>Добавить образование</label>
+                  </button>
+                  <button class="btn btn-danger" id="remove_form" value="1" onclick="removeEducationForm();">
+                      <label>Удалить образование</label>
+                  </button>
               </div>
               <!-- /.Форма ввода образования -->
 
               <!-- solid sales graph -->
               <div class="box box-solid bg-teal-gradient">
                 <label>Добавить резюме</label>
-                <input type="file" name="file[]" multiple accept="application/msword, application/pdf, .odt, .docx">
+                <input type="file" name="resume[]" accept="application/msword, application/pdf, .odt, .docx">
               </div><!-- /.box -->
 
               <!-- Calendar -->
               <div class="box box-solid bg-green-gradient">
-                <div class="box-header">
-                  <i class="fa fa-calendar"></i>
-                  <h3 class="box-title">Calendar</h3>
-                  <!-- tools box -->
-                  <div class="pull-right box-tools">
-                    <!-- button with a dropdown -->
-                    <div class="btn-group">
-                      <button class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown"><i class="fa fa-bars"></i></button>
-                      <ul class="dropdown-menu pull-right" role="menu">
-                        <li><a href="#">Add new event</a></li>
-                        <li><a href="#">Clear events</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#">View calendar</a></li>
-                      </ul>
-                    </div>
-                    <button class="btn btn-success btn-sm" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                    <button class="btn btn-success btn-sm" data-widget="remove"><i class="fa fa-times"></i></button>
-                  </div><!-- /. tools -->
-                </div><!-- /.box-header -->
-                <div class="box-body no-padding">
-                  <!--The calendar -->
-                  <div id="calendar" style="width: 100%"></div>
-                </div><!-- /.box-body -->
                 <div class="box-footer text-black">
                   <div class="row">
-                    <div class="col-sm-6">
-                      <!-- Progress bars -->
-                      <div class="clearfix">
-                        <span class="pull-left">Task #1</span>
-                        <small class="pull-right">90%</small>
-                      </div>
-                      <div class="progress xs">
-                        <div class="progress-bar progress-bar-green" style="width: 90%;"></div>
-                      </div>
+                    <div class="col-sm-12">
+                        <h2>Адрес проживания</h2>
+                      <!-- Место проживания -->
+                        <div>
+                            <label>Регион</label>
+                            <div>
+                                <input type="text" name="region" class="form-control">
+                            </div>
+                        </div>
+                        <div>
+                            <label>Город</label>
+                            <div>
+                                <input type="text" name="city" class="form-control">
+                            </div>
+                        </div>
 
-                      <div class="clearfix">
-                        <span class="pull-left">Task #2</span>
-                        <small class="pull-right">70%</small>
-                      </div>
-                      <div class="progress xs">
-                        <div class="progress-bar progress-bar-green" style="width: 70%;"></div>
-                      </div>
-                    </div><!-- /.col -->
-                    <div class="col-sm-6">
-                      <div class="clearfix">
-                        <span class="pull-left">Task #3</span>
-                        <small class="pull-right">60%</small>
-                      </div>
-                      <div class="progress xs">
-                        <div class="progress-bar progress-bar-green" style="width: 60%;"></div>
-                      </div>
+                        <div>
+                            <div style="display: inline-block;">
+                                <label>Улица</label>
+                                <div>
+                                    <input type="text" name="street" class="form-control">
+                                </div>
+                            </div>
+                            <div style="display: inline-block;">
+                                <label>Дом</label>
+                                <div>
+                                    <input type="text" name="building" class="form-control">
+                                </div>
+                            </div>
+                        </div>
 
-                      <div class="clearfix">
-                        <span class="pull-left">Task #4</span>
-                        <small class="pull-right">40%</small>
-                      </div>
-                      <div class="progress xs">
-                        <div class="progress-bar progress-bar-green" style="width: 40%;"></div>
-                      </div>
+
+                        <div>
+                            <label>Корпус</label>
+                            <div>
+                                <input type="text" name="housing" class="form-control">
+                            </div>
+                        </div>
+                        <div>
+                            <label>Строение</label>
+                            <div>
+                                <input type="text" name="structure" class="form-control">
+                            </div>
+                        </div>
+                        <div>
+                            <label>Квартира</label>
+                            <div>
+                                <input type="text" name="flat" class="form-control">
+                            </div>
+                        </div>
+
                     </div><!-- /.col -->
                   </div><!-- /.row -->
                 </div>

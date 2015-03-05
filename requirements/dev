@@ -1,2 +1,4 @@
 Django==1.7.5
 django-bootstrap-form
+django-debug-toolbar
+requirements/dev:4

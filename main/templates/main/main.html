@@ -4,6 +4,14 @@
  ИС АПП - главная
 {% endblock %}
 
+{%block scripts%}
+
+<script>
+
+    $("")
+
+</script>
+{% endblock %}
 
 {% block content %}
       <!-- Right side column. Contains the navbar and content of the page -->
@@ -95,6 +103,30 @@
                   <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;"></div>
                 </div>
               </div><!-- /.nav-tabs-custom -->
+
+
+               <div class="box box-info">
+                <div class="box-header">
+                  <i class="fa fa-envelope"></i>
+                  <h3 class="box-title">Расписание</h3>
+                  <!-- tools box -->
+                  <div class="pull-right box-tools">
+                    <button class="btn btn-info btn-sm" data-widget="remove" data-toggle="tooltip" title="Remove"><i class="fa fa-times"></i></button>
+                  </div><!-- /. tools -->
+                </div>
+                <div class="box-body">
+
+                    <div id='scheduler'></div>
+
+                </div>
+                <div class="box-footer clearfix">
+
+                </div>
+              </div>
+
+
+
+
 
               <!-- Chat box -->
               <div class="box box-success">

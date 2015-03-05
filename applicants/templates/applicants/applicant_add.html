@@ -7,10 +7,20 @@
 
 {% block styles %}
     <!-- Стили для datepicker -->
-    <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}"/ >
+    <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
+<!-- Стили для select -->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin_lte/bootstrap/css/select_chosen.css' %}" >
+
+
 {% endblock %}
 
 {% block scripts %}
+<!-- кастомизвация select -->
+    <script src="{% static 'js/chosen/chosen.jquery.js' %}"></script>
+
+<!-- Добавление валидации -->
+    <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
+
 <!-- Скрипт работы для datepicker -->
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <!-- Добавление формы для выбора образования -->
@@ -32,10 +42,9 @@
             <li class="active">Добавление кандидата</li>
           </ol>
         </section>
-
+<form id="appliment_form">
         <!-- Main content -->
         <section class="content">
-
           <!-- Main row -->
           <div class="row">
             <!-- Left col -->
@@ -44,42 +53,40 @@
                     Форма добавления нового пользователя
                 -->
               <div class="box box-success">
-                <div class="box-header">
+                <div class="box-header form-horizontal">
 
-                    {% load bootstrap %}
-
-                    <div>
-                        <label>Фамилия</label>
-                        <div>
-                            <input type="text" name="first_name">
+                    <div  class="form-group">
+                        <label class="control-label col-sm-2" for="first_name">Фамилия</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="first_name" id="first_name" class="form-control"  data-validation="custom" data-validation-regexp="^([А-Яа-яЁё]+)$" data-validation-error-msg="Фамилия должна состоять из кириллических символов">
                         </div>
                     </div>
 
-                    <div>
-                        <label>Имя</label>
-                        <div>
-                            <input type="text" name="last_name">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="last_name">Имя</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="last_name" id="last_name" class="form-control" data-validation="custom" data-validation-regexp="^([А-Яа-яЁё]+)$" data-validation-error-msg="Имя должно состоять из кириллических символов">
                         </div>
                     </div>
 
-                    <div>
-                        <label>Отчество</label>
-                        <div>
-                            <input type="text" name="middle_name">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="middle_name">Отчество</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="middle_name" id="middle_name" class="form-control" data-validation="middle_name">
                         </div>
                     </div>
 
-                    <div>
-                        <label>Дата рождения</label>
-                        <div>
-                            <input type="text" id="birthday" name="birthday">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="birthday">Дата рождения</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="birthday" name="birthday" class="form-control" data-validation="date"  data-validation-format="ddd-mm-yyyy">
                         </div>
                     </div>
 
-                    <div>
-                        <label>Стаж</label>
-                        <div>
-                            <input type="number" name="experience">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="experience">Стаж</label>
+                        <div class="col-sm-10">
+                            <input type="number" name="experience" id="experience" class="form-control">
                         </div>
                     </div>
 
@@ -89,39 +96,48 @@
 
                 <!-- Контакты -->
                 <div class="box box-success">
-                    <div class="box-header">
+                    <div class="box-header form-horizontal">
                         <h2>Контактные данные</h2>
 
-                        <div>
-                            <label>Телефон</label>
-                            <div>
-                                <input type="number" name="phone">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Телефон</label>
+                            <div class="col-sm-10">
+                                <input type="phone" name="phone" class="form-control" data-validation="number">
                             </div>
                         </div>
 
-                        <div>
-                            <label>Email</label>
-                            <div>
-                                <input type="email" name="email">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Email</label>
+                            <div class="col-sm-10">
+                                <input type="email" name="email" class="form-control" data-validation="email">
                             </div>
                         </div>
 
-                        <div>
-                            <label>Skype</label>
-                            <div>
-                                <input type="text" name="skype">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Skype</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="skype" class="form-control" data-validation="skype">
                             </div>
                         </div>
 
-                        <div>
-                            <label>ICQ</label>
-                            <div>
-                                <input type="number" name="icq">
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">ICQ</label>
+                            <div class="col-sm-10">
+                                <input type="text" name="icq" class="form-control" data-validation="icq">
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- ./Контакты -->
+
+                <div class="box box-solid">
+
+                    <div class="box-body">
+                        <div>
+                            <input type="submit" value="Сохранить анкету" class="btn btn-success">
+                        </div>
+                    </div>
+                </div>
 
             </section><!-- /.Left col -->
             <!-- right col (We are only adding the ID to make the widgets sortable)-->
@@ -129,11 +145,12 @@
 
                 <div class="box box-solid">
 
-                <div class="box-body" id="edu_forms">
-                    <div>
-                        <label>Фото кандидата</label>
+                    <div class="box-body">
                         <div>
-                            <input type="file" name="photo">
+                            <label>Фото кандидата</label>
+                            <div>
+                                <input type="file" name="photo">
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -144,7 +161,20 @@
 
                 <div class="box-body" id="edu_forms">
                     <div id="edu_1">
-                        {{ edu_form.as_p }}
+                        <select class="select-color " data-placeholder="Выберите тип образования">
+                            <option value="-1">Выберите тип образования</option>
+                            {% for e in edu %}
+                                <option value="{{ e.id }}">{{ e.type }}</option>
+                            {% endfor %}
+                        </select>
+
+                        chosen-select
+                        <select class="select-color" data-placeholder="Выберите специальность">
+                            <option value="-1">Выберите специальность</option>
+                            {% for m in majors %}
+                                <option value="{{ m.id }}">{{ m.name }}</option>
+                            {% endfor %}
+                        </select>
                     </div>
 
                 </div><!-- /.Форма ввода образования-->
@@ -172,24 +202,18 @@
               <!-- Calendar -->
               <div class="box box-solid bg-green-gradient">
                 <div class="box-footer text-black">
-                  <div class="row">
+                  <div class="row"> chosen-select
                     <div class="col-sm-12">
                         <h2>Адрес проживания</h2>
                       <!-- Место проживания -->
-                        <div>
-                            <label>Регион</label>
-                            <div>
-                                <input type="text" name="region" class="form-control">
-                            </div>
-                        </div>
-                        <div>
+                        <div class="group-control">
                             <label>Город</label>
                             <div>
                                 <input type="text" name="city" class="form-control">
                             </div>
                         </div>
 
-                        <div>
+                        <div class="group-control">
                             <div style="display: inline-block;">
                                 <label>Улица</label>
                                 <div>
@@ -204,26 +228,6 @@
                             </div>
                         </div>
 
-
-                        <div>
-                            <label>Корпус</label>
-                            <div>
-                                <input type="text" name="housing" class="form-control">
-                            </div>
-                        </div>
-                        <div>
-                            <label>Строение</label>
-                            <div>
-                                <input type="text" name="structure" class="form-control">
-                            </div>
-                        </div>
-                        <div>
-                            <label>Квартира</label>
-                            <div>
-                                <input type="text" name="flat" class="form-control">
-                            </div>
-                        </div>
-
                     </div><!-- /.col -->
                   </div><!-- /.row -->
                 </div>
@@ -233,6 +237,7 @@
           </div><!-- /.row (main row) -->
 
         </section><!-- /.content -->
+    </form>
       </div><!-- /.content-wrapper -->
 
 

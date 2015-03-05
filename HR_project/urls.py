@@ -13,8 +13,8 @@ urlpatterns = patterns('',
     url(r'^', include('main.urls')),
     url(r'^applicants/', include('applicants.urls', namespace='applicants')),
     url(r'^admin/', include(admin.site.urls)),
-
-    url(r'^vacancies/', include('vacancies.urls'))
+    url(r'^vacancies/', include('vacancies.urls')),
+    url(r'^scheduler/', include('schedule.urls'))
 
 )
 

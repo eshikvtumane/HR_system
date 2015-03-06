@@ -81,9 +81,9 @@ window.onload = function(){
       login_len = value.length;
         if(login_len != 0){
             console.log(value);
-            var reg = new RegExp('^[А-Яа-яЁё]+$');
+            var reg = new RegExp('^([А-Яа-яЁё]+)$');
             result = reg.test(value);
-            return false;
+            return result;
         }
         return true;
       },

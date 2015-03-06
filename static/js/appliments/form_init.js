@@ -10,6 +10,7 @@ window.onload = function(){
   $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
 
  //инициализация валидации
+ // http://formvalidator.net/index.html#custom-validators
  var myLanguage = {
       errorTitle : 'Form submission failed!',
       requiredFields : 'Необходимо заполнить это поле',
@@ -81,9 +82,9 @@ window.onload = function(){
       login_len = value.length;
         if(login_len != 0){
             console.log(value);
-            var reg = new RegExp('^[А-Яа-яЁё]+$');
+            var reg = new RegExp('^([А-Яа-яЁё]+)$');
             result = reg.test(value);
-            return false;
+            return result;
         }
         return true;
       },

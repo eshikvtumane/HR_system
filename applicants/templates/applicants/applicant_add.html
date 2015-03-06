@@ -223,19 +223,21 @@
 
                 <div class="box-body" id="edu_forms">
                     <div id="edu_1">
-                        <select class="chosen-select" data-placeholder="Выберите тип образования">
+                        <select class="chosen-select" name="education" data-placeholder="Выберите тип образования">
                             <option style="display: none;" value="-1">Выберите тип образования</option>
                             {% for e in edu %}
                                 <option value="{{ e.id }}">{{ e.type }}</option>
                             {% endfor %}
                         </select>
 
-                        <select class="chosen-select" data-placeholder="Выберите специальность">
+                        <select class="chosen-select" name="major" data-placeholder="Выберите специальность">
                             <option style="display: none;" value="-1">Выберите специальность</option>
                             {% for m in majors %}
                                 <option value="{{ m.id }}">{{ m.name }}</option>
                             {% endfor %}
                         </select>
+
+                        <input type="text" id="add_education" name="add_major" placeholder="Добавить специальность" class="form-control" data-validation="">
                     </div>
 
                 </div><!-- /.Форма ввода образования-->

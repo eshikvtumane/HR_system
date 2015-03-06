@@ -42,3 +42,4 @@ class ApplicantEducationForm(forms.ModelForm):
         model = ApplicantEducation
         fields = ( 'education', 'major' )
 
+

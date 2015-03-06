@@ -6,8 +6,6 @@
     Добавление вакансии
 {% endblock %}
 
-
-
  {% block content %}
      <!-- Right side column. Contains the navbar and content of the page -->
       <div class="content-wrapper">
@@ -30,18 +28,19 @@
             <!-- Left col -->
             <section class="col-lg-7 connectedSortable">
                 <!--
-                    Форма добавления нового пользователя
+                    Форма добавления вакансии
                 -->
               <div class="box box-success">
                 <div class="box-header">
 
                     {% load bootstrap %}
                     {{ vacancy_form|bootstrap }}
+                    {{ department_form|bootstrap }}
 
 
                 </div>
 
-              </div><!-- /.форма добавления пользователя -->
+              </div><!-- /.форма добавления вакансии -->
 
 
             </section><!-- /.Left col -->

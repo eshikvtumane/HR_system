@@ -9,7 +9,7 @@
     <!-- Стили для datepicker -->
     <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
 <!-- Стили для select -->
-    <link rel="stylesheet" type="text/css" href="{% static 'admin_lte/bootstrap/css/select_chosen.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'css/chosen-bootstrap.css' %}" >
 
 
 {% endblock %}
@@ -107,8 +107,8 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-5" for="salary">Предполагаемая должность</label>
                                 <div class="col-sm-7">
-                                    <select name="position" id="position">
-                                        <option value="-1">--- Выберите предполагаемую должность ---</option>
+                                    <select style="display: none;" class="chosen-select" data-placeholder="Выберите предполагаемую должность" name="position" id="position">
+                                        <option style="display: none;" value="-1">Выберите предполагаемую должность</option>
                                     </select>
                                 </div>
                             </div>
@@ -116,8 +116,8 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-5" for="salary">Вакансия</label>
                                 <div class="col-sm-7">
-                                    <select name="vacancy" id="vacancy">
-                                        <option value="-1">--- Выберите вакансию ---</option>
+                                    <select class="chosen-select" data-placeholder="Выберите вакансию" name="vacancy" id="vacancy">
+                                        <option style="display: none;" value="-1">Выберите вакансию</option>
                                     </select>
                                 </div>
                             </div>
@@ -223,16 +223,16 @@
 
                 <div class="box-body" id="edu_forms">
                     <div id="edu_1">
-                        <select class="select-color " data-placeholder="Выберите тип образования">
-                            <option value="-1">Выберите тип образования</option>
+                        <select class="select-color chosen-select" data-placeholder="Выберите тип образования">
+                            <option style="display: none;" value="-1">Выберите тип образования</option>
                             {% for e in edu %}
                                 <option value="{{ e.id }}">{{ e.type }}</option>
                             {% endfor %}
                         </select>
 
                         chosen-select
-                        <select class="select-color" data-placeholder="Выберите специальность">
-                            <option value="-1">Выберите специальность</option>
+                        <select class="select-color chosen-select" data-placeholder="Выберите специальность">
+                            <option style="display: none;" value="-1">Выберите специальность</option>
                             {% for m in majors %}
                                 <option value="{{ m.id }}">{{ m.name }}</option>
                             {% endfor %}

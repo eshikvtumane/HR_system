@@ -1,12 +1,14 @@
-/*
- * Author: Abdullah A Almsaeed
- * Date: 4 Jan 2014
- * Description:
- *      This is a demo file used only for the main dashboard (index.html)
- **/
 "use strict";
 
 $(function () {
+
+   //Activate fullCalendar plugin
+    $('#scheduler').fullCalendar({
+        // put your options and callbacks here
+    })
+
+
+
 
   //Activate the iCheck Plugin
   $('input[type="checkbox"]').iCheck({
@@ -68,7 +70,7 @@ $(function () {
     "RU": 3000 //Russia
   };
   //World map by jvectormap
-  $('#world-map').vectorMap({
+  /*$('#world-map').vectorMap({
     map: 'world_mill_en',
     backgroundColor: "transparent",
     regionStyle: {
@@ -92,9 +94,9 @@ $(function () {
         el.html(el.html() + ': ' + visitorsData[code] + ' new visitors');
     }
   });
-
+*/
   //Sparkline charts
-  var myvalues = [1000, 1200, 920, 927, 931, 1027, 819, 930, 1021];
+ /* var myvalues = [1000, 1200, 920, 927, 931, 1027, 819, 930, 1021];
   $('#sparkline-1').sparkline(myvalues, {
     type: 'line',
     lineColor: '#92c1dc',
@@ -127,7 +129,7 @@ $(function () {
     height: '250px'
   });
 
-  /* Morris.js Charts */
+  *//* Morris.js Charts *//*
   // Sales chart
   var area = new Morris.Area({
     element: 'revenue-chart',
@@ -200,7 +202,7 @@ $(function () {
   });
 
 
-  /* BOX REFRESH PLUGIN EXAMPLE (usage with morris charts) */
+  *//* BOX REFRESH PLUGIN EXAMPLE (usage with morris charts) *//*
   $("#loading-example").boxRefresh({
     source: "ajax/dashboard-boxrefresh-demo.php",
     onLoadDone: function (box) {
@@ -225,7 +227,7 @@ $(function () {
     }
   });
 
-  /* The todo list plugin */
+  *//* The todo list plugin *//*
   $(".todo-list").todolist({
     onCheck: function (ele) {
       console.log("The element has been checked")
@@ -233,6 +235,6 @@ $(function () {
     onUncheck: function (ele) {
       console.log("The element has been unchecked")
     }
-  });
+  });*/
 
 });

@@ -10,6 +10,7 @@ window.onload = function(){
   $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
 
  //инициализация валидации
+ // http://formvalidator.net/index.html#custom-validators
  var myLanguage = {
       errorTitle : 'Form submission failed!',
       requiredFields : 'Необходимо заполнить это поле',

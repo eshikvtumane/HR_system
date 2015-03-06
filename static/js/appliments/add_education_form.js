@@ -1,32 +1,23 @@
-div_name = 'edu_';
-btn = document.getElementById('add_form')
-btn_remove = document.getElementById('remove_form');
+
 
 //Добавление формы
-  function addEducationForm(div_forms){
+  function addForm(obj, div_forms, div_name, btn_remove){
+    clone_from = div_name + obj.value;
+    clone_to = div_forms;
+    btn_remove_obj = document.getElementById(btn_remove);
 
-    btn_value = btn.value;
-
-    div = document.getElementById(div_name+btn_value);
-    clone = div.cloneNode(true);
-
-    id = parseInt(btn_value) + 1;
-    clone.id = 'edu_' + id;
-    btn.value = id.toString();
-    btn_remove.value = id.toString();
-
-
-    document.getElementById(div_forms).appendChild(clone);
+    divClone(obj, clone_from, clone_to, obj.value, div_name, btn_remove_obj);
   }
 
-  function removeEducationForm(){
 
-    remove_val = btn_remove.value;
+  function removeForm(obj, btn_add, div_name){
+    btn = document.getElementById(btn_add);
+    remove_val = obj.value;
 
     if(remove_val != '1'){
         document.getElementById(div_name + remove_val).remove()
         btn.value = (remove_val - 1).toString();
-        btn_remove.value = (remove_val - 1).toString();
+        obj.value = (remove_val - 1).toString();
     }
   }
 
@@ -40,4 +31,22 @@ btn_remove = document.getElementById('remove_form');
                 this[i].parentElement.removeChild(this[i]);
             }
         }
+    }
+
+
+    function addVacancyForm(div_forms){
+
+    }
+
+    function divClone(btn, clone_from, clone_to, btn_value, div_name, btn_remove){
+        div = document.getElementById(clone_from);
+        clone = div.cloneNode(true);
+
+        id = parseInt(btn_value) + 1;
+        clone.id = div_name + id;
+        btn.value = id.toString();
+        btn_remove.value = id.toString();
+        document.getElementById(clone_to).appendChild(clone);
+
+        return;
     }

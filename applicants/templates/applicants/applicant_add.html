@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block scripts %}
-<!-- кастомизвация select -->
+<!-- кастомизация select -->
     <script src="{% static 'js/chosen/chosen.jquery.js' %}"></script>
 
 <!-- Добавление валидации -->
@@ -25,6 +25,8 @@
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <!-- Добавление формы для выбора образования -->
     <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
+<!-- Добавление эскиза загруженного изображения на страницу -->
+    <script src="{% static 'js/appliments/upload_photo.js' %}"></script>
 <!-- Инициализация элементов при загрузке страницы -->
     <script src="{% static 'js/appliments/form_init.js' %}"></script>
 
@@ -96,6 +98,56 @@
 
               </div><!-- /.форма добавления пользователя -->
 
+
+                <!-- Добавление вакансии -->
+              <div class="box box-success">
+                <div class="box-header form-horizontal">
+                    <div id="vacancy_forms">
+                        <div id="vac_1" class="well">
+                            <div class="form-group">
+                                <label class="control-label col-sm-5" for="salary">Предполагаемая должность</label>
+                                <div class="col-sm-7">
+                                    <select name="position" id="position">
+                                        <option value="-1">--- Выберите предполагаемую должность ---</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-5" for="salary">Вакансия</label>
+                                <div class="col-sm-7">
+                                    <select name="vacancy" id="vacancy">
+                                        <option value="-1">--- Выберите вакансию ---</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-5" for="salary">Уровень зарплаты в анкете</label>
+                                <div class="col-sm-7">
+                                    <input type="number" name="salary" id="salary" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-sm-5" for="suggested_salary">Предлагаемая зарплата</label>
+                                <div class="col-sm-7">
+                                    <input type="number" name="suggested_salary" id="suggested_salary" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-success" id="add_vac" value="1" onclick="addForm(this, 'vacancy_forms', 'vac_', 'remove_vac');">
+                        <label>Добавить вакансию</label>
+                    </button>
+                    <button class="btn btn-danger" id="remove_vac" value="1" onclick="removeForm(this, 'add_vac', 'vac_');">
+                        <label>Удалить вакансию</label>
+                    </button>
+                </div>
+
+              </div>
+
                 <!-- Контакты -->
                 <div class="box box-success">
                     <div class="box-header form-horizontal">
@@ -149,10 +201,18 @@
 
                     <div class="box-body">
                         <div>
-                            <label>Фото кандидата</label>
-                            <div>
-                                <input type="file" name="photo">
+                            <h2>Фото кандидата</h2>
+                            <div align="center">
+                                <div>
+                                    <input type="file" id="imageLoader" name="photo">
+                                </div>
+                                <div style="margin-top: 3ex;">
+                                    <canvas id="imageCanvas">
+                                        <img src="http://placehold.it/300x150">
+                                    </canvas>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -186,10 +246,10 @@
                         color: black;
                       }
                   </style>
-                  <button class="btn btn-success" id="add_form" value="1" onclick="addEducationForm('edu_forms');">
+                  <button class="btn btn-success" id="add_form" value="1" onclick="addForm(this, 'edu_forms', 'edu_', 'remove_form');">
                       <label>Добавить образование</label>
                   </button>
-                  <button class="btn btn-danger" id="remove_form" value="1" onclick="removeEducationForm();">
+                  <button class="btn btn-danger" id="remove_form" value="1" onclick="removeForm(this, 'add_form', 'edu_');">
                       <label>Удалить образование</label>
                   </button>
               </div>

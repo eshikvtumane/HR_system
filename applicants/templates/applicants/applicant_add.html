@@ -107,7 +107,7 @@
                             <div class="form-group">
                                 <label class="control-label col-sm-5" for="salary">Предполагаемая должность</label>
                                 <div class="col-sm-7">
-                                    <select style="display: none;" class="chosen-select" data-placeholder="Выберите предполагаемую должность" name="position" id="position">
+                                    <select class="chosen-select" data-placeholder="Выберите предполагаемую должность" name="position" id="position">
                                         <option style="display: none;" value="-1">Выберите предполагаемую должность</option>
                                     </select>
                                 </div>
@@ -223,15 +223,14 @@
 
                 <div class="box-body" id="edu_forms">
                     <div id="edu_1">
-                        <select class="select-color chosen-select" data-placeholder="Выберите тип образования">
+                        <select class="chosen-select" data-placeholder="Выберите тип образования">
                             <option style="display: none;" value="-1">Выберите тип образования</option>
                             {% for e in edu %}
                                 <option value="{{ e.id }}">{{ e.type }}</option>
                             {% endfor %}
                         </select>
 
-                        chosen-select
-                        <select class="select-color chosen-select" data-placeholder="Выберите специальность">
+                        <select class="chosen-select" data-placeholder="Выберите специальность">
                             <option style="display: none;" value="-1">Выберите специальность</option>
                             {% for m in majors %}
                                 <option value="{{ m.id }}">{{ m.name }}</option>
@@ -241,11 +240,6 @@
 
                 </div><!-- /.Форма ввода образования-->
 
-                  <style rel="stylesheet">
-                      .select-color{
-                        color: black;
-                      }
-                  </style>
                   <button class="btn btn-success" id="add_form" value="1" onclick="addForm(this, 'edu_forms', 'edu_', 'remove_form');">
                       <label>Добавить образование</label>
                   </button>
@@ -264,7 +258,7 @@
               <!-- Calendar -->
               <div class="box box-solid bg-green-gradient">
                 <div class="box-footer text-black">
-                  <div class="row"> chosen-select
+                  <div class="row">
                     <div class="col-sm-12">
                         <h2>Адрес проживания</h2>
                       <!-- Место проживания -->

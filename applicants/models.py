@@ -4,8 +4,6 @@ from datetime import datetime
 
 # Create your models here.
 
-
-
 # Кандидат
 class Applicant(models.Model):
     class Meta:
@@ -24,23 +22,13 @@ class Applicant(models.Model):
     # Фотография кандидата
     photo = models.FileField(upload_to='photo_applicants', verbose_name='Фото кандидата', null=True, blank=True)
 
-
-
     # Место жительства
-    region = models.TextField()
-    city = models.TextField()
-    street = models.TextField()
-    building = models.TextField()
-    # корпус
-    housing = models.TextField(null=True, blank=True)
-    # строение
-    structure = models.TextField(null=True, blank=True)
-    flat = models.IntegerField(max_length=5)
+    city = models.TextField(verbose_name='Город')
+    street = models.TextField(verbose_name='Улица')
+    building = models.TextField(verbose_name='Номер дома')
 
-    # Должность
-    position = models.ManyToManyField('Position', verbose_name='Должность')
-
-    experience = models.FloatField(verbose_name='Стаж', null=True, blank=True)
+    # Стаж
+    #experience = models.FloatField(verbose_name='Стаж', null=True, blank=True)
 
     # контакты
     phone = models.IntegerField(max_length=10, verbose_name='Мобильный телефон')
@@ -48,6 +36,18 @@ class Applicant(models.Model):
     skype = models.CharField(max_length=32, verbose_name='Skype', null=True, blank=True)
     icq = models.IntegerField(max_length=10, verbose_name='ICQ', null=True, blank=True)
 
+    # Соц. сети
+    vk = models.URLField(verbose_name='ВКонтакте',null=True, blank=True)
+    fb = models.URLField(verbose_name='Facebook', null=True, blank=True)
+
+    # Источник
+    source = models.ForeignKey('SourceInformation')
+
+    def __unicode__(self):
+        return '%s %s %s' % (self.first_name, self.last_name, self.middle_name)
+
+    def getFullName(self):
+        return '%s %s %s' % (self.first_name, self.last_name, self.middle_name)
 
 # Образование
 class Education(models.Model):
@@ -73,6 +73,9 @@ class Major(models.Model):
     # Название специальности
     name = models.TextField(verbose_name='Специальность')
 
+    def __unicode__(self):
+        return self.name
+
 
 # Отношение Кандидат-Образование
 class ApplicantEducation(models.Model):
@@ -87,27 +90,10 @@ class ApplicantEducation(models.Model):
     education = models.ForeignKey('Education', verbose_name='Образование')
     # Специальность
     major = models.ForeignKey('Major', verbose_name='Специальность')
-
-
-
-# Предпочитаемые должности для кандидата
-class ApplicantToPosition(models.Model):
-    class Meta:
-        db_table = 'ApplicantToPositions'
-        verbose_name = 'Предполагаемая должность'
-        verbose_name_plural = 'Предполагаемые долности'
-
-    # Кандидат
-    applicant = models.ForeignKey('Applicant')
-    # Название должности
-    position = models.ForeignKey('Position')
-
-    # Запрашиваемая зарплата
-    salary = models.FloatField()
-
-    # Дата создания
-    date_create = models.DateTimeField(default=datetime.now())
-
+    # Год начала учёбы
+    study_start = models.IntegerField(max_length=4)
+    # Год окончания учёбы
+    study_end = models.IntegerField(max_length=4)
 
 
 # Должность
@@ -133,4 +119,29 @@ class Resume(models.Model):
     # Дата добавления
     date_upload = models.DateTimeField(default=datetime.now(), verbose_name='Дата загрузки')
 
+class Portfolio(models.Model):
+    '''
+         Работы кандидата
+    '''
+    class Meta:
+        db_table = 'Portfolio'
+        verbose_name = 'Портфолио'
+        verbose_name_plural = 'Портфолио'
 
+    applicant = models.ForeignKey('Applicant')
+    portfolio_file = models.FileField(upload_to='portfolio')
+    date_upload = models.DateTimeField(default=datetime.now(), verbose_name='Дата загрузки')
+
+class SourceInformation(models.Model):
+    '''
+         Источник информации (место, откуду кандидат узнал о наличии данной вакансии)
+    '''
+    class Meta:
+        db_table = 'SourceInformations'
+        verbose_name = 'Источник'
+        verbose_name_plural = 'Источники'
+
+    source = models.CharField(max_length=100)
+
+    def __unicode__(self):
+        return self.source

@@ -9,17 +9,26 @@
     <!-- Стили для datepicker -->
     <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
 <!-- Стили для select -->
-    <link rel="stylesheet" type="text/css" href="{% static 'css/chosen-bootstrap.css' %}" >
-
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/chosen-bootstrap.css' %}" >-->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
+<link rel="stylesheet" type="text/css" href="{% static 'js/chosen/chosen.min.css' %}" >
 
 {% endblock %}
 
 {% block scripts %}
 <!-- кастомизация select -->
-    <script src="{% static 'js/chosen/chosen.jquery.js' %}"></script>
+<script src="{% static 'js/selectize/selectize.js' %}"></script>
+<!--
+<script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
+-->
 
 <!-- Добавление валидации -->
     <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
+
+
+
+<!-- Плагин для клонирования формы -->
+    <script src="{% static 'js/cloneya/jquery-cloneya.js' %}"></script>
 
 <!-- Скрипт работы для datepicker -->
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
@@ -46,7 +55,11 @@
             <li class="active">Добавление кандидата</li>
           </ol>
         </section>
-<form id="appliment_form">
+
+          <!--
+<form id="appliment_form" method="post" enctype="multipart/form-data" action="{% url 'applicants:applicant_add' %}">
+    {% csrf_token %}
+-->
         <!-- Main content -->
         <section class="content">
           <!-- Main row -->
@@ -57,6 +70,55 @@
                     Форма добавления нового пользователя
                 -->
               <div class="box box-success">
+                  <div class="box-header form-horizontal">
+
+                    <div  class="form-group">
+                        <label class="control-label col-sm-2">{{ applicant_form.first_name.label_tag }}</label>
+                        <div class="col-sm-10">
+                            {{ applicant_form.first_name }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">{{ applicant_form.last_name.label_tag }}</label>
+                        <div class="col-sm-10">
+                            {{ applicant_form.last_name }}
+                            <!--
+                            <input type="text" name="last_name" id="last_name" class="form-control" data-validation="custom" data-validation-regexp="^([А-Яа-яЁё]+)$" data-validation-error-msg="Имя должно состоять из кириллических символов">
+                            -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">{{ applicant_form.middle_name.label_tag }}</label>
+                        <div class="col-sm-10">
+                            {{ applicant_form.middle_name }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <!--
+                        <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+                        -->
+                        <label class="control-label col-sm-2">{{ applicant_form.birthday.label_tag }}</label>
+                        <div class="col-sm-9">
+                            <div class="input-group form-group">
+                                <span class="input-group-addon"></span>
+                                {{ applicant_form.birthday }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">Источник</label>
+                        <div class="col-sm-10">
+                            {{ applicant_form.source }}
+                        </div>
+                    </div>
+
+
+                </div>
+                  <!--
                 <div class="box-header form-horizontal">
 
                     <div  class="form-group">
@@ -83,7 +145,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="birthday">Дата рождения</label>
                         <div class="col-sm-10">
-                            <input type="text" id="birthday" name="birthday" class="form-control" data-validation="date"  data-validation-format="ddd-mm-yyyy">
+                            <input type="text" id="birthday" name="birthday" class="form-control" data-validation="date"  data-validation-format="dd-mm-yyyy">
                         </div>
                     </div>
 
@@ -94,8 +156,29 @@
                         </div>
                     </div>
 
-                </div>
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="linkedin">LinkedIn</label>
+                        <div class="col-sm-10">
+                            <input type="number" name="linkedin" id="linkedin" class="form-control">
+                        </div>
+                    </div>
 
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="fb">Facebook</label>
+                        <div class="col-sm-10">
+                            <input type="number" name="fb" id="fb" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="vk">ВКонтакте</label>
+                        <div class="col-sm-10">
+                            <input type="number" name="vk" id="vk" class="form-control">
+                        </div>
+                    </div>
+
+                </div>
+-->
               </div><!-- /.форма добавления пользователя -->
 
 
@@ -103,47 +186,62 @@
               <div class="box box-success">
                 <div class="box-header form-horizontal">
                     <div id="vacancy_forms">
-                        <div id="vac_1" class="well">
-                            <div class="form-group">
-                                <label class="control-label col-sm-5" for="salary">Предполагаемая должность</label>
-                                <div class="col-sm-7">
-                                    <select class="chosen-select" data-placeholder="Выберите предполагаемую должность" name="position" id="position">
-                                        <option style="display: none;" value="-1">Выберите предполагаемую должность</option>
-                                    </select>
-                                </div>
-                            </div>
+                        <table id="vacancy" class="table">
+                            <tr>
+                                <th>Предполагаемая должность</th>
+                                <th>Вакансия</th>
+                                <th>Уровень зарплаты в анкете</th>
+                                <th>Предлагаемая зарплата</th>
+                                <th></th>
+                            </tr>
+                            <tr class="data-wrapper">
 
-                            <div class="form-group">
-                                <label class="control-label col-sm-5" for="salary">Вакансия</label>
-                                <div class="col-sm-7">
-                                    <select class="chosen-select" data-placeholder="Выберите вакансию" name="vacancy" id="vacancy">
+                                <td>
+                                    <select name="position" id="position" placeholder="Выберите должность">
+                                        <option value="-1"></option>
+                                        <option value="1">ddd</option>
+                                        <option value="2">dddd</option>
+                                        <option value="3">dddddd</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class="chosen-select" placeholder="Выберите вакансию" name="vacancy" id="vacancy">
                                         <option style="display: none;" value="-1">Выберите вакансию</option>
+                                        <option value="1">1</option>
+                                        <option value="1">2</option>
                                     </select>
-                                </div>
-                            </div>
+                                </td>
+                                <td>
+                                    <input type="number" min="0" name="salary" id="salary" class="form-control">
+                                </td>
+                                <td>
+                                    <input type="number" min="0" name="suggested_salary" id="suggested_salary" class="form-control">
+                                </td>
+                            </tr>
+                        </table>
 
-                            <div class="form-group">
-                                <label class="control-label col-sm-5" for="salary">Уровень зарплаты в анкете</label>
-                                <div class="col-sm-7">
-                                    <input type="number" name="salary" id="salary" class="form-control">
-                                </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="control-label col-sm-5" for="suggested_salary">Предлагаемая зарплата</label>
-                                <div class="col-sm-7">
-                                    <input type="number" name="suggested_salary" id="suggested_salary" class="form-control">
-                                </div>
-                            </div>
+
+
+                                <button id='btnAddVacancy' class="btn btn-success add-new-data">
+                                    <label>Добавить вакансию</label>
+                                </button>
+
+                        <table id="tblAddingVacancy" class="table">
+
+                        </table>
+
+                         <!--       <button class="btn btn-success clone">
+                                    <label>Добавить вакансию</label>
+                                </button>
+                                <button class="btn btn-danger delete">
+                                    <label>Удалить вакансию</label>
+                                </button>
+
+                           </div>
                         </div>
+-->
                     </div>
-
-                    <button class="btn btn-success" id="add_vac" value="1" onclick="addForm(this, 'vacancy_forms', 'vac_', 'remove_vac');">
-                        <label>Добавить вакансию</label>
-                    </button>
-                    <button class="btn btn-danger" id="remove_vac" value="1" onclick="removeForm(this, 'add_vac', 'vac_');">
-                        <label>Удалить вакансию</label>
-                    </button>
                 </div>
 
               </div>
@@ -153,7 +251,57 @@
                     <div class="box-header form-horizontal">
                         <h2>Контактные данные</h2>
 
+                        <!-- -->
                         <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.phone.label_tag }}</label>
+                            <div class="col-sm-10">
+                                <div class="input-group form-group">
+                                    <span class="input-group-addon">+7</span>
+                                    {{ applicant_form.phone }}
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- -->
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.email.label_tag }}</label>
+                            <div class="col-sm-10">
+                                <div class="input-group form-group">
+                                    <span class="input-group-addon">@</span>
+                                    {{ applicant_form.email }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.skype.label_tag }}</label>
+                            <div class="col-sm-10">
+                                {{ applicant_form.skype }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.icq.label_tag }}</label>
+                            <div class="col-sm-10">
+                                {{ applicant_form.icq }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.vk.label_tag }}</label>
+                            <div class="col-sm-10">
+                                {{ applicant_form.vk }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.fb.label_tag }}</label>
+                            <div class="col-sm-10">
+                                {{ applicant_form.fb }}
+                            </div>
+                        </div>
+                       <!-- <div class="form-group">
                             <label class="control-label col-sm-2">Телефон</label>
                             <div class="col-sm-10">
                                 <input type="phone" name="phone" class="form-control" data-validation="number">
@@ -179,7 +327,7 @@
                             <div class="col-sm-10">
                                 <input type="text" name="icq" class="form-control" data-validation="icq">
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <!-- ./Контакты -->
@@ -188,7 +336,7 @@
 
                     <div class="box-body">
                         <div>
-                            <input type="submit" value="Сохранить анкету" class="btn btn-success">
+                            <input type="button" value="Сохранить анкету" class="btn btn-success">
                         </div>
                     </div>
                 </div>
@@ -201,14 +349,13 @@
 
                     <div class="box-body">
                         <div>
-                            <h2>Фото кандидата</h2>
+                            <h2>{{ applicant_form.photo.label_tag }}</h2>
                             <div align="center">
                                 <div>
-                                    <input type="file" id="imageLoader" name="photo">
+                                    {{ applicant_form.photo }}
                                 </div>
                                 <div style="margin-top: 3ex;">
                                     <canvas id="imageCanvas">
-                                        <img src="http://placehold.it/300x150">
                                     </canvas>
                                 </div>
                             </div>
@@ -219,42 +366,51 @@
 
 
               <!-- Форма ввода образования -->
-              <div class="box box-solid bg-light-blue-gradient">
-
-                <div class="box-body" id="edu_forms">
-                    <div id="edu_1">
-                        <select class="chosen-select" name="education" data-placeholder="Выберите тип образования">
+              <div class="box box-solid">
+                <div class="box-header" id="edu_forms">
+                    <div class="toclone">
+                        <select name="education" placeholder="Выберите тип образования">
                             <option style="display: none;" value="-1">Выберите тип образования</option>
                             {% for e in edu %}
                                 <option value="{{ e.id }}">{{ e.type }}</option>
                             {% endfor %}
                         </select>
 
-                        <select class="chosen-select" name="major" data-placeholder="Выберите специальность">
+                        <select class="select-add" name="major" data-placeholder="Выберите специальность">
                             <option style="display: none;" value="-1">Выберите специальность</option>
                             {% for m in majors %}
                                 <option value="{{ m.id }}">{{ m.name }}</option>
                             {% endfor %}
                         </select>
+                        <button class="btn btn-success clone">
+                        <label>Добавить образование</label>
+                    </button>
+                    <button class="btn btn-danger delete">
+                        <label>Удалить образование</label>
+                    </button>
 
-                        <input type="text" id="add_education" name="add_major" placeholder="Добавить специальность" class="form-control" data-validation="">
                     </div>
+
 
                 </div><!-- /.Форма ввода образования-->
 
-                  <button class="btn btn-success" id="add_form" value="1" onclick="addForm(this, 'edu_forms', 'edu_', 'remove_form');">
-                      <label>Добавить образование</label>
-                  </button>
-                  <button class="btn btn-danger" id="remove_form" value="1" onclick="removeForm(this, 'add_form', 'edu_');">
-                      <label>Удалить образование</label>
-                  </button>
               </div>
               <!-- /.Форма ввода образования -->
 
-              <!-- solid sales graph -->
+              <!-- Resume -->
               <div class="box box-solid bg-teal-gradient">
-                <label>Добавить резюме</label>
-                <input type="file" name="resume[]" accept="application/msword, application/pdf, .odt, .docx">
+                  <div class="box-header" align="center">
+                    <h2>Добавить резюме</h2>
+                    <input type="file" name="resume[]" accept="application/msword, application/pdf, .odt, .docx" multiple>
+                  </div>
+              </div><!-- /.box -->
+
+                <!-- Portfolio -->
+              <div class="box box-solid bg-teal-gradient">
+                  <div class="box-header" align="center">
+                    <h2>Добавить портфолио</h2>
+                    <input type="file" name="portfolio[]" accept="application/zip, .rar, .7z" multiple>
+                  </div>
               </div><!-- /.box -->
 
               <!-- Calendar -->
@@ -265,23 +421,23 @@
                         <h2>Адрес проживания</h2>
                       <!-- Место проживания -->
                         <div class="group-control">
-                            <label>Город</label>
+                            <label>{{ applicant_form.city.label_tag }}</label>
                             <div>
-                                <input type="text" name="city" class="form-control">
+                                {{ applicant_form.city }}
                             </div>
                         </div>
 
                         <div class="group-control">
                             <div style="display: inline-block;">
-                                <label>Улица</label>
+                                <label>{{ applicant_form.street.label_tag }}</label>
                                 <div>
-                                    <input type="text" name="street" class="form-control">
+                                    {{ applicant_form.street }}
                                 </div>
                             </div>
                             <div style="display: inline-block;">
-                                <label>Дом</label>
+                                <label>{{ applicant_form.building.label_tag }}</label>
                                 <div>
-                                    <input type="text" name="building" class="form-control">
+                                    {{ applicant_form.building }}
                                 </div>
                             </div>
                         </div>
@@ -295,7 +451,8 @@
           </div><!-- /.row (main row) -->
 
         </section><!-- /.content -->
-    </form>
+          <!--
+    </form>-->
       </div><!-- /.content-wrapper -->
 
 

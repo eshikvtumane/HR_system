@@ -1,42 +1,42 @@
+$(document).ready(function(){
+    var vacancy_count = 1;
+    var vacancy_arr = Array();
+    $('#btnAddVacancy').click(function(){
+        tbl = document.getElementById('tblAddingVacancy');
+
+        position = document.getElementById('position');
+        position_name = position.options[position.selectedIndex].text;
+        vacancy = document.getElementById('vacancy').text;
+        salary = document.getElementById('salary').value;
+        suggested_salary = document.getElementById('suggested_salary').value;
+
+        values = [
+            position_name,
+            vacancy,
+            salary,
+            suggested_salary
+        ];
 
 
-//Добавление формы
-  function addForm(obj, div_forms, div_name, btn_remove){
-    clone_from = div_name + obj.value;
-    clone_to = div_forms;
-    btn_remove_obj = document.getElementById(btn_remove);
-
-    divClone(obj, clone_from, clone_to, obj.value, div_name, btn_remove_obj);
-  }
-
-
-  function removeForm(obj, btn_add, div_name){
-    btn = document.getElementById(btn_add);
-    remove_val = obj.value;
-
-    if(remove_val != '1'){
-        document.getElementById(div_name + remove_val).remove()
-        btn.value = (remove_val - 1).toString();
-        obj.value = (remove_val - 1).toString();
-    }
-  }
-
-  <!-- Определение функции удаления элементов -->
-    Element.prototype.remove = function() {
-        this.parentElement.removeChild(this);
-    }
-    NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
-        for(var i = 0, len = this.length; i < len; i++) {
-            if(this[i] && this[i].parentElement) {
-                this[i].parentElement.removeChild(this[i]);
-            }
+        var tr = document.createElement('tr');
+        for(var i = 0; i < values.length; i++){
+            var td = document.createElement('td');
+            td.appendChild(document.createTextNode(values[i]));
+            tr.appendChild(td);
         }
-    }
+        tbl.appendChild(tr);
 
+    });
+});
 
-    function addVacancyForm(div_forms){
+  function addVacancy(){
+    var input = document.createElement('select');
+    input.className = 'chosen-select';
 
-    }
+    document.getElementById('vacancy_forms').appendChild(input);
+    $('.chosen-select').chosen();
+  }
+
 
     function divClone(btn, clone_from, clone_to, btn_value, div_name, btn_remove){
         div = document.getElementById(clone_from);
@@ -47,6 +47,8 @@
         btn.value = id.toString();
         btn_remove.value = id.toString();
         document.getElementById(clone_to).appendChild(clone);
+
+        $('#' + clone_to).find('select').chosen();
 
         return;
     }

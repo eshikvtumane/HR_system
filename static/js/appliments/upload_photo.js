@@ -1,5 +1,5 @@
 // Добавление эскиза загруженного изображения на страницу
-var imageLoader = document.getElementById('imageLoader');
+var imageLoader = document.getElementById('id_photo');
     imageLoader.addEventListener('change', handleImage, false);
 var canvas = document.getElementById('imageCanvas');
 var ctx = canvas.getContext('2d');
@@ -11,8 +11,6 @@ function handleImage(e){
     reader.onload = function(event){
         var img = new Image();
         img.onload = function(){
-        console.log(img.width)
-        //
             img_width = img.width; // длина картинки
             img_height = img.height; // ширина картинки
 

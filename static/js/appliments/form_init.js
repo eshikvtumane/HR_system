@@ -1,13 +1,84 @@
 window.onload = function(){
+$('input:text:first').focus();
+
+ $('input:text').bind("keydown", function(e) {
+    var n = $("input").length;
+    if (e.which == 13)
+    { //Enter key
+      e.preventDefault(); //Skip default behavior of the enter key
+      var nextIndex = $('input').index(this) + 1;
+      if(nextIndex < n)
+        $('input')[nextIndex].focus();
+      else
+      {
+        $('input')[nextIndex-1].blur();
+        $('#btnSubmit').click();
+      }
+    }
+  });
+
+
+   /* $('body').on('keydown', 'input, select, textarea', function(e){
+        var self = $(this)
+            , form = self.parents('form:eq(0')
+            , focusable
+            , next
+            ;
+        if(e.keyCode == 13){
+            focusable = form.find('input,a,select,button,textarea').filter(":visible");
+            next = focusable.eq(focusable.index(this)+1);
+            if(next.length){
+                next.focus();
+            }else{
+                form.sibmit();
+            }
+            return false;
+        }
+    })
+*/
+
+    loadCanvas();
+
 // инициализация datepicker
-    $('#birthday').datetimepicker({
+    $('#id_birthday').datetimepicker({
         lang: 'ru',
         timepicker: false,
         format: 'd-m-Y'
     });
-// инициализация select
-  $('.chosen-select').chosen();
-  $('.chosen-select-deselect').chosen({ allow_single_deselect: true });
+
+    // инициализация select
+    //$('select').chosen();
+   $('select').selectize({
+        create: true,
+        createOnBlur: true,
+        dropdownParent: 'body'
+    });
+
+// limit: 10
+    $('#vacancy_forms').cloneya({
+    valueClone      : true,
+            dataClone       : false,
+            deepClone       : false,
+        cloneButton     : '.clone',
+        deleteButton    : '.delete',
+        clonePosition   : 'after',
+        serializeID     : true,
+        ignore          : 'label.error',
+        defaultRender   : false,
+        preserveChildCount  : true
+    }).on('clone_after_append', function(e, newclone) {
+    $(".chosen-select").chosen('destroy');
+        $(".chosen-select").chosen();
+
+    });
+
+    $('#edu_forms').cloneya({
+        limit           : 10,
+        cloneButton     : '.clone',
+        deleteButton    : '.delete',
+        clonePosition   : 'after'
+    })
+
 
  //инициализация валидации
  // http://formvalidator.net/index.html#custom-validators
@@ -95,3 +166,31 @@ window.onload = function(){
     language : myLanguage
   });
 }
+
+function loadCanvas() {
+console.log('dffdf');
+        var canvas = document.getElementById('imageCanvas');
+        var context = canvas.getContext('2d');
+        width = 300;
+
+        // load image from data url
+        var img = new Image();
+        img.onload = function(){
+            img_width = img.width; // длина картинки
+            img_height = img.height; // ширина картинки
+
+            // вычисление ширины для картинки
+            height = (img_height * width) / img_width;
+
+
+            img.width = width;
+            img.height = height;
+
+            canvas.width = width;
+            canvas.height = height;
+            ctx.drawImage(img,0,0,img.width, img.height);
+        }
+
+        img.src = '/media/no_photo.gif'; //"http://placehold.it/300x150";
+
+      }

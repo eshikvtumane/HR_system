@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    Добавление кандидата
+{% endblock %}
+
+{% block styles %}
+    <!-- Стили для datepicker -->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
+<!-- Стили для select -->
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/chosen-bootstrap.css' %}" >-->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
+<link rel="stylesheet" type="text/css" href="{% static 'js/chosen/chosen.min.css' %}" >
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Инициализация элементов при загрузке страницы -->
+    <script src="{% static 'js/administration/add_value.js' %}"></script>
+<!-- передача token на сервер через ajax -->
+    <script src="{% static 'js/csrf_ajax.js' %}"></script>
+<!-- передача данных на сервер через ajax -->
+    <script src="{% static 'js/administration/send_value.js' %}"></script>
+
+{% endblock %}
+
+{% block content %}
+      <!-- Right side column. Contains the navbar and content of the page -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Добавление нового кандидата
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+            <li class="active">Добавление кандидата</li>
+          </ol>
+        </section>
+
+
+        <!-- Main content -->
+        <section class="content">
+          <!-- Main row -->
+          <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-7 connectedSortable">
+                <!--
+                    Форма добавления нового пользователя
+                -->
+              <div class="box box-success">
+                  <div class="box-header form-horizontal">
+
+                        <h1>Добавление специальностей</h1>
+
+                      <div>
+                          <div>
+                              <div>
+                                  <label>Введите название специальности</label>
+                                  <input type="text" id="add_speciality" class="form-control">
+                              </div>
+                              <div style="margin-top: 3ex;">
+                                  <button value="Добавить" class="btn btn-primary" id="addSpec">Добавить</button>
+                              </div>
+
+                          </div>
+
+                          <div>
+                              <div style="margin-top: 3ex;">
+                                  <select id="speciality" style="width: 30em;" multiple></select>
+                              </div>
+
+                              <div style="margin-top: 3ex;">
+                                  <div id="result_spec_list"></div>
+                                  <div  style="margin-top: 2ex;">
+                                      <button value="Добавить" class="btn btn-success" id="saveSpec">Сохранить</button>
+                                      <button value="Удалить" class="btn btn-danger" id="removeSpec">Удалить</button>
+                                  </div>
+
+                              </div>
+                          </div>
+
+                      </div>
+
+<hr/>
+                      <div style="margin-top: 3ex;">
+                          <h4>Добавить из файла</h4>
+                          <input type="file" name="spec[]" id="spec[]" value="Выбрать файл">
+
+                          <div style="padding-top: 3ex;">
+                              <div id="result_load_spec_file"></div>
+                            <button value="Сохранить данные из файла" class="btn btn-success" id="btnAddSpec">Сохранить</button>
+                          </div>
+
+                      </div>
+
+
+                  </div>
+              </div><!-- /.форма добавления пользователя -->
+
+
+                <!-- Добавление вакансии -->
+              <div class="box box-success">
+                <div class="box-header form-horizontal">
+
+                </div>
+
+              </div>
+
+                <!-- Контакты -->
+                <div class="box box-success">
+                    <div class="box-header form-horizontal">
+
+                    </div>
+                </div>
+                <!-- ./Контакты -->
+
+                <div class="box box-solid">
+
+                    <div class="box-body">
+
+                    </div>
+                </div>
+
+            </section><!-- /.Left col -->
+            <!-- right col (We are only adding the ID to make the widgets sortable)-->
+            <section class="col-lg-5 connectedSortable">
+
+                <!-- Добавление источников -->
+                <div class="box box-success">
+                  <div class="box-header form-horizontal">
+
+                      <h1>Добавление источников</h1>
+
+                      <h4>(Откуда пришли кандидаты)</h4>
+
+                      <div>
+                          <div>
+                              <div>
+                                  <label>Введите название источника</label>
+                                  <input type="text" id="add_source" class="form-control">
+                              </div>
+                              <div style="margin-top: 3ex;">
+                                  <button value="Добавить" class="btn btn-primary" id="addSource">Добавить</button>
+                              </div>
+
+                          </div>
+
+                          <div>
+                              <div style="margin-top: 3ex;">
+                                  <select id="source" style="width: 30em;" multiple></select>
+                              </div>
+
+                              <div style="margin-top: 3ex;">
+                                  <div id="result_source_list"></div>
+                                  <div  style="margin-top: 2ex;">
+                                      <button value="Добавить" class="btn btn-success" id="btnSaveSource">Сохранить</button>
+                                      <button value="Удалить" class="btn btn-danger" id="removeSource">Удалить</button>
+                                  </div>
+
+                              </div>
+                          </div>
+
+                      </div>
+
+<hr/>
+                      <div style="margin-top: 3ex;">
+                          <h4>Добавить из файла</h4>
+                          <input type="file" name="source_file" id="source_file" value="Выбрать файл">
+
+                          <div style="padding-top: 3ex;">
+                              <div id="result_load_source_file"></div>
+                            <button value="Сохранить данные из файла" class="btn btn-success" id="btnAddSource">Сохранить</button>
+                          </div>
+
+                      </div>
+
+
+                  </div>
+              </div>
+
+
+                <div class="box box-solid">
+
+                    <div class="box-body">
+
+                    </div>
+                </div>
+
+
+              <!-- Форма ввода образования -->
+              <div class="box box-solid bg-light-blue-gradient">
+
+                <div class="box-body" id="edu_forms">
+
+
+
+                </div><!-- /.Форма ввода образования-->
+
+              </div>
+
+              <div class="box box-solid bg-green-gradient">
+                <div class="box-footer text-black">
+                  <div class="row">
+                    <div class="col-sm-12">
+
+
+                    </div><!-- /.col -->
+                  </div><!-- /.row -->
+                </div>
+              </div><!-- /.box -->
+
+            </section><!-- right col -->
+          </div><!-- /.row (main row) -->
+
+        </section><!-- /.content -->
+
+      </div><!-- /.content-wrapper -->
+
+
+{% endblock %}

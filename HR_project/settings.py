@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'main',
     'applicants',
     'vacancies',
+    'administration',
     'schedule'
 )
 
@@ -98,8 +99,8 @@ TEMPLATE_DIRS = (
     os.path.join(BASE_DIR,'templates'),
     os.path.join(BASE_DIR,"main/templates/main"),
     os.path.join(BASE_DIR,"applicants/templates/applicants"),
-    os.path.join(BASE_DIR,"vacancies/templates/vacancies")
-
+    os.path.join(BASE_DIR,"vacancies/templates/vacancies"),
+    os.path.join(BASE_DIR,"administration/templates/administration"),
 )   
 
 STATICFILES_DIRS = (

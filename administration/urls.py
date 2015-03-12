@@ -4,7 +4,6 @@ from views import ValueAddView, MajorSaveView, SourceSaveView
 
 
 urlpatterns = patterns('',
-
     url(r'^add/$', ValueAddView.as_view(), name='add'),
 
 

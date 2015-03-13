@@ -1,7 +1,7 @@
 window.onload = function(){
 $('input:text:first').focus();
 
- $('input:text').bind("keydown", function(e) {
+ $('input').bind("keydown", function(e) {
     var n = $("input").length;
     if (e.which == 13)
     { //Enter key
@@ -18,24 +18,8 @@ $('input:text:first').focus();
   });
 
 
-   /* $('body').on('keydown', 'input, select, textarea', function(e){
-        var self = $(this)
-            , form = self.parents('form:eq(0')
-            , focusable
-            , next
-            ;
-        if(e.keyCode == 13){
-            focusable = form.find('input,a,select,button,textarea').filter(":visible");
-            next = focusable.eq(focusable.index(this)+1);
-            if(next.length){
-                next.focus();
-            }else{
-                form.sibmit();
-            }
-            return false;
-        }
-    })
-*/
+
+
 
     loadCanvas();
 
@@ -46,38 +30,19 @@ $('input:text:first').focus();
         format: 'd-m-Y'
     });
 
-    // инициализация select
-    //$('select').chosen();
-   $('select').selectize({
+
+   $('.select').selectize();
+
+   $('.select-add').selectize({
         create: true,
         createOnBlur: true,
-        dropdownParent: 'body'
     });
 
-// limit: 10
-    $('#vacancy_forms').cloneya({
-    valueClone      : true,
-            dataClone       : false,
-            deepClone       : false,
-        cloneButton     : '.clone',
-        deleteButton    : '.delete',
-        clonePosition   : 'after',
-        serializeID     : true,
-        ignore          : 'label.error',
-        defaultRender   : false,
-        preserveChildCount  : true
-    }).on('clone_after_append', function(e, newclone) {
-    $(".chosen-select").chosen('destroy');
-        $(".chosen-select").chosen();
 
+    $('.clone-wrapper').cloneya({
+        limit: 3
     });
 
-    $('#edu_forms').cloneya({
-        limit           : 10,
-        cloneButton     : '.clone',
-        deleteButton    : '.delete',
-        clonePosition   : 'after'
-    })
 
 
  //инициализация валидации

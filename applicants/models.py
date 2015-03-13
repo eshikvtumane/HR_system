@@ -104,7 +104,8 @@ class Position(models.Model):
         verbose_name_plural = 'Должности'
 
     name = models.TextField(verbose_name='Должность')
-
+    def __unicode__(self):
+        return self.name
 # Хранение резюме
 class Resume(models.Model):
     class Meta:

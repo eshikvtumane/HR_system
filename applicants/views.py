@@ -2,15 +2,20 @@
 from django.shortcuts import render, render_to_response
 from django.views.generic import View
 from django.template import RequestContext
+from django.http import HttpResponse
 
 from django.forms.formsets import formset_factory
-from forms import ApplicantForm, CandidateSearchForm #, ApplicantEducationForm
+from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio
+from vacancies.models import Vacancy
 
 import os
 from django.conf import settings
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+
+import json
+
 
 import datetime
 
@@ -21,7 +26,7 @@ class ApplicantAddView(View):
     template = 'applicant_add.html'
     def get(self, request):
         form = ApplicantForm()
-        #edu_form = formset_factory(ApplicantEducationForm, extra=5)
+        edu_form = ApplicantEducationForm()
 
 
         edu = Education.objects.all()
@@ -30,7 +35,7 @@ class ApplicantAddView(View):
 
         args = {}
         args['applicant_form'] = form
-        #args['edu_form'] = edu_form
+        args['edu_form'] = edu_form
 
         args['edu'] = edu
         args['majors'] = major
@@ -84,6 +89,15 @@ class SavingFiles():
         save_path = default_storage.save(os.path.join(dir, filename), ContentFile(f.read()))
         file_url = os.path.join(path, save_path)
         return file_url
+
+# выборка вакансий
+class VacancySearchAjax(View):
+    def get(self, request):
+        position = request.GET.get('position')
+        vacancies = Vacancy.objects.filter(position=position).values('id', 'post_date', 'head__name')
+        vac_json = json.dumps(vacancies)
+        return HttpResponse(vac_json, content_type='application/json')
+
 
 class CandidateSearchView(View):
     template = 'candidate_search.html'

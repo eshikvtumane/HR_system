@@ -7,20 +7,10 @@ class ApplicantForm(forms.ModelForm):
     """
         Форма для добавления кандидата в базу
     """
-    '''first_name = forms.CharField(widget=forms.TextInput)
-    last_name = forms.CharField(widget=forms.TextInput)
-    middle_name = forms.CharField(widget=forms.TextInput)
-
-    # Дата рождения
-    birthday = forms.DateField(widget=forms.DateField)
-
-    # Фотография кандидата
-    photo = forms.FileField(widget=forms.FileField)
-'''
     source = forms.ModelChoiceField(queryset=SourceInformation.objects.all(),
                                        label='Источник',
                                        widget=forms.Select(attrs={
-                                           'class':'',
+                                           'class':'select-add',
                                             'placeholder':'Выберите источник'
                                        })
             )
@@ -70,10 +60,6 @@ class ApplicantForm(forms.ModelForm):
                 #'data-validation-regexp': "^([А-Яа-яЁё]+)$",
                 #'data-validation-error-msg': "Название города должно состоять из кириллических символов"
             }),
-            'phone': forms.TextInput(attrs={
-                'class': "form-control",
-                'data-validation': "number"
-            }),
             'email': forms.EmailInput(attrs={
                 'class': "form-control",
                 'data-validation': "email"
@@ -95,28 +81,31 @@ class ApplicantForm(forms.ModelForm):
         }
 
 # Форма добавления оюрахования
-'''class ApplicantEducationForm(forms.ModelForm):
+class ApplicantEducationForm(forms.ModelForm):
+    education = forms.ModelChoiceField(queryset=Education.objects.all(),
+                                       label='Образование',
+                                       widget=forms.Select(attrs={
+                                           'class':'select',
+                                            'placeholder':'Выберите образование'
+                                       })
+            )
+
+    major = forms.ModelChoiceField(queryset=Major.objects.all(),
+                                            label='Специальность',
+                                            widget=forms.Select(attrs={
+                                                'class': 'select-add',
+                                                'placeholder':'Выберите специальность'
+                                                }
+                                            )
+            )
+
     class Meta:
         model = ApplicantEducation
         fields = ( 'education', 'major' )
         widgets = {
-            'education': forms.ModelChoiceField(queryset=Education.objects.all(),
-                                       label='Образование',
-                                       widget=forms.Select(attrs={
-                                           'class':'select-color',
-                                            'placeholder':'Выберите образование'
-                                       })
-            ),
-            'major': forms.ModelChoiceField(queryset=Major.objects.all(),
-                                            label='Специальность',
-                                            widget=forms.Select(attrs={
-                                                'placeholder':'Выберите специальность'
-                                                }
-                                            )
-            ),
             'study_start': forms.NumberInput(),
             'study_end': forms.NumberInput()
-        }'''
+        }
 
 # Форма поиска
 class CandidateSearchForm(forms.Form):

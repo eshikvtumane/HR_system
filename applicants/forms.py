@@ -23,17 +23,20 @@ class ApplicantForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={
                 'class': "form-control",
                 'data-validation': "custom", 'data-validation-regexp': "^([А-Яа-яЁё]+)$",
-                'data-validation-error-msg': "Фамилия должна состоять из кириллических символов"
+                'data-validation-error-msg': "Фамилия должна состоять из кириллических символов",
+                'autocomplete': 'off'
             }),
             'last_name': forms.TextInput(attrs={
                 'class': "form-control",
                 'data-validation': "custom",
                 'data-validation-regexp': "^([А-Яа-яЁё]+)$",
-                'data-validation-error-msg': "Имя должно состоять из кириллических символов"
+                'data-validation-error-msg': "Имя должно состоять из кириллических символов",
+                'autocomplete': 'off'
             }),
             'middle_name': forms.TextInput(attrs={
                  'class': "form-control",
-                 'data-validation': "middle_name"
+                 'data-validation': "middle_name",
+                'autocomplete': 'off'
             }),
             'birthday': forms.DateInput(attrs={
                 'class': "form-control",
@@ -45,42 +48,50 @@ class ApplicantForm(forms.ModelForm):
                 'class': "form-control",
                 'data-validation': "custom",
                 'data-validation-regexp': "^([А-Яа-яЁё]+)$",
-                'data-validation-error-msg': "Название города должно состоять из кириллических символов"
+                'data-validation-error-msg': "Название города должно состоять из кириллических символов",
+                'autocomplete': 'off'
             }),
             'street': forms.TextInput(attrs={
                 'class': "form-control",
                 'data-validation': "custom",
                 'data-validation-regexp': "^([А-Яа-яЁё]+)$",
-                'data-validation-error-msg': "Название улицы должно состоять из кириллических символов"
+                'data-validation-error-msg': "Название улицы должно состоять из кириллических символов",
+                'autocomplete': 'off'
             }),
 
             'building': forms.TextInput(attrs={
-                'class': "form-control"
+                'class': "form-control",
+                'autocomplete': 'off'
                 #'data-validation': "custom",
                 #'data-validation-regexp': "^([А-Яа-яЁё]+)$",
                 #'data-validation-error-msg': "Название города должно состоять из кириллических символов"
             }),
             'email': forms.EmailInput(attrs={
                 'class': "form-control",
-                'data-validation': "email"
+                'data-validation': "email",
+                'autocomplete': 'off'
             }),
             'skype': forms.TextInput(attrs={
                 'class': "form-control",
-                'data-validation': "skype"
+                'data-validation': "skype",
+                'autocomplete': 'off'
             }),
             'icq': forms.TextInput(attrs={
                 'class': "form-control",
-                'data-validation': "icq"
+                'data-validation': "icq",
+                'autocomplete': 'off'
             }),
             'vk': forms.TextInput(attrs={
-                'class': "form-control"
+                'class': "form-control",
+                'autocomplete': 'off'
             }),
             'fb': forms.TextInput(attrs={
-                'class': "form-control"
+                'class': "form-control",
+                'autocomplete': 'off'
             })
         }
 
-# Форма добавления оюрахования
+# Форма добавления образования
 class ApplicantEducationForm(forms.ModelForm):
     education = forms.ModelChoiceField(queryset=Education.objects.all(),
                                        label='Образование',
@@ -101,11 +112,33 @@ class ApplicantEducationForm(forms.ModelForm):
 
     class Meta:
         model = ApplicantEducation
-        fields = ( 'education', 'major' )
+        fields = ('education', 'major', 'study_start', 'study_end')
         widgets = {
-            'study_start': forms.NumberInput(),
-            'study_end': forms.NumberInput()
+            'study_start': forms.Select(attrs={
+                                                'class': 'yearpicker select',
+                                                'placeholder':'Выберите год'
+                                            }
+            ),
+            'study_end': forms.NumberInput(attrs={
+                                                'class': 'form-control'
+                                            })
         }
+
+# Форма выбора вакансий
+class VacancyAddForm(forms.Form):
+    position = forms.ModelChoiceField(queryset=Position.objects.all(),
+                                       label='Должность',
+                                       widget=forms.Select(attrs={
+                                           'class':'select',
+                                            'placeholder':'Выберите должность'
+                                       })
+            )
+    '''vacancies = forms.ModelChoiceField(label='Вакансии',
+                                       widget=forms.Select(attrs={
+                                           'class':'select',
+                                            'placeholder':'Выберите вакансию'
+                                       })
+            )'''
 
 # Форма поиска
 class CandidateSearchForm(forms.Form):

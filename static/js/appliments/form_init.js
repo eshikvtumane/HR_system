@@ -18,16 +18,27 @@ $('input:text:first').focus();
   });
 
 
+// вычисление года окончания обучения
+$('#id_study_start').change(function(){
+
+    var start = document.getElementById('id_study_start');
+    var study_start = start.options[start.selectedIndex].text;
 
 
+    var study_end = document.getElementById('id_study_end');
+    study_end.value = parseInt(study_start) + 5;
+});
 
+// заглушка для загружаемой фотографии
     loadCanvas();
+    setYear();
 
 // инициализация datepicker
     $('#id_birthday').datetimepicker({
         lang: 'ru',
         timepicker: false,
-        format: 'd-m-Y'
+        format: 'd-m-Y',
+        mask: true
     });
 
 
@@ -37,7 +48,6 @@ $('input:text:first').focus();
         create: true,
         createOnBlur: true,
     });
-
 
     $('.clone-wrapper').cloneya({
         limit: 3
@@ -159,3 +169,19 @@ console.log('dffdf');
         img.src = '/media/no_photo.gif'; //"http://placehold.it/300x150";
 
       }
+
+
+// заполнение select'a годами
+function setYear(div){
+    var start = 1900;
+    var end   = new Date().getFullYear() + 10;
+
+
+    var empty = 'Выберите дату';
+    $('.yearpicker').append($('<option value/>').html(empty));
+
+    for (i = end; i > 1900; i--)
+    {
+         $('.yearpicker').append($('<option />').val(i).html(i));
+    }
+}

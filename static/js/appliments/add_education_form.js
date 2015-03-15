@@ -1,7 +1,13 @@
 $(document).ready(function(){
+    var $select = $('.select-vacancy').selectize({
+        create: true,
+        createOnBlur: true
+    });
+
 
     $('#btnAddVacancy').click(function(){
            addVacancy();
+
     });
 
     // изменение значений в вакансиях при изменении должности
@@ -9,26 +15,44 @@ $(document).ready(function(){
         var position_id = document.getElementById('position').value;
         var select_vacancies = document.getElementById('vacancies');
 
-        console.log('Start');
+        var div_loader = document.getElementById('loader');
+        var div_message = document.getElementById('message');
+        ajaxLoader(div_loader);
+        div_message.innerHTML = 'Загрузка вакансий';
+
+
 // выборка вакансий по выбранной должности
         $.ajax({
             type: 'GET',
-            url: '',
+            url: '/applicants/vacancy_search/',
             data: {
                 'position': position_id
             },
+            dataType: 'json',
             success: function(data){
-                for(var i = 0; i < data.length; i++){
-                    var option = document.createElement('option');
-                    option.value = data[i]['id'];
-                    option.text = data[i]['name'] + ' от ' + data[i]['post_date'];
+                var control = $select[0].selectize;
+                control.clearOptions();
 
-                    select_vacancies.appendChild(option);
+                for(var i = 0; i < data.length; i++){
+
+                    var d = {
+                        value: data[i]['value'],
+                        text: data[i]['head'] + ', от ' + data[i]['date']
+                    };
+                    control.addOption(d);
+
                 }
 
-console.log('End');
+                div_loader.innerHTML = '';
+                div_message.innerHTML = 'Вакансии загружены';
             }
         });
+    });
+
+
+// добавление образования
+    $('#btnAddEdu').click(function(){
+        addEdu();
     });
 });
 
@@ -36,8 +60,8 @@ console.log('End');
 //position_name = position.options[position.selectedIndex].text;
 
 
-
-var va = new WorkWithTable('tblAddingVacancy', 'vac');
+// добавление вакансий
+var va = new WorkWithTable('tblAddingVacancy', 'vac', 'rowEduDelete');
 var vacancies = {};
 function addVacancy(){
     var val_dict = createDict(vacancies, va);
@@ -45,43 +69,119 @@ function addVacancy(){
     console.log(vacancies);
 }
 
+// создание словаря с добавленными вакансиями
 var createDict = function(vacancies, tbl_work){
     position = document.getElementById('position');
-    //vacancy_id = document.getElementById('vacancy').value;
+    vacancy = document.getElementById('vacancies');
+
     salary = document.getElementById('salary');
     suggested_salary = document.getElementById('suggested_salary');
 
     position_id = position.value;
     position_name = position.options[position.selectedIndex].text;
+    vacancy_id = vacancy.value;
+    vacancy_name = vacancy.options[vacancy.selectedIndex].text;
+
     salary_sum = salary.value;
     suggested_salary_sum = suggested_salary.value;
 
-    var arr = [
-        position_name,
-        //vacancy_id,
-        salary_sum,
-        suggested_salary_sum
-    ]
+    var message = document.getElementById('message');
 
-    tbl_work.addRecords(arr);
+    if(position_id != '' && position_name != '' && salary_sum != '' && suggested_salary_sum != ''){
+        var arr = [
+            position_name,
+            vacancy_name,
+            salary_sum,
+            suggested_salary_sum
+        ]
 
-    var dict = {};
-    dict[tbl_work.count_id.toString()] = {
-            'position': position_id,
-            //'vacancy': vacancy_id,
-            'salary': salary_sum,
-            'suggested_salary': suggested_salary_sum
-    };
+        tbl_work.addRecords(arr);
 
-    salary.value = '';
-    suggested_salary.value = '';
+        var dict = {};
+        dict[tbl_work.count_id.toString()] = {
+                'position': position_id,
+                'vacancy': vacancy_id,
+                'salary': salary_sum,
+                'suggested_salary': suggested_salary_sum
+        };
 
-    return dict;
+        salary.value = '';
+        suggested_salary.value = '';
+        message.innerHTML = '';
+
+        return dict;
+    }
+    else{
+        message.innerHTML = 'Заполните все поля';
+    }
+
+
 }
-
+// удаление вакансий
 function rowDelete(id){
     vacancies = va.deleteRecords(id, vacancies);
     console.log(vacancies);
+}
+
+
+// добавление образования
+var edu = new WorkWithTable('tblAddingEdu', 'edu', 'rowDeleteEdu');
+var educations = {};
+function addEdu(){
+    var val_dict = createEduDict(educations, edu);
+    educations   = $.extend(educations, val_dict);
+    console.log(educations);
+}
+
+// создание словаря с добавленными образованиями
+function createEduDict(edu, tbl_edu){
+    var education   = document.getElementById('id_education');
+    var edu_id      = education.value;
+    var edu_name    = education.options[education.selectedIndex].text;
+    var major       = document.getElementById('id_major');
+    var major_id    = major.value;
+    var major_name  = major.options[major.selectedIndex].text;
+
+    var study_start = document.getElementById('id_study_start').value;
+    var study_end   = document.getElementById('id_study_end').value;
+
+    message = document.getElementById('messageEdu');
+
+    if(edu_id != '' && major_name != '' && study_start != '' && study_end != ''){
+        var arr = [
+            edu_name,
+            major_name,
+            study_start + ' - ' + study_end,
+
+        ]
+
+        tbl_edu.addRecords(arr);
+
+        var dict = {};
+        dict[tbl_edu.count_id.toString()] = {
+                'education': edu_id,
+                'major_name': major_name,
+                'major': major_id,
+                'study_start': study_start,
+                'study_end': study_start
+        };
+
+        study_start.value = '';
+        study_end.value = '';
+        message.innerHTML = '';
+
+        return dict;
+    }
+    else{
+        message.innerHTML = 'Заполните все поля';
+    }
+
+
+}
+
+function rowDeleteEdu(id){
+    education = edu.deleteRecords(id, educations);
+    console.log(educations);
 }
 
 
@@ -89,11 +189,12 @@ function rowDelete(id){
                      Работа с таблицами
            ============================================= */
 
-function WorkWithTable(tbl, id){
+function WorkWithTable(tbl, id, del_fn){
     this.count_id = 0;
     this.array = 0;
     this.tbl_result = document.getElementById(tbl);
     this.id = id;
+    this.del_fn =del_fn;
 };
 // создание и добавление в таблицу новой строки
 WorkWithTable.prototype.addRecords = function(values){
@@ -110,7 +211,7 @@ WorkWithTable.prototype.addRecords = function(values){
     var btn = document.createElement('button');
     btn.innerHTML = 'Удалить';
     btn.setAttribute('class', 'btn btn-danger');
-    btn.setAttribute('onclick', 'rowDelete('+ this.count_id +');');
+    btn.setAttribute('onclick', this.del_fn + '('+ this.count_id +');');
 
     var td = document.createElement('td')
     td.appendChild(btn);

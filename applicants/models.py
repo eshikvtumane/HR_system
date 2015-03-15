@@ -25,7 +25,7 @@ class Applicant(models.Model):
     # Место жительства
     city = models.TextField(verbose_name='Город')
     street = models.TextField(verbose_name='Улица')
-    building = models.TextField(verbose_name='Номер дома')
+    building = models.TextField(verbose_name='Номер дома', null=True, blank=True)
 
     # Стаж
     #experience = models.FloatField(verbose_name='Стаж', null=True, blank=True)
@@ -104,9 +104,9 @@ class ApplicantEducation(models.Model):
     # Специальность
     major = models.ForeignKey('Major', verbose_name='Специальность')
     # Год начала учёбы
-    study_start = models.IntegerField(max_length=4)
+    study_start = models.IntegerField(max_length=4, verbose_name='Начало учёбы')
     # Год окончания учёбы
-    study_end = models.IntegerField(max_length=4)
+    study_end = models.IntegerField(max_length=4, verbose_name='Окончание учёбы')
 
 
 # Должность

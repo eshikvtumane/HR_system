@@ -53,8 +53,8 @@
                     <form id='frm_add_vacancy'>{% csrf_token %}
                     {% load bootstrap %}
                     {{ vacancy_form|bootstrap }}
-                    <label for='departments'>Отдел</label>
-                    <select id="departments" name="departments"
+                    <label for='department'>Отдел</label>
+                    <select id="department" name="department"
                             class="form-control">
                         <option selected="'selected" value=""></option>
                         {% for department in departments %}
@@ -65,7 +65,7 @@
                     </select>
                     <br>
                     <button class="btn btn-success add-new-data"
-                            id="btn_save_vacancy">Добавить
+                            id="save_vacancy">Добавить
                     </button>
                     </form>
                 </div>

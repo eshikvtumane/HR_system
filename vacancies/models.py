@@ -58,11 +58,14 @@ class Vacancy(models.Model):
 
     salary = models.FloatField(verbose_name=u"Заработная плана")
     published_at = models.DateTimeField(verbose_name=u'Дата размещения',
-                                     default=datetime.datetime.now())
+                                    default=datetime.datetime.now())
     end_date = models.DateTimeField(verbose_name=u'Крайний срок')
     description = models.TextField(verbose_name=u"Описание")
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
-    status = models.ForeignKey(Status,verbose_name=u'Статус')
+    status = models.ForeignKey(Status,verbose_name=u'Статус',
+                                 )
+    # status = models.ForeignKey(Status,verbose_name=u'Статус',
+    #                            default=Status.objects.get(name='Открыта'))
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
 
 
@@ -78,4 +81,5 @@ class ApplicantVacancy(models.Model):
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=datetime.datetime.now(), verbose_name='Дата добавления')
+
 

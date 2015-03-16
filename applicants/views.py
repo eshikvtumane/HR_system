@@ -74,7 +74,7 @@ class SavingModels():
 
 # Добавление кандидата
 class ApplicantAddView(View, SavingModels):
-    template = 'applicant_add.html'
+    template = 'applicants/applicant_add.html'
     def get(self, request):
         form = ApplicantForm()
         edu_form = ApplicantEducationForm()
@@ -141,6 +141,7 @@ class ApplicantAddView(View, SavingModels):
         json_res = json.dumps(['200', new_applicant.id])
         return HttpResponse(json_res, 'application/json')
 
+
 class SavingFiles():
     '''def saveFile(self, file, dir='', path=settings.MEDIA_URL):
         return self.__save(file, dir, path)'''
@@ -158,13 +159,6 @@ class SavingFiles():
         save_path = default_storage.save(os.path.join(dir, filename), ContentFile(f.read()))
         file_url = os.path.join(path, save_path)
         return file_url
-
-class ApplicantView(View):
-    template = 'applicant_view.html'
-    def get(self, request):
-        args = {}
-        rc = RequestContext(request, args)
-        return render_to_response(self.template, rc)
 
 # выборка вакансий
 class VacancySearchAjax(View):
@@ -185,7 +179,7 @@ class VacancySearchAjax(View):
 
 
 class CandidateSearchView(View):
-    template = 'candidate_search.html'
+    template = 'applicants/candidate_search.html'
     def get(self, request):
         args = {}
         args['form_search'] = CandidateSearchForm
@@ -206,3 +200,8 @@ class CandidateSearchView(View):
         args['applicants'] = applicants
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
+
+class ApplicantView(View):
+    template = ''
+    def get(self, request):
+        pass

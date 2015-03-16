@@ -62,7 +62,7 @@
         </section>
 
  <!-- action="{% url 'applicants:applicant_add' %}" -->
-<form id="applicant_form" method="post" enctype="multipart/form-data">
+<form id="applicant_form" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
 
         <!-- Main content -->
@@ -320,10 +320,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2">{{ applicant_form.email.label_tag }}</label>
                             <div class="col-sm-10">
-                                <div class="input-group form-group">
-                                    <span class="input-group-addon">@</span>
-                                    {{ applicant_form.email }}
-                                </div>
+                                {{ applicant_form.email }}
                             </div>
                         </div>
 
@@ -360,11 +357,14 @@
 
                 <div class="box box-solid">
 
-                    <div class="box-body">
-                        <div id="create_applicant_message">
+                    <div class="box-body" align="center">
+                        <div id="save_loader">
 
                         </div>
-                        <div>
+                        <div id="create_applicant_message" style="padding-top: 2ex;">
+
+                        </div>
+                        <div style="padding-top: 3ex;">
                             <input type="submit" value="Сохранить анкету" class="btn btn-success">
                         </div>
                     </div>
@@ -454,9 +454,13 @@
                         </div>
 
                         <div class="col-sm-12" style="margin-top: 10px;">
+                            <input type="button" class="btn btn-success" id="btnAddEdu" value="Добавить образование">
+                            <!--
+                            <a href="" class="btn btn-success" id="btnAddEdu">Добавить образование</a>
                            <button class="btn btn-success" id="btnAddEdu">
                                 <label>Добавить образование</label>
                            </button>
+                           -->
                         </div>
 
 

@@ -6,8 +6,8 @@ from django.http import HttpResponse
 
 from django.forms.formsets import formset_factory
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyAddForm
-from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position
-from vacancies.models import Vacancy
+from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation
+from vacancies.models import Vacancy, ApplicantVacancy
 
 import os
 from django.conf import settings
@@ -32,60 +32,43 @@ class SavingModels():
             source_obj.save()
             return source_obj.id
 
-    def saveApplicant(self, request):
-        print 'w 0'
-        attrs = request.POST
-        print 'w 0.0.0'
-        #photo = self.saveFile(request.FILES['photo'], dir='photo_applicants')
-        print 'w 0.0'
-        print attrs['source']
-        print SourceInformation.objects.get(pk=attrs['source'])
-        d = {
-            'first_name': attrs['first_name'],
-            'last_name': attrs['last_name'],
-            'middle_name': attrs['middle_name'],
-            'birthday': attrs['birthday'],
-            #'photo': photo,
-            'city': attrs['city'],
-            'street': attrs['street'],
-            'building': attrs['building'],
-            'email': attrs['email'],
-            'skype': attrs['skype'],
-            'vk': attrs['vk'],
-            'fb': attrs['fb'],
-            'icq': int(attrs['icq']),
-            'source': SourceInformation.objects.get(pk=attrs['source'])
-        }
-        print 'w 1'
-        app_obj = Applicant(**d)
-        app_obj.save()
-        print 'w 2'
-        '''try:
-
+    def createMajor(self, major):
+        try:
+            convert_id = int(major)
+            return convert_id
         except:
-            print 'sdfdsfsdfdsfsdfsdfsfdddddddddddddddddd'
-            '''
-        return  app_obj
+            major_obj = Major(source=major)
+            major_obj.save()
+            return major_obj.id
 
-    def saveFile(self, file, dir='', path=settings.MEDIA_URL):
-        return self.__save(file, dir, path, '')
+    def savingPhone(self, phones, user):
+        if phones:
+            phone_obj = [Phone(applicant=user, phone=p) for p in phones]
+            Phone.objects.bulk_create(phone_obj)
+        return
 
-    def saveFiles(self, files, dir='', path=settings.MEDIA_URL, filename=''):
-        arr_path = []
-        for f in files:
-            arr_path.append(self.__save(f, dir, path, filename))
-        return arr_path
+    def savingVacancies(self, json_vacancies, user):
+        vacancies = json.loads(json_vacancies)
+        vacancy_obj = []
 
-    def __save(self, f,  dir, path, filename):
-        original_name, file_extension = os.path.splitext(f.name)
-        print 'p 1'
-        filename = filename + '-' + datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + file_extension
-        print 'p 2'
-        save_path = default_storage.save(os.path.join(dir, filename), ContentFile(f.read()))
-        file_url = os.path.join(path, save_path)
-        print 'p 3'
-        return file_url
+        for k, v in enumerate(vacancies):
+            vacancies[v]['vacancy'] = Vacancy(vacancies[v]['vacancy'])
+            vacancies[v]['applicant'] = user
+            vacancy_obj.append(ApplicantVacancy(**vacancies[v]))
 
+        ApplicantVacancy.objects.bulk_create(vacancy_obj)
+
+    def savingEducations(self, json_educations, user):
+        educations = json.loads(json_educations)
+        edu_obj = []
+
+        for k, v in enumerate(educations):
+            educations[v]['education'] = Education.objects.get(pk=educations[v]['education'])
+            educations[v]['major'] = Major.objects.get(pk=self.createMajor(educations[v]['major']))
+            educations[v]['applicant'] = user
+            edu_obj.append(ApplicantEducation(**educations[v]))
+
+        ApplicantEducation.objects.bulk_create(edu_obj)
 
 
 # Добавление кандидата
@@ -115,12 +98,13 @@ class ApplicantAddView(View, SavingModels):
         req = request.POST
         sf = SavingFiles()
 
+
         req['birthday'] = datetime.datetime.strptime(req['birthday'], "%d-%m-%Y").date()
-        print req['birthday'], req['source']
+
+
 # сохранение данных в таблицу Applicant
         source_id = self.sourceCreate(req['source'])
         request.POST['source'] = source_id
-        print source_id, req['source']
 
         if req['icq']:
             req['icq'] = int(req['icq'])
@@ -128,10 +112,13 @@ class ApplicantAddView(View, SavingModels):
             req['icq'] = None
 
         applicant_form = ApplicantForm(request.POST, request.FILES)
-
         new_applicant = applicant_form.save()
-
         #new_applicant = self.saveApplicant(request)
+
+        self.savingPhone(req.getlist('phone'), new_applicant)
+        self.savingVacancies(req['vacancies'], new_applicant)
+        self.savingEducations(req['educations'], new_applicant)
+
         full_name = new_applicant.getFullName()
 
         resume = sf.saveFiles(request.FILES.getlist('resume[]'), dir='resume', filename=full_name) #sf.saveFile(request.FILES.get('photo'), 'photo_applicants')
@@ -150,9 +137,8 @@ class ApplicantAddView(View, SavingModels):
             # сохранение ссылок на файлы в таблицу
             Portfolio.objects.bulk_create(portfolio_list)
 
-
-
-        return HttpResponse('200', 'text/plain')
+        json_res = json.dumps(['200', new_applicant.id])
+        return HttpResponse(json_res, 'application/json')
 
 class SavingFiles():
     '''def saveFile(self, file, dir='', path=settings.MEDIA_URL):
@@ -171,6 +157,13 @@ class SavingFiles():
         save_path = default_storage.save(os.path.join(dir, filename), ContentFile(f.read()))
         file_url = os.path.join(path, save_path)
         return file_url
+
+class ApplicantView(View):
+    template = 'applicant_view.html'
+    def get(self, request):
+        args = {}
+        rc = RequestContext(request, args)
+        return render_to_response(self.template, rc)
 
 # выборка вакансий
 class VacancySearchAjax(View):

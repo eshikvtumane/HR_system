@@ -2,6 +2,7 @@
 from django.db import models
 from datetime import datetime
 
+
 # Create your models here.
 
 # Кандидат
@@ -90,6 +91,7 @@ class Major(models.Model):
         return self.name
 
 
+
 # Отношение Кандидат-Образование
 class ApplicantEducation(models.Model):
     class Meta:
@@ -119,6 +121,8 @@ class Position(models.Model):
     name = models.TextField(verbose_name='Должность')
     def __unicode__(self):
         return self.name
+
+
 # Хранение резюме
 class Resume(models.Model):
     class Meta:

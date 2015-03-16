@@ -111,12 +111,43 @@
                                 <tr>
                                     <td>Фото</td>
                                     <td>ФИО</td>
+                                    <td>Email</td>
                                     <td>Ссылка на страницу кандидата</td>
-                                    <td></td>
+
                                     <td></td>
                                 </tr>
                             </thead>
+                            <tbody>
+                                {% for a in applicants %}
+                                    <tr>
+                                        <td>
+                                            <img src="/media/{{ a.photo }}">
+                                        </td>
+                                        <td>{{ a.first_name }} {{ a.last_name }} {{ a.middle_name }}</td>
+                                        <td>{{ a.email }}</td>
+                                        <td><a href="{% url 'applicants:applicant_view' a.id %}'" class="btn btn-success">Перейти на страницу</a></td>
+
+                                        <td></td>
+                                        </tr>
+                                {% endfor %}
+                            </tbody>
                         </table>
+                    </div>
+
+                    <div class="pagination">
+                        <span class="step-links">
+                            {% if applicants.has_previous %}
+                                <a href="?page={{ applicants.previous_page_number }}">previous</a>
+                            {% endif %}
+
+                            <span class="current">
+                                Page {{ applicants.number }} of {{ applicants.paginator.num_pages }}.
+                            </span>
+
+                            {% if applicants.has_next %}
+                                <a href="?page={{ applicants.next_page_number }}">next</a>
+                            {% endif %}
+                        </span>
                     </div>
                 </div>
 

@@ -3,6 +3,7 @@ from django.shortcuts import render, render_to_response
 from django.views.generic import View
 from django.template import RequestContext
 from django.http import HttpResponse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.forms.formsets import formset_factory
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyAddForm
@@ -188,5 +189,20 @@ class CandidateSearchView(View):
     def get(self, request):
         args = {}
         args['form_search'] = CandidateSearchForm
+        applicants_list = Applicant.objects.all().values('id', 'first_name', 'last_name', 'middle_name', 'photo', 'email')
+        paginator = Paginator(applicants_list, 10)
+
+        page = request.GET.get('page')
+        try:
+            applicants = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            applicants = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            applicants = paginator.page(paginator.num_pages)
+
+
+        args['applicants'] = applicants
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)

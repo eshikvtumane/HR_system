@@ -1,0 +1,537 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    Добавление кандидата
+{% endblock %}
+
+{% block styles %}
+    <!-- Стили для datepicker -->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
+<!-- Стили для select -->
+    <!--<link rel="stylesheet" type="text/css" href="{% static 'css/chosen-bootstrap.css' %}" >-->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
+<link rel="stylesheet" type="text/css" href="{% static 'js/chosen/chosen.min.css' %}" >
+
+{% endblock %}
+
+{% block scripts %}
+<!-- кастомизация select -->
+<script src="{% static 'js/selectize/selectize.js' %}"></script>
+<!--
+<script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
+-->
+
+<!-- Ajax loader -->
+<script src="{% static 'js/loader.js' %}"></script>
+
+<!-- Добавление валидации -->
+    <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
+
+
+
+<!-- Плагин для клонирования формы -->
+    <script src="{% static 'js/cloneya/jquery-cloneya.js' %}"></script>
+
+<!-- Скрипт работы для datepicker -->
+    <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
+<!-- Добавление формы для выбора образования -->
+    <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
+<!-- Добавление эскиза загруженного изображения на страницу -->
+    <script src="{% static 'js/appliments/upload_photo.js' %}"></script>
+<!-- Инициализация элементов при загрузке страницы -->
+    <script src="{% static 'js/appliments/form_init.js' %}"></script>
+<!-- отправка данных на сервер -->
+    <script src="{% static 'js/appliments/send_candidate_form.js' %}"></script>
+
+
+{% endblock %}
+
+{% block content %}
+      <!-- Right side column. Contains the navbar and content of the page -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Добавление нового кандидата
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+            <li class="active">Добавление кандидата</li>
+          </ol>
+        </section>
+
+ <!-- action="{% url 'applicants:applicant_add' %}" -->
+<form id="applicant_form" action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+        <!-- Main content -->
+        <section class="content">
+          <!-- Main row -->
+          <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-7 connectedSortable">
+                <!--
+                    Форма добавления нового пользователя
+                -->
+              <div class="box box-success">
+                  <div class="box-header" class='col-sm-12'>
+
+                      <div class="col-sm-12">
+                          <div class="group-control">
+                            <label>{{ applicant_form.first_name.label_tag }}</label>
+                            <div>
+                                {{ applicant_form.first_name }}
+                            </div>
+                        </div>
+
+                        <div class="group-control">
+                            <div style="display: inline-block;" class='col-sm-6'>
+                                <label>{{ applicant_form.last_name.label_tag }}</label>
+                                <div>
+                                    {{ applicant_form.last_name }}
+                                </div>
+                            </div>
+                            <div style="display: inline-block;" class='col-sm-6'>
+                                <label>{{ applicant_form.middle_name.label_tag }}</label>
+                                <div>
+                                    {{ applicant_form.middle_name }}
+                                </div>
+                            </div>
+                        </div>
+
+                          <div class="group-control">
+                            <div style="display: inline-block;" class='col-sm-6'>
+                                <label>{{ applicant_form.birthday.label_tag }}</label>
+                                <div>
+                                    {{ applicant_form.birthday }}
+                                </div>
+                            </div>
+                            <div style="display: inline-block;" class='col-sm-6'>
+                                <label>Источник:</label>
+                                <div>
+                                    {{ applicant_form.source }}
+                                </div>
+                            </div>
+                        </div>
+
+                      </div>
+
+
+<!--
+                    <div  class="form-group">
+                        <label class="control-label col-sm-2">{{ applicant_form.first_name.label_tag }}</label>
+                        <div class="col-sm-10">
+                            {{ applicant_form.first_name }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">{{ applicant_form.last_name.label_tag }}</label>
+                        <div class="col-sm-10">
+                            {{ applicant_form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2">{{ applicant_form.middle_name.label_tag }}</label>
+                        <div class="col-sm-10">
+                            {{ applicant_form.middle_name }}
+                        </div>
+                    </div>
+
+                      <div class="form-horizontal" style="padding-top: 2ex;">
+                          <div class="form-group" style="margin-top: 2ex;">
+
+                            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+
+                            <label class="control-label col-sm-2">{{ applicant_form.birthday.label_tag }}</label>
+                            <div class="col-sm-9">
+                                <div class="input-group form-group">
+                                    <span class="input-group-addon"></span>
+                                    {{ applicant_form.birthday }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Источник</label>
+                            <div class="col-sm-5">
+                                {{ applicant_form.source }}
+                            </div>
+                        </div>
+
+                      </div>
+                -->
+                  <!--
+                <div class="box-header form-horizontal">
+
+                    <div  class="form-group">
+                        <label class="control-label col-sm-2" for="first_name">Фамилия</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="first_name" id="first_name" class="form-control"  data-validation="custom" data-validation-regexp="^([А-Яа-яЁё]+)$" data-validation-error-msg="Фамилия должна состоять из кириллических символов">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="last_name">Имя</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="last_name" id="last_name" class="form-control" data-validation="custom" data-validation-regexp="^([А-Яа-яЁё]+)$" data-validation-error-msg="Имя должно состоять из кириллических символов">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="middle_name">Отчество</label>
+                        <div class="col-sm-10">
+                            <input type="text" name="middle_name" id="middle_name" class="form-control" data-validation="middle_name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="birthday">Дата рождения</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="birthday" name="birthday" class="form-control" data-validation="date"  data-validation-format="dd-mm-yyyy">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="experience">Стаж</label>
+                        <div class="col-sm-10">
+                            <input type="number" name="experience" id="experience" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="linkedin">LinkedIn</label>
+                        <div class="col-sm-10">
+                            <input type="number" name="linkedin" id="linkedin" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="fb">Facebook</label>
+                        <div class="col-sm-10">
+                            <input type="number" name="fb" id="fb" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="vk">ВКонтакте</label>
+                        <div class="col-sm-10">
+                            <input type="number" name="vk" id="vk" class="form-control">
+                        </div>
+                    </div>
+
+                </div>
+-->
+                  </div>
+              </div><!-- /.форма добавления пользователя -->
+
+
+                <!-- Добавление вакансии -->
+              <div class="box box-success">
+                <div class="box-header form-horizontal">
+                    <h2>Выбор вакансий</h2>
+                    <div id="vacancy_forms">
+                        <table id="vacancy" class="table">
+                            <tr>
+                                <th class="col-sm-4">Предполагаемая должность</th>
+                                <th class="col-sm-5">Вакансия</th>
+                                <th class="col-sm-5">Уровень зарплаты в анкете</th>
+                                <th class="col-sm-5">Предлагаемая зарплата</th>
+                            </tr>
+                            <tr class="data-wrapper">
+
+                                <td>
+                                    <select class='select' name="position" id="position" placeholder="Выберите должность">
+                                        <option value>-------</option>
+                                        {% for p in positions %}
+                                            <option value="{{ p.id }}">{{ p.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class='select-vacancy' placeholder="Выберите вакансию" name="vacancies" id="vacancies">
+                                        <option value>-------</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" min="0" name="salary" id="salary" class="form-control">
+                                </td>
+                                <td>
+                                    <input type="number" min="0" name="suggested_salary" id="suggested_salary" class="form-control">
+                                </td>
+                            </tr>
+                        </table>
+
+
+                        <div id="result" align="center">
+                            <div id="loader">
+
+                            </div>
+                            <div id="message">
+
+                            </div>
+                        </div>
+
+                        <div align="center" style="margin-top: 2ex;">
+                            <button id='btnAddVacancy' class="btn btn-success add-new-data">
+                                <label>Добавить вакансию</label>
+                            </button>
+                        </div>
+
+                        <table id="tblAddingVacancy" class="table table-striped" style="margin-top: 2ex;">
+
+                        </table>
+
+                    </div>
+                </div>
+
+              </div>
+
+                <!-- Контакты -->
+                <div class="box box-success">
+                    <div class="box-header form-horizontal">
+                        <h2>Контактные данные</h2>
+
+                        <!-- -->
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Телефон:</label>
+
+                            <div class="clone-wrapper col-sm-10" style="margin-top: 1ex;">
+                                <div class="toclone col-sm-12" style="display: inline-block;">
+                                    <div style="display: inline-block;">
+                                        <div class="col-sm-8" style="display: inline-block;">
+                                            <input type="number" name="phone" class="form-control">
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <button class="clone btn btn-success">+</button>
+                                            <button class="delete btn btn-danger">-</button>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+                        <!-- -->
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.email.label_tag }}</label>
+                            <div class="col-sm-10">
+                                {{ applicant_form.email }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.skype.label_tag }}</label>
+                            <div class="col-sm-10">
+                                {{ applicant_form.skype }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.icq.label_tag }}</label>
+                            <div class="col-sm-10">
+                                {{ applicant_form.icq }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.vk.label_tag }}</label>
+                            <div class="col-sm-10">
+                                {{ applicant_form.vk }}
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">{{ applicant_form.fb.label_tag }}</label>
+                            <div class="col-sm-10">
+                                {{ applicant_form.fb }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./Контакты -->
+
+                <div class="box box-solid">
+
+                    <div class="box-body" align="center">
+                        <div id="save_loader">
+
+                        </div>
+                        <div id="create_applicant_message" style="padding-top: 2ex;">
+
+                        </div>
+                        <div style="padding-top: 3ex;">
+                            <input type="submit" value="Сохранить анкету" class="btn btn-success">
+                        </div>
+                    </div>
+                </div>
+
+            </section><!-- /.Left col -->
+            <!-- right col (We are only adding the ID to make the widgets sortable)-->
+            <section class="col-lg-5 connectedSortable">
+
+                <div class="box box-solid">
+
+                    <div class="box-body">
+                        <div>
+                            <h2>{{ applicant_form.photo.label_tag }}</h2>
+                            <div align="center">
+                                <div>
+                                    {{ applicant_form.photo }}
+                                </div>
+                                <div style="margin-top: 3ex;">
+                                    <canvas id="imageCanvas">
+                                    </canvas>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+              <!-- Форма ввода образования -->
+              <div class="box box-solid">
+                <div class="box-header">
+                    <h2>Выбор образований</h2>
+                    <div>
+                        <div>
+                           {{ edu_form.education.label_tag }}
+                            {{ edu_form.education }}
+                        </div>
+                        <div>
+                            {{ edu_form.major.label_tag }}
+                            {{ edu_form.major }}
+                        </div>
+
+                        <div>
+                            <div class="col-sm-6">
+                                {{ edu_form.study_start.label_tag }}
+                                {{ edu_form.study_start }}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ edu_form.study_end.label_tag }}
+                                {{ edu_form.study_end }}
+                            </div>
+                        </div>
+
+
+                        <!--
+                        <select class="select-add" name="education" placeholder="Выберите тип образования">
+                            <option style="display: none;" value="-1">Выберите тип образования</option>
+                            {% for e in edu %}
+                                <option value="{{ e.id }}">{{ e.type }}</option>
+                            {% endfor %}
+
+                        </select>
+
+                        <select name="major" placeholder="Выберите специальность">
+                            <option style="display: none;" value="-1">Выберите специальность</option>
+                            {% for m in majors %}
+                                <option value="{{ m.id }}">{{ m.name }}</option>
+                            {% endfor %}
+                        </select>
+
+                        <div style="margin-top: 2ex;">
+                            <div class="col-sm-5">
+                                <label>c</label>
+                                <input type="number" min="1900" id="study_start">
+                            </div>
+                            <div class="col-sm-6">
+                                <label>по</label>
+                                <input type="number" min="1900" id="study_end">
+                            </div>
+                        </div>
+                    </div>
+-->
+
+                        <div id="messageEdu">
+
+                        </div>
+
+                        <div class="col-sm-12" style="margin-top: 10px;">
+                            <input type="button" class="btn btn-success" id="btnAddEdu" value="Добавить образование">
+                            <!--
+                            <a href="" class="btn btn-success" id="btnAddEdu">Добавить образование</a>
+                           <button class="btn btn-success" id="btnAddEdu">
+                                <label>Добавить образование</label>
+                           </button>
+                           -->
+                        </div>
+
+
+                        <div style="margin-top: 2ex;">
+                            <table id="tblAddingEdu" class="table">
+
+                            </table>
+                        </div>
+
+                    </div><!-- /.Форма ввода образования-->
+                </div>
+              </div>
+              <!-- /.Форма ввода образования -->
+
+              <!-- Resume -->
+              <div class="box box-solid bg-teal-gradient">
+                  <div class="box-header" align="center">
+                    <h2>Добавить резюме</h2>
+                    <input type="file" name="resume[]" accept="application/msword, application/pdf, .odt, .docx" multiple>
+                  </div>
+              </div><!-- /.box -->
+
+                <!-- Portfolio -->
+              <div class="box box-solid bg-teal-gradient">
+                  <div class="box-header" align="center">
+                    <h2>Добавить портфолио</h2>
+                    <input type="file" name="portfolio[]" accept="application/zip, .rar, .7z" multiple>
+                  </div>
+              </div><!-- /.box -->
+
+              <!-- Место жительства -->
+              <div class="box box-solid bg-green-gradient">
+                <div class="box-footer text-black">
+                  <div class="row">
+                    <div class="col-sm-12">
+                        <h2>Адрес проживания</h2>
+                      <!-- Место проживания -->
+                        <div class="group-control">
+                            <label>{{ applicant_form.city.label_tag }}</label>
+                            <div>
+                                {{ applicant_form.city }}
+                            </div>
+                        </div>
+
+                        <div class="group-control">
+                            <div class="col-sm-6" style="display: inline-block;">
+                                <label>{{ applicant_form.street.label_tag }}</label>
+                                <div>
+                                    {{ applicant_form.street }}
+                                </div>
+                            </div>
+                            <div class="col-sm-6" style="display: inline-block;">
+                                <label>{{ applicant_form.building.label_tag }}</label>
+                                <div>
+                                    {{ applicant_form.building }}
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><!-- /.col -->
+                  </div><!-- /.row -->
+                </div>
+              </div><!-- /.box -->
+
+            </section><!-- right col -->
+          </div><!-- /.row (main row) -->
+
+        </section><!-- /.content -->
+
+    </form>
+      </div><!-- /.content-wrapper -->
+
+
+{% endblock %}

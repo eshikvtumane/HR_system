@@ -18,7 +18,7 @@ import datetime
 
 # Добавление кандидата
 class ApplicantAddView(View):
-    template = 'applicant_add.html'
+    template = 'applicants/applicant_add.html'
     def get(self, request):
         form = ApplicantForm()
         #edu_form = formset_factory(ApplicantEducationForm, extra=5)
@@ -86,7 +86,7 @@ class SavingFiles():
         return file_url
 
 class CandidateSearchView(View):
-    template = 'candidate_search.html'
+    template = 'applicants/candidate_search.html'
     def get(self, request):
         args = {}
         args['form_search'] = CandidateSearchForm

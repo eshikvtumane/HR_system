@@ -9,7 +9,7 @@ from applicants.models import Major, SourceInformation
 # Create your views here.
 # рендер страницы добавления значений в БД
 class ValueAddView(View):
-    template = 'name_add.html'
+    template = 'administration/name_add.html'
     def get(self, request):
         args = {}
         rc = RequestContext(request, args)

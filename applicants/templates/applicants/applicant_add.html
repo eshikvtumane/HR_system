@@ -22,6 +22,9 @@
 <script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
 -->
 
+<!-- Ajax loader -->
+<script src="{% static 'js/loader.js' %}"></script>
+
 <!-- Добавление валидации -->
     <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
 
@@ -38,6 +41,8 @@
     <script src="{% static 'js/appliments/upload_photo.js' %}"></script>
 <!-- Инициализация элементов при загрузке страницы -->
     <script src="{% static 'js/appliments/form_init.js' %}"></script>
+<!-- отправка данных на сервер -->
+    <script src="{% static 'js/appliments/send_candidate_form.js' %}"></script>
 
 
 {% endblock %}
@@ -56,10 +61,10 @@
           </ol>
         </section>
 
-          <!--
-<form id="appliment_form" method="post" enctype="multipart/form-data" action="{% url 'applicants:applicant_add' %}">
+ <!-- action="{% url 'applicants:applicant_add' %}" -->
+<form id="applicant_form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
--->
+
         <!-- Main content -->
         <section class="content">
           <!-- Main row -->
@@ -70,8 +75,50 @@
                     Форма добавления нового пользователя
                 -->
               <div class="box box-success">
-                  <div class="box-header form-horizontal">
+                  <div class="box-header" class='col-sm-12'>
 
+                      <div class="col-sm-12">
+                          <div class="group-control">
+                            <label>{{ applicant_form.first_name.label_tag }}</label>
+                            <div>
+                                {{ applicant_form.first_name }}
+                            </div>
+                        </div>
+
+                        <div class="group-control">
+                            <div style="display: inline-block;" class='col-sm-6'>
+                                <label>{{ applicant_form.last_name.label_tag }}</label>
+                                <div>
+                                    {{ applicant_form.last_name }}
+                                </div>
+                            </div>
+                            <div style="display: inline-block;" class='col-sm-6'>
+                                <label>{{ applicant_form.middle_name.label_tag }}</label>
+                                <div>
+                                    {{ applicant_form.middle_name }}
+                                </div>
+                            </div>
+                        </div>
+
+                          <div class="group-control">
+                            <div style="display: inline-block;" class='col-sm-6'>
+                                <label>{{ applicant_form.birthday.label_tag }}</label>
+                                <div>
+                                    {{ applicant_form.birthday }}
+                                </div>
+                            </div>
+                            <div style="display: inline-block;" class='col-sm-6'>
+                                <label>Источник:</label>
+                                <div>
+                                    {{ applicant_form.source }}
+                                </div>
+                            </div>
+                        </div>
+
+                      </div>
+
+
+<!--
                     <div  class="form-group">
                         <label class="control-label col-sm-2">{{ applicant_form.first_name.label_tag }}</label>
                         <div class="col-sm-10">
@@ -83,9 +130,6 @@
                         <label class="control-label col-sm-2">{{ applicant_form.last_name.label_tag }}</label>
                         <div class="col-sm-10">
                             {{ applicant_form.last_name }}
-                            <!--
-                            <input type="text" name="last_name" id="last_name" class="form-control" data-validation="custom" data-validation-regexp="^([А-Яа-яЁё]+)$" data-validation-error-msg="Имя должно состоять из кириллических символов">
-                            -->
                         </div>
                     </div>
 
@@ -96,28 +140,29 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <!--
-                        <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-                        -->
-                        <label class="control-label col-sm-2">{{ applicant_form.birthday.label_tag }}</label>
-                        <div class="col-sm-9">
-                            <div class="input-group form-group">
-                                <span class="input-group-addon"></span>
-                                {{ applicant_form.birthday }}
+                      <div class="form-horizontal" style="padding-top: 2ex;">
+                          <div class="form-group" style="margin-top: 2ex;">
+
+                            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
+
+                            <label class="control-label col-sm-2">{{ applicant_form.birthday.label_tag }}</label>
+                            <div class="col-sm-9">
+                                <div class="input-group form-group">
+                                    <span class="input-group-addon"></span>
+                                    {{ applicant_form.birthday }}
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-sm-2">Источник</label>
-                        <div class="col-sm-10">
-                            {{ applicant_form.source }}
+                        <div class="form-group">
+                            <label class="control-label col-sm-2">Источник</label>
+                            <div class="col-sm-5">
+                                {{ applicant_form.source }}
+                            </div>
                         </div>
-                    </div>
 
-
-                </div>
+                      </div>
+                -->
                   <!--
                 <div class="box-header form-horizontal">
 
@@ -179,36 +224,35 @@
 
                 </div>
 -->
+                  </div>
               </div><!-- /.форма добавления пользователя -->
 
 
                 <!-- Добавление вакансии -->
               <div class="box box-success">
                 <div class="box-header form-horizontal">
+                    <h2>Выбор вакансий</h2>
                     <div id="vacancy_forms">
                         <table id="vacancy" class="table">
                             <tr>
-                                <th>Предполагаемая должность</th>
-                                <th>Вакансия</th>
-                                <th>Уровень зарплаты в анкете</th>
-                                <th>Предлагаемая зарплата</th>
-                                <th></th>
+                                <th class="col-sm-4">Предполагаемая должность</th>
+                                <th class="col-sm-5">Вакансия</th>
+                                <th class="col-sm-5">Уровень зарплаты в анкете</th>
+                                <th class="col-sm-5">Предлагаемая зарплата</th>
                             </tr>
                             <tr class="data-wrapper">
 
                                 <td>
-                                    <select name="position" id="position" placeholder="Выберите должность">
-                                        <option value="-1"></option>
-                                        <option value="1">ddd</option>
-                                        <option value="2">dddd</option>
-                                        <option value="3">dddddd</option>
+                                    <select class='select' name="position" id="position" placeholder="Выберите должность">
+                                        <option value>-------</option>
+                                        {% for p in positions %}
+                                            <option value="{{ p.id }}">{{ p.name }}</option>
+                                        {% endfor %}
                                     </select>
                                 </td>
                                 <td>
-                                    <select class="chosen-select" placeholder="Выберите вакансию" name="vacancy" id="vacancy">
-                                        <option style="display: none;" value="-1">Выберите вакансию</option>
-                                        <option value="1">1</option>
-                                        <option value="1">2</option>
+                                    <select class='select-vacancy' placeholder="Выберите вакансию" name="vacancies" id="vacancies">
+                                        <option value>-------</option>
                                     </select>
                                 </td>
                                 <td>
@@ -221,26 +265,25 @@
                         </table>
 
 
+                        <div id="result" align="center">
+                            <div id="loader">
 
+                            </div>
+                            <div id="message">
 
-                                <button id='btnAddVacancy' class="btn btn-success add-new-data">
-                                    <label>Добавить вакансию</label>
-                                </button>
+                            </div>
+                        </div>
 
-                        <table id="tblAddingVacancy" class="table">
+                        <div align="center" style="margin-top: 2ex;">
+                            <button id='btnAddVacancy' class="btn btn-success add-new-data">
+                                <label>Добавить вакансию</label>
+                            </button>
+                        </div>
+
+                        <table id="tblAddingVacancy" class="table table-striped" style="margin-top: 2ex;">
 
                         </table>
 
-                         <!--       <button class="btn btn-success clone">
-                                    <label>Добавить вакансию</label>
-                                </button>
-                                <button class="btn btn-danger delete">
-                                    <label>Удалить вакансию</label>
-                                </button>
-
-                           </div>
-                        </div>
--->
                     </div>
                 </div>
 
@@ -253,13 +296,23 @@
 
                         <!-- -->
                         <div class="form-group">
-                            <label class="control-label col-sm-2">{{ applicant_form.phone.label_tag }}</label>
-                            <div class="col-sm-10">
-                                <div class="input-group form-group">
-                                    <span class="input-group-addon">+7</span>
-                                    {{ applicant_form.phone }}
-                                </div>
+                            <label class="control-label col-sm-2">Телефон:</label>
 
+                            <div class="clone-wrapper col-sm-10" style="margin-top: 1ex;">
+                                <div class="toclone col-sm-12" style="display: inline-block;">
+                                    <div style="display: inline-block;">
+                                        <div class="col-sm-8" style="display: inline-block;">
+                                            <input type="number" name="phone" class="form-control">
+                                        </div>
+
+                                        <div class="col-sm-4">
+                                            <button class="clone btn btn-success">+</button>
+                                            <button class="delete btn btn-danger">-</button>
+                                        </div>
+                                    </div>
+
+
+                                </div>
                             </div>
                         </div>
                         <!-- -->
@@ -301,33 +354,6 @@
                                 {{ applicant_form.fb }}
                             </div>
                         </div>
-                       <!-- <div class="form-group">
-                            <label class="control-label col-sm-2">Телефон</label>
-                            <div class="col-sm-10">
-                                <input type="phone" name="phone" class="form-control" data-validation="number">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">Email</label>
-                            <div class="col-sm-10">
-                                <input type="email" name="email" class="form-control" data-validation="email">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">Skype</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="skype" class="form-control" data-validation="skype">
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">ICQ</label>
-                            <div class="col-sm-10">
-                                <input type="text" name="icq" class="form-control" data-validation="icq">
-                            </div>
-                        </div> -->
                     </div>
                 </div>
                 <!-- ./Контакты -->
@@ -335,8 +361,11 @@
                 <div class="box box-solid">
 
                     <div class="box-body">
+                        <div id="create_applicant_message">
+
+                        </div>
                         <div>
-                            <input type="button" value="Сохранить анкету" class="btn btn-success">
+                            <input type="submit" value="Сохранить анкету" class="btn btn-success">
                         </div>
                     </div>
                 </div>
@@ -367,33 +396,78 @@
 
               <!-- Форма ввода образования -->
               <div class="box box-solid">
-                <div class="box-header" id="edu_forms">
-                    <div class="toclone">
-                        <select name="education" placeholder="Выберите тип образования">
+                <div class="box-header">
+                    <h2>Выбор образований</h2>
+                    <div>
+                        <div>
+                           {{ edu_form.education.label_tag }}
+                            {{ edu_form.education }}
+                        </div>
+                        <div>
+                            {{ edu_form.major.label_tag }}
+                            {{ edu_form.major }}
+                        </div>
+
+                        <div>
+                            <div class="col-sm-6">
+                                {{ edu_form.study_start.label_tag }}
+                                {{ edu_form.study_start }}
+                            </div>
+                            <div class="col-sm-6">
+                                {{ edu_form.study_end.label_tag }}
+                                {{ edu_form.study_end }}
+                            </div>
+                        </div>
+
+
+                        <!--
+                        <select class="select-add" name="education" placeholder="Выберите тип образования">
                             <option style="display: none;" value="-1">Выберите тип образования</option>
                             {% for e in edu %}
                                 <option value="{{ e.id }}">{{ e.type }}</option>
                             {% endfor %}
+
                         </select>
 
-                        <select class="select-add" name="major" data-placeholder="Выберите специальность">
+                        <select name="major" placeholder="Выберите специальность">
                             <option style="display: none;" value="-1">Выберите специальность</option>
                             {% for m in majors %}
                                 <option value="{{ m.id }}">{{ m.name }}</option>
                             {% endfor %}
                         </select>
-                        <button class="btn btn-success clone">
-                        <label>Добавить образование</label>
-                    </button>
-                    <button class="btn btn-danger delete">
-                        <label>Удалить образование</label>
-                    </button>
 
+                        <div style="margin-top: 2ex;">
+                            <div class="col-sm-5">
+                                <label>c</label>
+                                <input type="number" min="1900" id="study_start">
+                            </div>
+                            <div class="col-sm-6">
+                                <label>по</label>
+                                <input type="number" min="1900" id="study_end">
+                            </div>
+                        </div>
                     </div>
+-->
+
+                        <div id="messageEdu">
+
+                        </div>
+
+                        <div class="col-sm-12" style="margin-top: 10px;">
+                           <button class="btn btn-success" id="btnAddEdu">
+                                <label>Добавить образование</label>
+                           </button>
+                        </div>
 
 
-                </div><!-- /.Форма ввода образования-->
+                        <div style="margin-top: 2ex;">
+                            <table id="tblAddingEdu" class="table">
 
+                            </table>
+                        </div>
+
+                    </div><!-- /.Форма ввода образования-->
+                </div>
               </div>
               <!-- /.Форма ввода образования -->
 
@@ -413,7 +487,7 @@
                   </div>
               </div><!-- /.box -->
 
-              <!-- Calendar -->
+              <!-- Место жительства -->
               <div class="box box-solid bg-green-gradient">
                 <div class="box-footer text-black">
                   <div class="row">
@@ -428,13 +502,13 @@
                         </div>
 
                         <div class="group-control">
-                            <div style="display: inline-block;">
+                            <div class="col-sm-6" style="display: inline-block;">
                                 <label>{{ applicant_form.street.label_tag }}</label>
                                 <div>
                                     {{ applicant_form.street }}
                                 </div>
                             </div>
-                            <div style="display: inline-block;">
+                            <div class="col-sm-6" style="display: inline-block;">
                                 <label>{{ applicant_form.building.label_tag }}</label>
                                 <div>
                                     {{ applicant_form.building }}
@@ -451,8 +525,8 @@
           </div><!-- /.row (main row) -->
 
         </section><!-- /.content -->
-          <!--
-    </form>-->
+
+    </form>
       </div><!-- /.content-wrapper -->
 
 

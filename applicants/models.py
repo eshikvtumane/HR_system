@@ -25,13 +25,13 @@ class Applicant(models.Model):
     # Место жительства
     city = models.TextField(verbose_name='Город')
     street = models.TextField(verbose_name='Улица')
-    building = models.TextField(verbose_name='Номер дома')
+    building = models.TextField(verbose_name='Номер дома', null=True, blank=True)
 
     # Стаж
     #experience = models.FloatField(verbose_name='Стаж', null=True, blank=True)
 
     # контакты
-    phone = models.IntegerField(max_length=10, verbose_name='Мобильный телефон')
+    #phone = models.IntegerField(max_length=10, verbose_name='Мобильный телефон')
     email = models.CharField(max_length=255, verbose_name='Email', null=True, blank=True)
     skype = models.CharField(max_length=32, verbose_name='Skype', null=True, blank=True)
     icq = models.IntegerField(max_length=10, verbose_name='ICQ', null=True, blank=True)
@@ -48,6 +48,19 @@ class Applicant(models.Model):
 
     def getFullName(self):
         return '%s %s %s' % (self.first_name, self.last_name, self.middle_name)
+
+class Phone(models.Model):
+    class Meta:
+        db_table = 'Phones'
+        verbose_name = 'Телефон'
+        verbose_name_plural = 'Телефоны'
+
+    applicant = models.ForeignKey('Applicant')
+    phone = models.IntegerField(verbose_name='Номер телефона', max_length=11)
+
+    def __unicode__(self):
+        return self.phone
+
 
 # Образование
 class Education(models.Model):
@@ -91,9 +104,9 @@ class ApplicantEducation(models.Model):
     # Специальность
     major = models.ForeignKey('Major', verbose_name='Специальность')
     # Год начала учёбы
-    study_start = models.IntegerField(max_length=4)
+    study_start = models.IntegerField(max_length=4, verbose_name='Начало учёбы')
     # Год окончания учёбы
-    study_end = models.IntegerField(max_length=4)
+    study_end = models.IntegerField(max_length=4, verbose_name='Окончание учёбы')
 
 
 # Должность

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio
+from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position
+from vacancies.models import Vacancy
 
 # Register your models here.
 
@@ -25,7 +26,17 @@ class ApplicantAdmin(admin.ModelAdmin):
     )
     fields = []
 
+class VacancyInline(admin.StackedInline):
+    model = Vacancy
+
+class PositionAdmin(admin.ModelAdmin):
+    inlines = (
+        VacancyInline,
+    )
+    fields = []
+
 admin.site.register(Education, EducationAdmin)
 admin.site.register(Major, MajorAdmin)
 admin.site.register(SourceInformation, SourceAdmin)
 admin.site.register(Applicant, ApplicantAdmin)
+admin.site.register(Position, PositionAdmin)

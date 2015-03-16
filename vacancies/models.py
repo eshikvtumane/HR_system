@@ -25,6 +25,9 @@ class Department(models.Model):
 
     name = models.CharField(verbose_name=u"Название отдела",max_length=50)
 
+    def __unicode__(self):
+        return self.name
+
 
 
 
@@ -37,6 +40,9 @@ class Head(models.Model):
 
     name = models.TextField()
     department = models.ForeignKey(Department)
+
+    def __unicode__(self):
+        return self.name
 
 
 class Vacancy(models.Model):

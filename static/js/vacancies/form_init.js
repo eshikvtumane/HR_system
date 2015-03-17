@@ -10,7 +10,7 @@ window.onload = function(){
     //Сохранение вакансии
     $('#save_vacancy').click(function () {
         var datastring = $('#frm_add_vacancy').serialize();
-        console.log(datastring)
+        console.log(datastring);
         $.ajax({
             type: 'Post',
             url: '/vacancies/add/',
@@ -26,15 +26,31 @@ window.onload = function(){
     });
 
     $('#department').change(function(){
-        department_par = $('#department').val();
-        console.log("Get_heads ajax request")
+        department = $('#department').val();
+        console.log("Get_heads ajax request");
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: '/vacancies/get_heads/',
-            data: {'department':'dsds','name':'dsdffsfsf'},
+            dataType: 'json',
+            data: {'department':department},
             contentType: 'application/json',
             success: function (data) {
-               alert("Вакансия сохранена!");
+
+               $select =  $('<select/>',{
+                   'id': 'heads',
+                   'name': 'heads',
+                   'class': 'form-control'
+                });
+                $.each(data,function(){
+                    $('<option/>',{
+                        'value': this['id'],
+                        'text': this['name']
+
+                    }).appendTo($select);
+
+                });
+                $("<label for='heads' id = 'lbl_heads' >Руководитель</label>").insertAfter('#department');
+                $select.insertAfter('#lbl_heads')
             },
             error: function(data) {
                alert("Произошла ошибка!");

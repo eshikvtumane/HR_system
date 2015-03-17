@@ -111,7 +111,7 @@ $('#id_study_start').change(function(){
       login_len = value.length;
         if(login_len != 0 && (login_len > 32 || login_len < 6)){
             console.log(value);
-            //var reg = new RegExp('^[0-9]+$');
+            //var reg = new RegExp('^[0-9.-]+$');
             //result = reg.test(value);
             return false;
         }
@@ -128,7 +128,7 @@ $('#id_study_start').change(function(){
       login_len = value.length;
         if(login_len != 0){
             console.log(value);
-            var reg = new RegExp('^([А-Яа-яЁё]+)$');
+            var reg = new RegExp('^([А-Яа-яЁё -]+)$');
             result = reg.test(value);
             return result;
         }
@@ -137,13 +137,33 @@ $('#id_study_start').change(function(){
       errorMessage : 'Отчество должно состоять из кириллических символов',
       errorMessageKey: 'badEvenNumber'
     });
+
+    // валидация названия email
+    $.formUtils.addValidator({
+      name : 'custom-email',
+      validatorFunction : function(value, $el, config, language, $form) {
+        email_len = value.length;
+        if(email_len != 0){
+            var reg = new RegExp('^([А-Яа-яЁё -]+)$');
+            result = reg.test(value);
+            return result;
+        }
+        return true;
+      },
+      errorMessage : 'Неверно введен email',
+      errorMessageKey: 'badEvenNumber'
+    });
+
   $.validate({
-    language : myLanguage
+    language : myLanguage,
+    onSuccess : function() {
+      sendApplicantForm();
+      return false; // Will stop the submission of the form
+    }
   });
 }
 
 function loadCanvas() {
-console.log('dffdf');
         var canvas = document.getElementById('imageCanvas');
         var context = canvas.getContext('2d');
         width = 300;
@@ -174,7 +194,7 @@ console.log('dffdf');
 // заполнение select'a годами
 function setYear(div){
     var start = 1900;
-    var end   = new Date().getFullYear() + 10;
+    var end   = new Date().getFullYear();
 
 
     var empty = 'Выберите дату';

@@ -17,7 +17,7 @@ $(document).ready(function(){
 
         var div_loader = document.getElementById('loader');
         var div_message = document.getElementById('message');
-        ajaxLoader(div_loader);
+        ajaxLoader('loader');
         div_message.innerHTML = 'Загрузка вакансий';
 
 
@@ -61,7 +61,7 @@ $(document).ready(function(){
 
 
 // добавление вакансий
-var va = new WorkWithTable('tblAddingVacancy', 'vac', 'rowEduDelete');
+var va = new WorkWithTable('tblAddingVacancy', 'vac', 'rowDelete');
 var vacancies = {};
 function addVacancy(){
     var val_dict = createDict(vacancies, va);
@@ -77,13 +77,13 @@ var createDict = function(vacancies, tbl_work){
     salary = document.getElementById('salary');
     suggested_salary = document.getElementById('suggested_salary');
 
-    position_id = position.value;
+    position_id = parseInt(position.value);
     position_name = position.options[position.selectedIndex].text;
-    vacancy_id = vacancy.value;
+    vacancy_id = parseInt(vacancy.value);
     vacancy_name = vacancy.options[vacancy.selectedIndex].text;
 
-    salary_sum = salary.value;
-    suggested_salary_sum = suggested_salary.value;
+    salary_sum = parseFloat(salary.value);
+    suggested_salary_sum = parseFloat(suggested_salary.value);
 
     var message = document.getElementById('message');
 
@@ -99,7 +99,7 @@ var createDict = function(vacancies, tbl_work){
 
         var dict = {};
         dict[tbl_work.count_id.toString()] = {
-                'position': position_id,
+                //'position': position_id,
                 'vacancy': vacancy_id,
                 'salary': salary_sum,
                 'suggested_salary': suggested_salary_sum
@@ -160,7 +160,7 @@ function createEduDict(edu, tbl_edu){
         var dict = {};
         dict[tbl_edu.count_id.toString()] = {
                 'education': edu_id,
-                'major_name': major_name,
+                //'major_name': major_name,
                 'major': major_id,
                 'study_start': study_start,
                 'study_end': study_start

@@ -2,6 +2,7 @@
 from django.db import models
 from datetime import datetime
 
+
 # Create your models here.
 
 # Кандидат
@@ -20,7 +21,7 @@ class Applicant(models.Model):
     birthday = models.DateField(verbose_name='Дата рождения')
 
     # Фотография кандидата
-    photo = models.FileField(upload_to='photo_applicants', verbose_name='Фото кандидата', null=True, blank=True)
+    photo = models.FileField(upload_to='photo_applicants', default='no-photo.gif', verbose_name='Фото кандидата', null=True, blank=True)
 
     # Место жительства
     city = models.TextField(verbose_name='Город')
@@ -90,6 +91,7 @@ class Major(models.Model):
         return self.name
 
 
+
 # Отношение Кандидат-Образование
 class ApplicantEducation(models.Model):
     class Meta:
@@ -119,6 +121,8 @@ class Position(models.Model):
     name = models.TextField(verbose_name='Должность')
     def __unicode__(self):
         return self.name
+
+
 # Хранение резюме
 class Resume(models.Model):
     class Meta:

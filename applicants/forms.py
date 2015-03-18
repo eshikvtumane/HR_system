@@ -17,8 +17,8 @@ class ApplicantForm(forms.ModelForm):
 
     class Meta:
         model = Applicant
-        exclude = ('id',)
-        #fields = ( 'first_name', 'last_name', 'middle_name', 'birthday', 'photo', 'phone', 'email', 'icq', 'skype', 'city', 'street', 'building')
+        #exclude = ('id',)
+        fields = '__all__'
         widgets = {
             'first_name': forms.TextInput(attrs={
                 'class': "form-control",

@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.forms.formsets import formset_factory
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyAddForm
-from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation
+from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
 from vacancies.models import Vacancy, ApplicantVacancy
 
 import os
@@ -94,59 +94,59 @@ class SavingModels():
         return args
 
     def savingApplicantForm(self, request, applicant_instance={}):
-        #try:
-        req = request.POST
-        # создание объекта класса сохранения файлов
-        sf = SavingFiles()
-
-        # конвертирование даты в формат, понятный БД
         try:
-            req['birthday'] = datetime.datetime.strptime(req['birthday'], "%d-%m-%Y").date()
+            req = request.POST
+            # создание объекта класса сохранения файлов
+            sf = SavingFiles()
+
+            # конвертирование даты в формат, понятный БД
+            try:
+                req['birthday'] = datetime.datetime.strptime(req['birthday'], "%d-%m-%Y").date()
+            except:
+                req['birthday'] = datetime.datetime.strptime(req['birthday'], "%Y-%m-%d").date()
+
+            # сохранение данных в таблицу Applicant
+            # сохраниение нового источника или получение id существующего источника
+            request.POST['source'] = self.sourceCreate(req['source'])
+
+            if req['icq']:
+                req['icq'] = int(req['icq'])
+            else:
+                req['icq'] = None
+
+            print applicant_instance
+            applicant_form = ApplicantForm(request.POST, request.FILES, **applicant_instance)
+            new_applicant = applicant_form.save()
+
+            self.savingPhone(req.getlist('phone'), new_applicant)
+            self.savingVacancies(req['vacancies'], new_applicant)
+            self.savingEducations(req['educations'], new_applicant)
+
+            full_name = new_applicant.getFullName()
+
+            resume = sf.saveFiles(request.FILES.getlist('resume[]'),
+                                  dir='resume',
+                                  filename=full_name)
+            portfolio = sf.saveFiles(request.FILES.getlist('portfolio[]'),
+                                     dir='portfolio',
+                                     filename=full_name)
+
+            # сохранение текстовых файлов с резюме и запись ссылки в БД
+            if resume:
+                # запись файлов на сервер
+                resume_list = [Resume(applicant = new_applicant, resume_file = r) for r in resume]
+                # сохранение ссылок на файлы в таблицу
+                Resume.objects.bulk_create(resume_list)
+            # сохранение архивов с работами кандидата и запись ссылки в БД
+            if portfolio:
+                # запись файлов на сервер
+                portfolio_list = [Portfolio(applicant = new_applicant, portfolio_file = p) for p in portfolio]
+                # сохранение ссылок на файлы в таблицу
+                Portfolio.objects.bulk_create(portfolio_list)
+
+            return new_applicant.id
         except:
-            req['birthday'] = datetime.datetime.strptime(req['birthday'], "%Y-%m-%d").date()
-
-        # сохранение данных в таблицу Applicant
-        # сохраниение нового источника или получение id существующего источника
-        request.POST['source'] = self.sourceCreate(req['source'])
-
-        if req['icq']:
-            req['icq'] = int(req['icq'])
-        else:
-            req['icq'] = None
-
-        print applicant_instance
-        applicant_form = ApplicantForm(request.POST, request.FILES, **applicant_instance)
-        new_applicant = applicant_form.save()
-
-        self.savingPhone(req.getlist('phone'), new_applicant)
-        self.savingVacancies(req['vacancies'], new_applicant)
-        self.savingEducations(req['educations'], new_applicant)
-
-        full_name = new_applicant.getFullName()
-
-        resume = sf.saveFiles(request.FILES.getlist('resume[]'),
-                              dir='resume',
-                              filename=full_name)
-        portfolio = sf.saveFiles(request.FILES.getlist('portfolio[]'),
-                                 dir='portfolio',
-                                 filename=full_name)
-
-        # сохранение текстовых файлов с резюме и запись ссылки в БД
-        if resume:
-            # запись файлов на сервер
-            resume_list = [Resume(applicant = new_applicant, resume_file = r) for r in resume]
-            # сохранение ссылок на файлы в таблицу
-            Resume.objects.bulk_create(resume_list)
-        # сохранение архивов с работами кандидата и запись ссылки в БД
-        if portfolio:
-            # запись файлов на сервер
-            portfolio_list = [Portfolio(applicant = new_applicant, portfolio_file = p) for p in portfolio]
-            # сохранение ссылок на файлы в таблицу
-            Portfolio.objects.bulk_create(portfolio_list)
-
-        return new_applicant.id
-        '''except:
-            return False'''
+            return False
 
 
 
@@ -161,9 +161,12 @@ class ApplicantAddView(View, SavingModels):
         return render_to_response(self.template, rc)
 
     def post(self, request):
+        if request.is_ajax:
+            result = self.savingApplicantForm(request)
+            json_res = json.dumps(['200',result])
+        else:
+            json_res = json.dumps(['200'])
 
-        result = self.savingApplicantForm(request)
-        json_res = json.dumps(['200',result])
         return HttpResponse(json_res, 'application/json')
 
 
@@ -188,19 +191,19 @@ class SavingFiles():
 # выборка вакансий
 class VacancySearchAjax(View):
     def get(self, request):
-        position = request.GET.get('position')
-        vacancies = Vacancy.objects.filter(position=position).values('head__name', 'id', 'published_at')
-        result = [
-            {'head': v['head__name'],
-             'date': v['published_at'].date().strftime("%d-%m-%Y"),
-             'value':v['id']
-            }
-            for v in vacancies
-        ]
+        if request.is_ajax:
+            position = request.GET.get('position')
+            vacancies = Vacancy.objects.filter(position=position).values('head__name', 'id', 'published_at')
+            result = [
+                {'head': v['head__name'],
+                 'date': v['published_at'].date().strftime("%d-%m-%Y"),
+                 'value':v['id']
+                }
+                for v in vacancies
+            ]
 
-        j = json.dumps(result)
-
-        return HttpResponse(j, content_type='application/json')
+            j = json.dumps(result)
+            return HttpResponse(j, content_type='application/json')
 
 
 class CandidateSearchView(View):
@@ -252,9 +255,17 @@ class ApplicantView(View, SavingModels):
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
 
+    # обновление информации
     def post(self, request, applicant_id):
-        instance = get_object_or_404(Applicant, id=applicant_id)
-        result = self.savingApplicantForm(request, {'instance': instance})
+        if request.is_ajax:
+            instance = get_object_or_404(Applicant, id=applicant_id)
+            result = self.savingApplicantForm(request, {'instance': instance})
 
-        json_res = json.dumps(['200',result])
+            # добавление изменения в историю
+            HistoryChangeApplicantInfo.objects.create(user=request.user, )
+
+            json_res = json.dumps(['200',result])
+        else:
+            json_res = json.dumps(['200'])
+
         return HttpResponse(json_res, 'application/json')

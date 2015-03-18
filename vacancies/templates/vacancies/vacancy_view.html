@@ -5,7 +5,7 @@
 
 
 {% block title %}
-    Добавление вакансии
+    Просмотр вакансии
 {% endblock %}
 
 
@@ -50,9 +50,13 @@
 
               <div class="box box-success">
                 <div class="box-header">
-                    <form id='frm_add_vacancy'>{% csrf_token %}
+                    <form id='frm_update_vacancy'>{% csrf_token %}
                     {% load bootstrap %}
                     {{ vacancy_form|bootstrap}}
+                        <input id="vacancy_id" type="hidden"
+                               value="{{vacancy.id}}">
+                    <button id="update_vacancy" class="btn">Сохранить
+                        данные</button>
 
                     </form>
                 </div>

@@ -51,8 +51,16 @@
               <div class="box box-success">
                 <div class="box-header">
                     <form id='frm_add_vacancy'>{% csrf_token %}
-                    {% load bootstrap %}
-                    {{ vacancy_form|bootstrap }}
+
+                        {{ vacancy_form.position.label_tag}}
+                        {{ vacancy_form.position}}
+                        {{ vacancy_form.salary.label_tag}}
+                        {{ vacancy_form.salary}}
+                        {{ vacancy_form.end_date.label_tag}}
+                        {{ vacancy_form.end_date}}
+                        {{ vacancy_form.description.label_tag}}
+                        {{ vacancy_form.description}}
+
                     <div class="form-group">
                     <label for='department'>Отдел</label>
                     <select id="department" name="department"

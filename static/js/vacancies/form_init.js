@@ -27,6 +27,8 @@ window.onload = function(){
         return false;
     });
 
+
+    //Выборка руководителей отделов
     $('#department').change(function(){
         department = $('#department').val();
         console.log("Get_heads ajax request");
@@ -55,6 +57,28 @@ window.onload = function(){
                 $heads_div.empty()
                 $("<label for='heads'>Руководитель</label>").appendTo($heads_div)
                 $select.appendTo(heads_div)
+            },
+            error: function(data) {
+               alert("Произошла ошибка!");
+            }
+        });
+        return false;
+    });
+
+
+     //Обновление вакансии
+     $('#update_vacancy').click(function () {
+        var datastring = $('#frm_update_vacancy').serialize();
+        var $vacancy_id = $("#vacancy_id").val();
+        console.log(datastring);
+        $.ajax({
+            type: 'Post',
+            url: '/vacancies/'+ $vacancy_id + '/',
+            dataType: 'json',
+            data: datastring,
+            success: function (data) {
+                alert("success")
+               //window.location.href = '/vacancies/' + vacancy_id;
             },
             error: function(data) {
                alert("Произошла ошибка!");

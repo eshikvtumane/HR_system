@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% load humanize %}
+{% load ru_phone_format %}
+{% load date_format %}
 
 {% block title %}
     Добавление кандидата
@@ -11,23 +14,27 @@
 <!-- Стили для select -->
     <!--<link rel="stylesheet" type="text/css" href="{% static 'css/chosen-bootstrap.css' %}" >-->
     <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
-<link rel="stylesheet" type="text/css" href="{% static 'js/chosen/chosen.min.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'js/chosen/chosen.min.css' %}" >
 
+    <!-- увеличение картинок -->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/fancy_box/source/jquery.fancybox.css' %}" >
 {% endblock %}
 
 {% block scripts %}
 <!-- кастомизация select -->
 <script src="{% static 'js/selectize/selectize.js' %}"></script>
-<!--
-<script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
--->
+<!-- увеличение картинок -->
+<script src="{% static 'js/fancy_box/source/jquery.fancybox.js' %}"></script>
+<script src="{% static 'js/fancy_box_init.js' %}"></script>
+
+<script src="{% static 'js/appliments/update_applicant.js' %}"></script>
 
 <!-- Ajax loader -->
 <script src="{% static 'js/loader.js' %}"></script>
 
 <!-- Добавление валидации -->
     <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
-
+    <script src="{% static 'js/appliments/validate_applicant_form.js' %}"></script>
 
 
 <!-- Плагин для клонирования формы -->
@@ -37,8 +44,8 @@
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <!-- Добавление формы для выбора образования -->
     <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
-<!-- Добавление эскиза загруженного изображения на страницу -->
-    <script src="{% static 'js/appliments/upload_photo.js' %}"></script>
+<!-- Добавление эскиза загруженного изображения на страницу
+    <script src="{% static 'js/appliments/upload_photo.js' %}"></script> -->
 <!-- Инициализация элементов при загрузке страницы -->
     <script src="{% static 'js/appliments/form_init.js' %}"></script>
 <!-- отправка данных на сервер -->
@@ -53,11 +60,11 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Добавление нового кандидата
+            Страница кандидата
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
-            <li class="active">Добавление кандидата</li>
+            <li class="active">Страница кандидата</li>
           </ol>
         </section>
 
@@ -76,6 +83,7 @@
                 -->
               <div class="box box-success">
                   <div class="box-header" class='col-sm-12'>
+                      <input type="hidden" id="id" name="id" value="{{ applicant_id }}">
 
                       <div class="col-sm-12">
                           <div class="group-control">
@@ -104,7 +112,8 @@
                             <div style="display: inline-block;" class='col-sm-6'>
                                 <label>{{ applicant_form.birthday.label_tag }}</label>
                                 <div>
-                                    {{ applicant_form.birthday }}
+                                    <label >{{ applicant_form.birthday.value }}</label>
+                                    <input type="hidden" name="birthday" value="{{ applicant_form.birthday.value|date_format }}">
                                 </div>
                             </div>
                             <div style="display: inline-block;" class='col-sm-6'>
@@ -117,113 +126,6 @@
 
                       </div>
 
-
-<!--
-                    <div  class="form-group">
-                        <label class="control-label col-sm-2">{{ applicant_form.first_name.label_tag }}</label>
-                        <div class="col-sm-10">
-                            {{ applicant_form.first_name }}
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2">{{ applicant_form.last_name.label_tag }}</label>
-                        <div class="col-sm-10">
-                            {{ applicant_form.last_name }}
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2">{{ applicant_form.middle_name.label_tag }}</label>
-                        <div class="col-sm-10">
-                            {{ applicant_form.middle_name }}
-                        </div>
-                    </div>
-
-                      <div class="form-horizontal" style="padding-top: 2ex;">
-                          <div class="form-group" style="margin-top: 2ex;">
-
-                            <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>
-
-                            <label class="control-label col-sm-2">{{ applicant_form.birthday.label_tag }}</label>
-                            <div class="col-sm-9">
-                                <div class="input-group form-group">
-                                    <span class="input-group-addon"></span>
-                                    {{ applicant_form.birthday }}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">Источник</label>
-                            <div class="col-sm-5">
-                                {{ applicant_form.source }}
-                            </div>
-                        </div>
-
-                      </div>
-                -->
-                  <!--
-                <div class="box-header form-horizontal">
-
-                    <div  class="form-group">
-                        <label class="control-label col-sm-2" for="first_name">Фамилия</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="first_name" id="first_name" class="form-control"  data-validation="custom" data-validation-regexp="^([А-Яа-яЁё]+)$" data-validation-error-msg="Фамилия должна состоять из кириллических символов">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="last_name">Имя</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="last_name" id="last_name" class="form-control" data-validation="custom" data-validation-regexp="^([А-Яа-яЁё]+)$" data-validation-error-msg="Имя должно состоять из кириллических символов">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="middle_name">Отчество</label>
-                        <div class="col-sm-10">
-                            <input type="text" name="middle_name" id="middle_name" class="form-control" data-validation="middle_name">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="birthday">Дата рождения</label>
-                        <div class="col-sm-10">
-                            <input type="text" id="birthday" name="birthday" class="form-control" data-validation="date"  data-validation-format="dd-mm-yyyy">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="experience">Стаж</label>
-                        <div class="col-sm-10">
-                            <input type="number" name="experience" id="experience" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="linkedin">LinkedIn</label>
-                        <div class="col-sm-10">
-                            <input type="number" name="linkedin" id="linkedin" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="fb">Facebook</label>
-                        <div class="col-sm-10">
-                            <input type="number" name="fb" id="fb" class="form-control">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-sm-2" for="vk">ВКонтакте</label>
-                        <div class="col-sm-10">
-                            <input type="number" name="vk" id="vk" class="form-control">
-                        </div>
-                    </div>
-
-                </div>
--->
                   </div>
               </div><!-- /.форма добавления пользователя -->
 
@@ -231,6 +133,27 @@
                 <!-- Добавление вакансии -->
               <div class="box box-success">
                 <div class="box-header form-horizontal">
+                    <h2>Вакансии</h2>
+                    <table class="table">
+                        <thead>
+                            <th class="col-sm-4">Предполагаемая должность</th>
+                            <th class="col-sm-5">Вакансия</th>
+                            <th class="col-sm-5">Уровень зарплаты в анкете</th>
+                            <th class="col-sm-5">Предлагаемая зарплата</th>
+                        </thead>
+                        <tbody>
+                            {% for v in vacancies %}
+                                <tr>
+                                    <td>{{ v.vacancy.position.name }}</td>
+                                    <td><a target="_blank" href="">{{ v.vacancy.head.name }}, {{ v.vacancy.published_at }}</a></td>
+                                    <td>{{ v.salary|intcomma }} руб.</td>
+                                    <td>{{ v.suggested_salary|intcomma }} руб.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
                     <h2>Выбор вакансий</h2>
                     <div id="vacancy_forms">
                         <table id="vacancy" class="table">
@@ -298,19 +221,27 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2">Телефон:</label>
 
-                            <div class="clone-wrapper col-sm-10" style="margin-top: 1ex;">
-                                <div class="toclone col-sm-12" style="display: inline-block;">
-                                    <div style="display: inline-block;">
-                                        <div class="col-sm-8" style="display: inline-block;">
-                                            <input type="number" name="phone" class="form-control">
-                                        </div>
+                            <div class="clone-wrapper col-sm-10" style="margin-top: 1ex;  font-size: 3ex;">
 
-                                        <div class="col-sm-4">
-                                            <button class="clone btn btn-success">+</button>
-                                            <button class="delete btn btn-danger">-</button>
+                                {% for p in phones %}
+                                    <div>
+                                        {{ p.phone|phone_format }}
+                                    </div>
+                                {% endfor %}
+
+                                <div class="clone-wrapper">
+                                    <div class="toclone col-sm-12" style="display: inline-block;">
+                                        <div style="display: inline-block;">
+                                            <div class="col-sm-8" style="display: inline-block;">
+                                                <input type="number" name="phone" class="form-control">
+                                            </div>
+
+                                            <div class="col-sm-4">
+                                                <button class="clone btn btn-success">+</button>
+                                                <button class="delete btn btn-danger">-</button>
+                                            </div>
                                         </div>
                                     </div>
-
 
                                 </div>
                             </div>
@@ -341,14 +272,29 @@
                         <div class="form-group">
                             <label class="control-label col-sm-2">{{ applicant_form.vk.label_tag }}</label>
                             <div class="col-sm-10">
-                                {{ applicant_form.vk }}
+                                <div class="col-sm-5">
+                                    {{ applicant_form.vk }}
+                                </div>
+                                <div class="col-sm-5">
+                                    {% if applicant_form.vk.value %}
+                                        <a target='_blank' href="{{ applicant_form.vk.value }}">Перейти на страницу</a>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
 
                         <div class="form-group">
                             <label class="control-label col-sm-2">{{ applicant_form.fb.label_tag }}</label>
                             <div class="col-sm-10">
-                                {{ applicant_form.fb }}
+                                <div class="col-sm-5">
+                                    {{ applicant_form.fb }}
+                                </div>
+                                <div class="col-sm-5">
+                                    {% if applicant_form.fb.value %}
+                                        <a target='_blank'  href="{{ applicant_form.fb.value }}">Перейти на страницу</a>
+                                    {% endif %}
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -365,7 +311,7 @@
 
                         </div>
                         <div style="padding-top: 3ex;">
-                            <input type="submit" value="Сохранить анкету" class="btn btn-success">
+                            <input type="submit" value="Обновить анкету" class="btn btn-success">
                         </div>
                     </div>
                 </div>
@@ -380,13 +326,13 @@
                         <div>
                             <h2>{{ applicant_form.photo.label_tag }}</h2>
                             <div align="center">
-                                <div>
+                                <div style="margin-bottom: 2ex;">
                                     {{ applicant_form.photo }}
                                 </div>
-                                <div style="margin-top: 3ex;">
-                                    <canvas id="imageCanvas">
-                                    </canvas>
+                                <div>
+                                    <img id='photo' style="width: 300px;" src="{{ applicant_form.instance.photo.url }}">
                                 </div>
+
                             </div>
 
                         </div>
@@ -397,6 +343,25 @@
               <!-- Форма ввода образования -->
               <div class="box box-solid">
                 <div class="box-header">
+                    <h2>Образования кандидата</h2>
+                    <table class="table">
+                        <thead>
+                                <th>Тип образования</th>
+                                <th>Специальность</th>
+                                <th>Период обучения</th>
+                        </thead>
+                        {% for e in educations %}
+                        <tbody>
+                            <tr>
+                                <td>{{ e.education.type }}</td>
+                                <td>{{ e.major.name }}</td>
+                                <td>{{ e.study_start }} ‒ {{ e.study_end }} гг.</td>
+                            </tr>
+                        </tbody>
+                        {% endfor %}
+                    </table>
+
+
                     <h2>Выбор образований</h2>
                     <div>
                         <div>
@@ -420,34 +385,6 @@
                         </div>
 
 
-                        <!--
-                        <select class="select-add" name="education" placeholder="Выберите тип образования">
-                            <option style="display: none;" value="-1">Выберите тип образования</option>
-                            {% for e in edu %}
-                                <option value="{{ e.id }}">{{ e.type }}</option>
-                            {% endfor %}
-
-                        </select>
-
-                        <select name="major" placeholder="Выберите специальность">
-                            <option style="display: none;" value="-1">Выберите специальность</option>
-                            {% for m in majors %}
-                                <option value="{{ m.id }}">{{ m.name }}</option>
-                            {% endfor %}
-                        </select>
-
-                        <div style="margin-top: 2ex;">
-                            <div class="col-sm-5">
-                                <label>c</label>
-                                <input type="number" min="1900" id="study_start">
-                            </div>
-                            <div class="col-sm-6">
-                                <label>по</label>
-                                <input type="number" min="1900" id="study_end">
-                            </div>
-                        </div>
-                    </div>
--->
 
                         <div id="messageEdu">
 
@@ -478,6 +415,20 @@
               <!-- Resume -->
               <div class="box box-solid bg-teal-gradient">
                   <div class="box-header" align="center">
+                      <h2>Резюме</h2>
+                      <table class="table">
+                          {% for r in resume %}
+                            <tr>
+                                <td><a href="{{ r.resume_file }}"><img style="height: 32px" src="/media/download.png"></a></td>
+                                <td><i>Дата загрузки:</i> {{ r.date_upload|date }}</td>
+                                <td></td>
+                            </tr>
+                          {% empty %}
+                            <h4>Нет файлов</h4>
+                          {% endfor %}
+                      </table>
+                      <hr>
+
                     <h2>Добавить резюме</h2>
                     <input type="file" name="resume[]" accept="application/msword, application/pdf, .odt, .docx" multiple>
                   </div>
@@ -486,6 +437,21 @@
                 <!-- Portfolio -->
               <div class="box box-solid bg-teal-gradient">
                   <div class="box-header" align="center">
+                      <h2>Портфолио</h2>
+                      <table class="table">
+                          {% for p in portfolio %}
+                            <tr>
+                                <td><a href="{{ p.portfolio_file }}"><img style="height: 32px" src="/media/download.png"></a></td>
+                                <td><i>Дата загрузки:</i> {{ p.date_upload|date }}</td>
+                                <td></td>
+                            </tr>
+                          {% empty %}
+                            <h4>Нет файлов</h4>
+                          {% endfor %}
+                      </table>
+
+                      <hr>
+
                     <h2>Добавить портфолио</h2>
                     <input type="file" name="portfolio[]" accept="application/zip, .rar, .7z" multiple>
                   </div>

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position
+from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation
 from vacancies.models import Vacancy
 
 # Register your models here.
@@ -19,10 +19,18 @@ class MajorAdmin(admin.ModelAdmin):
 class SourceAdmin(admin.ModelAdmin):
     fields = []
 
+class PhoneInline(admin.StackedInline):
+    model = Phone
+
+class ApplicantEducationInline(admin.StackedInline):
+    model = ApplicantEducation
+
 class ApplicantAdmin(admin.ModelAdmin):
     inlines = (
+        ApplicantEducationInline,
         ResumeInline,
-        PortfolioInline
+        PortfolioInline,
+        PhoneInline,
     )
     fields = []
 

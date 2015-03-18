@@ -94,4 +94,3 @@ class ApplicantVacancy(models.Model):
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=datetime.datetime.now(), verbose_name='Дата добавления')
 
-

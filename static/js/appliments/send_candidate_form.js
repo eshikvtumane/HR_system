@@ -1,15 +1,5 @@
 // сохранение данных
-$(document).ready(function(event){
-
-});
-
-function fff(){
-    console.log(vacancies);
-    console.log(JSON.stringify(vacancies));
-}
-
-
-function sendApplicantForm(){
+function sendApplicantForm(url, fn){
     //$('#applicant_form').submit(function(event){
 
         var div_result = document.getElementById('create_applicant_message');
@@ -39,7 +29,7 @@ function sendApplicantForm(){
         fd.append('educations', JSON.stringify(educations))
 
 
-        var url = '/applicants/add/';
+        //var url = '/applicants/add/';
 
         $.ajax({
             type:'POST',
@@ -47,9 +37,10 @@ function sendApplicantForm(){
             data: fd,
             processData: false,
             contentType: false,
-            success: function(data){
+            success: fn/*function(data){
                 if('200' == data[0]){
-                    window.location.href = '/';
+                    var url = '/applicants/view/' + data[1];
+                    window.location.href = url;
                     div_result.innerHTML = 'Добавление прошло успешно';
                 }
                 else{
@@ -58,8 +49,7 @@ function sendApplicantForm(){
                 }
 
                 document.getElementById('save_loader').innerHTML = '';
-
-            }
+            }*/
         });
         return false;
    //});

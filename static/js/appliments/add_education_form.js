@@ -1,4 +1,5 @@
 $(document).ready(function(){
+
     var $select = $('.select-vacancy').selectize({
         create: true,
         createOnBlur: true
@@ -163,7 +164,7 @@ function createEduDict(edu, tbl_edu){
                 //'major_name': major_name,
                 'major': major_id,
                 'study_start': study_start,
-                'study_end': study_start
+                'study_end': study_end
         };
 
         study_start.value = '';

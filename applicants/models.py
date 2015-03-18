@@ -1,6 +1,7 @@
 #-*- coding:utf8 -*-
 from django.db import models
 from datetime import datetime
+from django.contrib.auth.models import User
 
 
 # Create your models here.
@@ -60,7 +61,7 @@ class Phone(models.Model):
     phone = models.IntegerField(verbose_name='Номер телефона', max_length=11)
 
     def __unicode__(self):
-        return self.phone
+        return str(self.phone)
 
 
 # Образование
@@ -163,3 +164,18 @@ class SourceInformation(models.Model):
 
     def __unicode__(self):
         return self.source
+
+
+# Хранение истории изменений информации о кандидате
+class HistoryChangeApplicantInfo(models.Model):
+    class Meta:
+        db_table='HistoryChangeApplicants'
+        verbose_name = 'История изменений'
+        verbose_name_plural = 'Истории изменений'
+
+    # кто изменил анкету
+    user = models.ForeignKey(User)
+    # чью анкету изменили
+    applicant = models.ForeignKey('Applicant')
+    # когда изменил
+    date_change = models.DateTimeField(default=datetime.now())

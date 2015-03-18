@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'bootstrapform',
-    'debug_toolbar',
+    #'debug_toolbar',
     'main',
     'applicants',
     'vacancies',

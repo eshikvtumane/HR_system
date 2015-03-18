@@ -1,6 +1,7 @@
 #-*- coding:utf8 -*-
 from django.db import models
 from datetime import datetime
+from django.conf import settings
 
 
 # Create your models here.
@@ -60,7 +61,7 @@ class Phone(models.Model):
     phone = models.IntegerField(verbose_name='Номер телефона', max_length=11)
 
     def __unicode__(self):
-        return self.phone
+        return str(self.phone)
 
 
 # Образование

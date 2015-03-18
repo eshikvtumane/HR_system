@@ -30,7 +30,7 @@ class Status(models.Model):
 
     def __unicode__(self):
         return self.name
-        return self.name
+
 
 
 
@@ -45,9 +45,6 @@ class Department(models.Model):
     def __unicode__(self):
         return self.name
 
-
-
-
 #Руководители отделов компании
 class Head(models.Model):
     class Meta:
@@ -61,6 +58,9 @@ class Head(models.Model):
     def __unicode__(self):
         return self.name
 
+
+
+DEFAULT_VACANCY_STATUS = 1
 
 class Vacancy(models.Model):
     class Meta:
@@ -77,7 +77,7 @@ class Vacancy(models.Model):
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
 
     status = models.ForeignKey(Status,verbose_name=u'Статус',
-                               default=defaultStatus)
+                               default=DEFAULT_VACANCY_STATUS)
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
 
 

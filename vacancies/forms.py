@@ -6,28 +6,16 @@ from vacancies.models import Vacancy,Department,Status
 from applicants.models import Position
 
 
-class VacancyForm(ModelForm):
-
-    position = forms.ModelChoiceField(queryset=Position.objects.all(),
-                                       label=u'Должность',
-                                       widget=forms.Select(attrs={
-                                           'class':'form-control',
-                                           'placeholder':'Выберите должность'
-                                       }
-                                       )
-                                 )
-
-    status = forms.ModelChoiceField(queryset=Status.objects.all(),
-                                    label='Статус вакансии',
-                                    widget=forms.Select(attrs={
-                                        'class':'form-control',
-                                        'placeholder':'Выберите статус'
-                                    })
-                                    )
+class AddVacancyForm(ModelForm):
 
     class Meta:
         model = Vacancy
-        fields = ("salary","end_date","description")
+        fields = ("salary","end_date","description",'head','position')
+        querysets={
+
+            'position':Status.objects.all()
+        }
+
         labels = {
             #'position': _(u'Должность'),
             'salary': _(u'Зарплата'),
@@ -52,10 +40,50 @@ class VacancyForm(ModelForm):
                 'class':'form-control'
 
             }),
-
-
+            'position':forms.Select(attrs={'class':'form-control','id':'position'})
         }
 
 
+
+class ViewVacancyForm(ModelForm):
+
+   class Meta:
+        model = Vacancy
+        fields = ("salary","end_date","description",'position','status')
+        querysets={
+
+            'status':Status.objects.all()
+        }
+
+        labels = {
+            #'position': _(u'Должность'),
+            'salary': _(u'Зарплата'),
+            'end_date': _(u'Предполагамый срок закрытия'),
+            'description': _(u'Описание'),
+
+        }
+        widgets = {
+            'salary': forms.NumberInput(attrs={
+                'class': "form-control",
+                'name':'salary'
+            }),
+            'end_date': forms.DateInput(attrs={
+                'id':'end_date',
+                'class': "form-control",
+                'name':'end_date',
+                'data-validation': "date",
+                'data-validation-format': "dd-mm-yyyy"
+
+            }),
+            'description':forms.Textarea(attrs={
+                'class':'form-control'
+
+
+            }),
+
+            'status':forms.Select(attrs={'class':'form-control','id':'status'})
+
+
+        }
 
 

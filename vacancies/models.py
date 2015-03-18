@@ -17,7 +17,6 @@ class Status(models.Model):
 
     def __unicode__(self):
         return self.name
-        return self.name
 
 
 
@@ -81,5 +80,4 @@ class ApplicantVacancy(models.Model):
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=datetime.datetime.now(), verbose_name='Дата добавления')
-
 

@@ -14,9 +14,11 @@ window.onload = function(){
         $.ajax({
             type: 'Post',
             url: '/vacancies/add/',
+            dataType: 'json',
             data: datastring,
             success: function (data) {
-               alert("Вакансия сохранена!");
+               var vacancy_id = data[0]["vacancy_id"];
+               window.location.href = '/vacancies/' + vacancy_id;
             },
             error: function(data) {
                alert("Произошла ошибка!");
@@ -38,7 +40,7 @@ window.onload = function(){
 
                $select =  $('<select/>',{
                    'id': 'heads',
-                   'name': 'heads',
+                   'name': 'head',
                    'class': 'form-control'
                 });
                 $.each(data,function(){
@@ -49,8 +51,10 @@ window.onload = function(){
                     }).appendTo($select);
 
                 });
-                $("<label for='heads' id = 'lbl_heads' >Руководитель</label>").insertAfter('#department');
-                $select.insertAfter('#lbl_heads')
+                $heads_div = $('#heads_div')
+                $heads_div.empty()
+                $("<label for='heads'>Руководитель</label>").appendTo($heads_div)
+                $select.appendTo(heads_div)
             },
             error: function(data) {
                alert("Произошла ошибка!");

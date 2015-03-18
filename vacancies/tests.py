@@ -8,8 +8,6 @@ import datetime
 
 
 
-
-
 #######MODEL TESTING#######
 class VacancyTest(TestCase):
     def test_adding_vacancy_to_db(self):
@@ -18,8 +16,8 @@ class VacancyTest(TestCase):
         status = Status.objects.create(name="Открыта")
         position = Position.objects.create(name="Продажник")
         vacancy = Vacancy.objects.create(salary=5000,end_date=datetime.datetime(
-            2015,5,4),description="Классная вакансия",head = head,
-                                         status=status,position=position)
+            2015,5,4),description="Классная вакансия",head = head,position =
+        position)
 
     def test_saving_vacancy_via_ajaxpost_request(self):
         self.client.post('vacancies/add')

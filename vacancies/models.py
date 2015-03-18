@@ -62,10 +62,10 @@ class Vacancy(models.Model):
     end_date = models.DateTimeField(verbose_name=u'Крайний срок')
     description = models.TextField(verbose_name=u"Описание")
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
+
     status = models.ForeignKey(Status,verbose_name=u'Статус',
-                                 )
-    # status = models.ForeignKey(Status,verbose_name=u'Статус',
-    #                            default=Status.objects.get(name='Открыта'))
+                               default=lambda:Status.objects.get(
+                                   name='Открыта'))
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
 
 

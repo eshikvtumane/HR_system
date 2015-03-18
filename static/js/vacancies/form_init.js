@@ -10,13 +10,15 @@ window.onload = function(){
     //Сохранение вакансии
     $('#save_vacancy').click(function () {
         var datastring = $('#frm_add_vacancy').serialize();
-        console.log(datastring)
+        console.log(datastring);
         $.ajax({
             type: 'Post',
             url: '/vacancies/add/',
+            dataType: 'json',
             data: datastring,
             success: function (data) {
-               alert("Вакансия сохранена!");
+               var vacancy_id = data[0]["vacancy_id"];
+               window.location.href = '/vacancies/' + vacancy_id;
             },
             error: function(data) {
                alert("Произошла ошибка!");
@@ -25,16 +27,58 @@ window.onload = function(){
         return false;
     });
 
+
+    //Выборка руководителей отделов
     $('#department').change(function(){
-        department_par = $('#department').val();
-        console.log("Get_heads ajax request")
+        department = $('#department').val();
+        console.log("Get_heads ajax request");
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: '/vacancies/get_heads/',
-            data: {'department':'dsds','name':'dsdffsfsf'},
+            dataType: 'json',
+            data: {'department':department},
             contentType: 'application/json',
             success: function (data) {
-               alert("Вакансия сохранена!");
+
+               $select =  $('<select/>',{
+                   'id': 'heads',
+                   'name': 'head',
+                   'class': 'form-control'
+                });
+                $.each(data,function(){
+                    $('<option/>',{
+                        'value': this['id'],
+                        'text': this['name']
+
+                    }).appendTo($select);
+
+                });
+                $heads_div = $('#heads_div')
+                $heads_div.empty()
+                $("<label for='heads'>Руководитель</label>").appendTo($heads_div)
+                $select.appendTo(heads_div)
+            },
+            error: function(data) {
+               alert("Произошла ошибка!");
+            }
+        });
+        return false;
+    });
+
+
+     //Обновление вакансии
+     $('#update_vacancy').click(function () {
+        var datastring = $('#frm_update_vacancy').serialize();
+        var $vacancy_id = $("#vacancy_id").val();
+        console.log(datastring);
+        $.ajax({
+            type: 'Post',
+            url: '/vacancies/'+ $vacancy_id + '/',
+            dataType: 'json',
+            data: datastring,
+            success: function (data) {
+                alert("success")
+               //window.location.href = '/vacancies/' + vacancy_id;
             },
             error: function(data) {
                alert("Произошла ошибка!");

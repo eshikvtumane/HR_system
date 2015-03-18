@@ -4,6 +4,19 @@ from django.db import models
 import datetime
 from time import timezone
 
+####HELPER FUNCTIONS##########
+def defaultStatus():
+    return Status.objects.get(name='Открыта')
+
+##############################
+
+####HELPER CLASSES###########
+
+# class ConvertedDateTime(models.DateTimeField):
+#     def get_prep_value(self, value):
+#         return str(datetime.datetime.strptime(value,'%d-%m-%Y'))
+
+##############################################
 
 
 
@@ -61,10 +74,9 @@ class Vacancy(models.Model):
     end_date = models.DateTimeField(verbose_name=u'Крайний срок')
     description = models.TextField(verbose_name=u"Описание")
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
+
     status = models.ForeignKey(Status,verbose_name=u'Статус',
-                                 )
-    # status = models.ForeignKey(Status,verbose_name=u'Статус',
-    #                            default=Status.objects.get(name='Открыта'))
+                               default=defaultStatus)
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
 
 

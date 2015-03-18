@@ -27,15 +27,14 @@ class AddVacancy(View):
             post_data['end_date'] = datetime.datetime.strptime(post_data['end_date'],
                                                        '%d-%m-%Y').date()
             vacancy_form = AddVacancyForm(post_data)
-            try:
-                vacancy_form.is_valid()
-                vacancy_form.save()
-            except:
-                raise TypeError("Данные не корректны")
-            vacancy_id = vacancy_form.instance.id
-            response = json.dumps([{'vacancy_id':vacancy_id}])
-            return HttpResponse(response,content_type='application/json')
+            if vacancy_form.is_valid():
+                    vacancy_form.save()
+                    vacancy_id = vacancy_form.instance.id
+                    response = json.dumps([{'vacancy_id':vacancy_id}])
+                    return HttpResponse(response,content_type='application/json')
+            else:
 
+                     return HttpResponse("400")
 
 class VacancyView(View):
     template = 'vacancies/vacancy_view.html'
@@ -48,19 +47,17 @@ class VacancyView(View):
         return render_to_response(self.template, c)
 
     def post(self,request,id):
-        post_data = request.POST.copy()
-        post_data['end_date'] = datetime.datetime.strptime(post_data['end_date'],
-                                                   '%d-%m-%Y').date()
+        if request.is_ajax:
+            post_data = request.POST.copy()
+            post_data['end_date'] = datetime.datetime.strptime(post_data['end_date'],
+                                                       '%d-%m-%Y').date()
 
-        vacancy = Vacancy.objects.get(pk=id)
-        vacancy_form = ViewVacancyForm(post_data,instance=vacancy)
-        try:
-            vacancy_form.is_valid()
-            vacancy_form.save()
-        except:
-            raise TypeError("Данные не корректны!")
-        return HttpResponse("200")
-
+            vacancy = Vacancy.objects.get(pk=id)
+            vacancy_form = ViewVacancyForm(post_data,instance=vacancy)
+            if vacancy_form.is_valid():
+                vacancy_form.save()
+                return HttpResponse("200")
+            return HttpResponse('400')
 
 ###AJAX REQUESTS#################
 def get_heads_ajax(request):

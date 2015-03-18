@@ -21,7 +21,7 @@ window.onload = function(){
                window.location.href = '/vacancies/' + vacancy_id;
             },
             error: function(data) {
-               alert("Произошла ошибка!");
+                    console.log("ERROR")
             }
         });
         return false;
@@ -53,13 +53,13 @@ window.onload = function(){
                     }).appendTo($select);
 
                 });
-                $heads_div = $('#heads_div')
-                $heads_div.empty()
-                $("<label for='heads'>Руководитель</label>").appendTo($heads_div)
+                $heads_div = $('#heads_div');
+                $heads_div.empty();
+                $("<label for='heads'>Руководитель</label>").appendTo($heads_div);
                 $select.appendTo(heads_div)
             },
             error: function(data) {
-               alert("Произошла ошибка!");
+               console.log("ERROR, retrieving heads")
             }
         });
         return false;
@@ -77,15 +77,16 @@ window.onload = function(){
             dataType: 'json',
             data: datastring,
             success: function (data) {
-                alert("success")
+
                //window.location.href = '/vacancies/' + vacancy_id;
             },
             error: function(data) {
                alert("Произошла ошибка!");
+               console.log("ERROR")
             }
         });
         return false;
     });
 
 
-   }
+   };

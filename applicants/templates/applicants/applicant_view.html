@@ -152,7 +152,7 @@
                             {% for v in vacancies %}
                                 <tr>
                                     <td>{{ v.vacancy.position.name }}</td>
-                                    <td><a target="_blank" href="">{{ v.vacancy.head.name }}, {{ v.vacancy.published_at }}</a></td>
+                                    <td><a target="_blank" href="{% url 'vacancies:vacancy_view' v.vacancy.id %}">{{ v.vacancy.head.name }}, {{ v.vacancy.published_at }}</a></td>
                                     <td>{{ v.salary|intcomma }} руб.</td>
                                     <td>{{ v.suggested_salary|intcomma }} руб.</td>
                                 </tr>

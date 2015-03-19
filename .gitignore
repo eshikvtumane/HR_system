@@ -5,6 +5,4 @@
 *.pyc
 db.sqlite3
 migrations/
-media/photo_applicants/
-media/resume/
-media/portfolio/
+media/cache/

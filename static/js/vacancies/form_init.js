@@ -79,7 +79,9 @@ window.onload = function(){
             data: datastring,
             success: function (data) {
 
-               //window.location.href = '/vacancies/' + vacancy_id;
+                $.notify("Данные вакансии успешно обновлены",'success',{
+                    position : 'top center'
+                })
             },
             error: function(data) {
                alert("Произошла ошибка!");

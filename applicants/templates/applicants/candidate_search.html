@@ -122,8 +122,8 @@
                                 {% for a in applicants %}
                                     <tr>
                                         <td>
-                                            {% thumbnail a.photo "100x100" crop="center" as im %}
-                                                <img src="/media/{{ im.url }}">
+                                            {% thumbnail a.photo "200x200" crop="center" as im %}
+                                                <img src="{{ im.url }}">
                                             {% endthumbnail %}
 
                                         </td>

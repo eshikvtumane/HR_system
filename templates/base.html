@@ -60,6 +60,14 @@
                 <!-- Часы -->
                 <li style="vertical-align: middle; color: white; size: 10ex;">
                     <div class="pull-left" >
+                        Осталось:
+                        <div id="clock"></div>
+                    </div>
+
+                </li>
+
+                <li style="vertical-align: middle; color: white; size: 10ex;">
+                    <div class="pull-left" >
                         <div class="date" id="time_now"></div>
                     </div>
 
@@ -444,6 +452,7 @@
 
 
     <!-- Часы на странице -->
+    <script src="{% static 'js/jquery.countdown/jquery.countdown.js' %}"></script>
     <script src="{% static 'js/digital_clock.js' %}"></script>
 
 

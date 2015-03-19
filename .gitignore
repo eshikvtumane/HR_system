@@ -6,3 +6,6 @@
 db.sqlite3
 migrations/
 media/cache/
+media/portfolio/
+media/resume/
+media/photo_applicants/

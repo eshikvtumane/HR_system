@@ -1,5 +1,6 @@
-from django.shortcuts import render, render_to_response
-from  django.views.generic import View
+from django.shortcuts import render_to_response
+from django.views.generic import View
+from django.template import RequestContext
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -10,5 +11,7 @@ class MainPageView(View):
 
     @method_decorator(login_required)
     def get(self, request):
-        return render_to_response(self.template)
+        args = {}
+        rc = RequestContext(request, args)
+        return render_to_response(self.template, rc)
 

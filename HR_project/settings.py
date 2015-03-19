@@ -26,6 +26,9 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGIN_URL = '/users/login'
+LOGIN_REDIRECT_URL = '/users/login'
+
 
 # Application definition
 
@@ -38,12 +41,14 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'bootstrapform',
+    'sorl.thumbnail',
     #'debug_toolbar',
     'main',
     'applicants',
     'vacancies',
     'administration',
-    'schedule'
+    'schedule',
+    'users',
 )
 
 MIDDLEWARE_CLASSES = (

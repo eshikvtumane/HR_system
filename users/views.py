@@ -12,7 +12,11 @@ from django.utils.decorators import method_decorator
 class LoginView(View):
     template = 'users/login.html'
     def get(self, request):
+        if request.user.is_authenticated():
+            return HttpResponseRedirect('/')
         return self.render(request)
+
+
 
     def post(self, request):
         user = auth.authenticate(

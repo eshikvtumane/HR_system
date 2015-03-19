@@ -20,9 +20,7 @@ class LoginView(View):
             password=request.POST['password']
         )
         if user is not None and user.is_active:
-            print 'AUTH'
             auth.login(request, user)
-            print 'AUTH'
             return HttpResponseRedirect('/')
 
         return self.render(request)

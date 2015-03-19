@@ -36,14 +36,22 @@ class AddVacancy(View):
 
                      return HttpResponse("400")
 
+
 class VacancyView(View):
     template = 'vacancies/vacancy_view.html'
     def get(self,request,id):
         vacancy = Vacancy.objects.get(pk=id)
+        c = RequestContext(request,{ 'vacancy':vacancy},)
+        return render_to_response(self.template, c)
+
+
+
+class VacancyEdit(View):
+    template = 'vacancies/vacancy_edit.html'
+    def get(self,request,id):
+        vacancy = Vacancy.objects.get(pk=id)
         vacancy_form = ViewVacancyForm(instance=vacancy)
-        c = RequestContext(request,{'vacancy_form':vacancy_form,
-                                    'vacancy':vacancy},
-                           )
+        c = RequestContext(request,{ 'vacancy':vacancy,'vacancy_form':vacancy_form})
         return render_to_response(self.template, c)
 
     def post(self,request,id):

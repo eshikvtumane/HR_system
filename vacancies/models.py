@@ -86,7 +86,9 @@ class Vacancy(models.Model):
                                default=DEFAULT_VACANCY_STATUS)
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
 
-
+    def get_fields(self):
+        return [(field.name, field.value_to_string(self)) for field in
+                Vacancy._meta.fields]
 
 
 class ApplicantVacancyStatus(models.Model):

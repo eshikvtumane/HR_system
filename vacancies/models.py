@@ -5,10 +5,11 @@ import datetime
 from time import timezone
 
 ####HELPER FUNCTIONS##########
-def defaultStatus():
-    return Status.objects.get(name='Открыта')
+
 
 ##############################
+
+
 
 ####HELPER CLASSES###########
 
@@ -18,7 +19,12 @@ def defaultStatus():
 
 ##############################################
 
+#####CONSTANTS############
+DEFAULT_VACANCY_STATUS = 1
+DEFAULT_APPLICANT_VACANCY_STATUS = 1
 
+
+#######################
 
 class Status(models.Model):
     class Meta:
@@ -60,7 +66,7 @@ class Head(models.Model):
 
 
 
-DEFAULT_VACANCY_STATUS = 1
+
 
 class Vacancy(models.Model):
     class Meta:
@@ -81,6 +87,20 @@ class Vacancy(models.Model):
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
 
 
+
+
+class ApplicantVacancyStatus(models.Model):
+    class Meta:
+        db_table = 'ApplicantVacancyStatuses'
+        verbose_name = 'Статус кандидата по вакансии'
+        verbose_name_plural = 'Статусы кандидата по вакансии'
+    name = models.TextField()
+
+    def __unicode__(self):
+        return self.name
+
+
+
 # Отношение Кандидат-Вакансии
 class ApplicantVacancy(models.Model):
     class Meta:
@@ -93,4 +113,9 @@ class ApplicantVacancy(models.Model):
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=datetime.datetime.now(), verbose_name='Дата добавления')
+    status = models.ForeignKey(ApplicantVacancyStatus, default =
+    DEFAULT_APPLICANT_VACANCY_STATUS)
+
+
+
 

@@ -11,13 +11,7 @@ class AddVacancyForm(ModelForm):
     class Meta:
         model = Vacancy
         fields = ("salary","end_date","description",'head','position')
-        querysets={
-
-            'position':Status.objects.all()
-        }
-
         labels = {
-            #'position': _(u'Должность'),
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),
             'description': _(u'Описание'),
@@ -50,13 +44,7 @@ class ViewVacancyForm(ModelForm):
    class Meta:
         model = Vacancy
         fields = ("salary","end_date","description",'position','status')
-        querysets={
-
-            'status':Status.objects.all()
-        }
-
         labels = {
-            #'position': _(u'Должность'),
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),
             'description': _(u'Описание'),
@@ -67,7 +55,7 @@ class ViewVacancyForm(ModelForm):
                 'class': "form-control",
                 'name':'salary'
             }),
-            'end_date': forms.DateInput(attrs={
+            'end_date': forms.DateInput(format=('%d-%m-%Y'),attrs={
                 'id':'end_date',
                 'class': "form-control",
                 'name':'end_date',

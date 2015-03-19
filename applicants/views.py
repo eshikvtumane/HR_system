@@ -5,7 +5,6 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from django.forms.formsets import formset_factory
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyAddForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
 from vacancies.models import Vacancy, ApplicantVacancy
@@ -16,7 +15,9 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 
 import json
-from django.core import serializers
+
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 
 import datetime
@@ -154,12 +155,15 @@ class SavingModels():
 # Добавление кандидата
 class ApplicantAddView(View, SavingModels):
     template = 'applicants/applicant_add.html'
+
+    @method_decorator(login_required)
     def get(self, request):
         args = self.addForms()
 
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
 
+    @method_decorator(login_required)
     def post(self, request):
         if request.is_ajax:
             result = self.savingApplicantForm(request)
@@ -208,6 +212,8 @@ class VacancySearchAjax(View):
 
 class CandidateSearchView(View):
     template = 'applicants/candidate_search.html'
+
+    @method_decorator(login_required)
     def get(self, request):
         args = {}
         args['form_search'] = CandidateSearchForm
@@ -232,6 +238,8 @@ class CandidateSearchView(View):
 # вывод информации о кандидате
 class ApplicantView(View, SavingModels):
     template = 'applicants/applicant_view.html'
+
+    @method_decorator(login_required)
     def get(self, request, applicant_id):
 
         applicant = get_object_or_404(Applicant, id=applicant_id)
@@ -256,6 +264,7 @@ class ApplicantView(View, SavingModels):
         return render_to_response(self.template, rc)
 
     # обновление информации
+    @method_decorator(login_required)
     def post(self, request, applicant_id):
         if request.is_ajax:
             instance = get_object_or_404(Applicant, id=applicant_id)

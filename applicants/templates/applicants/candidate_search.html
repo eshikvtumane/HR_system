@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load thumbnail %}
 
 {% block title %}
 
@@ -121,7 +122,10 @@
                                 {% for a in applicants %}
                                     <tr>
                                         <td>
-                                            <img src="/media/{{ a.photo }}">
+                                            {% thumbnail a.photo "100x100" crop="center" as im %}
+                                                <img src="/media/{{ im.url }}">
+                                            {% endthumbnail %}
+
                                         </td>
                                         <td>{{ a.first_name }} {{ a.last_name }} {{ a.middle_name }}</td>
                                         <td>{{ a.email }}</td>

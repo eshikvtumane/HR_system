@@ -62,6 +62,13 @@
           <h1>
             Страница кандидата
           </h1>
+
+            <div style="margin-top: 2ex;">
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
+                    История изменений анкеты
+                </button>
+            </div>
+
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
             <li class="active">Страница кандидата</li>
@@ -79,7 +86,7 @@
             <!-- Left col -->
             <section class="col-lg-7 connectedSortable">
                 <!--
-                    Форма добавления нового пользователя
+                    Форма отображения информации о пользователе
                 -->
               <div class="box box-success">
                   <div class="box-header" class='col-sm-12'>
@@ -492,6 +499,53 @@
         </section><!-- /.content -->
 
     </form>
+
+          <!--
+            Модальное окно с историей действий
+          -->
+
+          <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h4>История изменений</h4>
+                      </div>
+                      <div class="modal-body">
+
+                          <table class="table">
+                              <thead>
+                                <th>
+                                    Автор изменения
+                                </th>
+                              <th>
+                                    Тип изменения
+                                </th>
+                              <th>
+                                    Дата изменения
+                                </th>
+                              </thead>
+                              <tbody>
+                                {% for h in history_action %}
+                                    <tr>
+                                        <td>{{ h.user.first_name }} {{ h.user.last_name }}</td>
+                                        <td>{{ h.type_change }}</td>
+                                        <td>{{ h.date_change }}</td>
+                                    </tr>
+                                {% endfor %}
+                              </tbody>
+                          </table>
+
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
       </div><!-- /.content-wrapper -->
 
 

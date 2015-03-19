@@ -80,6 +80,17 @@ class SavingModels():
         except:
             return
 
+    # добавление изменения анкеты кандидата
+    def addHistoryChange(self, user, applicant, type):
+        hcai = HistoryChangeApplicantInfo(
+            user=user,
+            applicant=applicant,
+            type_change=type
+        )
+        hcai.save()
+
+        return
+
     def addForms(self, applicant_instance={}):
         args = {}
         form = ApplicantForm(**applicant_instance)
@@ -94,7 +105,7 @@ class SavingModels():
 
         return args
 
-    def savingApplicantForm(self, request, applicant_instance={}):
+    def savingApplicantForm(self, request, type_change, applicant_instance={}):
         try:
             req = request.POST
             # создание объекта класса сохранения файлов
@@ -145,6 +156,8 @@ class SavingModels():
                 # сохранение ссылок на файлы в таблицу
                 Portfolio.objects.bulk_create(portfolio_list)
 
+            # добавление изменения в историю
+            self.addHistoryChange(request.user, new_applicant, type_change)
             return new_applicant.id
         except:
             return False
@@ -166,7 +179,7 @@ class ApplicantAddView(View, SavingModels):
     @method_decorator(login_required)
     def post(self, request):
         if request.is_ajax:
-            result = self.savingApplicantForm(request)
+            result = self.savingApplicantForm(request, 'Создан')
             json_res = json.dumps(['200',result])
         else:
             json_res = json.dumps(['200'])
@@ -246,19 +259,14 @@ class ApplicantView(View, SavingModels):
         applicant_instance = {'instance': applicant}
         args = self.addForms(applicant_instance)
 
-        vacancies = applicant.applicantvacancy_set.all()
-        educations = applicant.applicanteducation_set.all()
-
-        phones = Phone.objects.filter(applicant=applicant).values('phone')
-        resume = Resume.objects.filter(applicant=applicant).values('resume_file', 'date_upload')
-        portfolio = Portfolio.objects.filter(applicant=applicant).values('portfolio_file', 'date_upload')
-
-        args['vacancies'] = vacancies
-        args['educations'] = educations
-        args['phones'] = phones
-        args['resume'] = resume
-        args['portfolio'] = portfolio
+        args['vacancies'] = applicant.applicantvacancy_set.all()
+        args['educations'] = applicant.applicanteducation_set.all()
+        args['phones'] = Phone.objects.filter(applicant=applicant).values('phone')
+        args['resume'] = Resume.objects.filter(applicant=applicant).values('resume_file', 'date_upload')
+        args['portfolio'] = Portfolio.objects.filter(applicant=applicant).values('portfolio_file', 'date_upload')
         args['applicant_id'] = applicant_id
+
+        args['history_action'] = HistoryChangeApplicantInfo.objects.filter(applicant=applicant)
 
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
@@ -268,10 +276,7 @@ class ApplicantView(View, SavingModels):
     def post(self, request, applicant_id):
         if request.is_ajax:
             instance = get_object_or_404(Applicant, id=applicant_id)
-            result = self.savingApplicantForm(request, {'instance': instance})
-
-            # добавление изменения в историю
-            HistoryChangeApplicantInfo.objects.create(user=request.user, )
+            result = self.savingApplicantForm(request, 'Изменён', {'instance': instance})
 
             json_res = json.dumps(['200',result])
         else:

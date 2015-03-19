@@ -177,5 +177,7 @@ class HistoryChangeApplicantInfo(models.Model):
     user = models.ForeignKey(User)
     # чью анкету изменили
     applicant = models.ForeignKey('Applicant')
+    # тип изменения
+    type_change = models.TextField()
     # когда изменил
     date_change = models.DateTimeField(default=datetime.now())

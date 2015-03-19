@@ -50,10 +50,15 @@
 
               <div class="box box-success">
                 <div class="box-header">
-                  {% for field, value in vacancy.get_fields %}
-                    <h5>{{field}}</h5>
-                    <strong>{{value}}</strong>
-                    {% endfor %}
+                    <form id='frm_update_vacancy'>{% csrf_token %}
+                    {% load bootstrap %}
+                    {{ vacancy_form|bootstrap}}
+                        <input id="vacancy_id" type="hidden"
+                               value="{{vacancy.id}}">
+                    <button id="update_vacancy" class="btn">Сохранить
+                        данные</button>
+
+                    </form>
                 </div>
 
               </div><!-- /.форма добавления вакансии -->

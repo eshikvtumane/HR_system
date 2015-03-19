@@ -5,10 +5,11 @@ import datetime
 from time import timezone
 
 ####HELPER FUNCTIONS##########
-def defaultStatus():
-    return Status.objects.get(name='Открыта')
+
 
 ##############################
+
+
 
 ####HELPER CLASSES###########
 
@@ -18,7 +19,12 @@ def defaultStatus():
 
 ##############################################
 
+#####CONSTANTS############
+DEFAULT_VACANCY_STATUS = 1
+DEFAULT_APPLICANT_VACANCY_STATUS = 1
 
+
+#######################
 
 class Status(models.Model):
     class Meta:
@@ -33,6 +39,7 @@ class Status(models.Model):
 
 
 
+
 class Department(models.Model):
     class Meta:
         db_table = 'Departments'
@@ -43,9 +50,6 @@ class Department(models.Model):
 
     def __unicode__(self):
         return self.name
-
-
-
 
 #Руководители отделов компании
 class Head(models.Model):
@@ -59,6 +63,9 @@ class Head(models.Model):
 
     def __unicode__(self):
         return self.name
+
+
+
 
 
 class Vacancy(models.Model):
@@ -76,8 +83,24 @@ class Vacancy(models.Model):
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
 
     status = models.ForeignKey(Status,verbose_name=u'Статус',
-                               default=defaultStatus)
+                               default=DEFAULT_VACANCY_STATUS)
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
+
+    def get_fields(self):
+        return [(field.name, field.value_to_string(self)) for field in
+                Vacancy._meta.fields]
+
+
+class ApplicantVacancyStatus(models.Model):
+    class Meta:
+        db_table = 'ApplicantVacancyStatuses'
+        verbose_name = 'Статус кандидата по вакансии'
+        verbose_name_plural = 'Статусы кандидата по вакансии'
+    name = models.TextField()
+
+    def __unicode__(self):
+        return self.name
+
 
 
 # Отношение Кандидат-Вакансии
@@ -92,4 +115,9 @@ class ApplicantVacancy(models.Model):
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=datetime.datetime.now(), verbose_name='Дата добавления')
+    status = models.ForeignKey(ApplicantVacancyStatus, default =
+    DEFAULT_APPLICANT_VACANCY_STATUS)
+
+
+
 

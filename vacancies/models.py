@@ -103,6 +103,19 @@ class ApplicantVacancyStatus(models.Model):
 
 
 
+class Event(models.Model):
+    class Meta:
+        db_table = 'Events'
+        verbose_name = 'Событие'
+        verbose_name_plural = 'События'
+
+
+    name = models.CharField(max_length=50,verbose_name="Название события")
+    date_time = models.DateTimeField(verbose_name='Дата назначения')
+    subject = models.ForeignKey(ApplicantVacancy)
+
+
+
 # Отношение Кандидат-Вакансии
 class ApplicantVacancy(models.Model):
     class Meta:
@@ -117,7 +130,5 @@ class ApplicantVacancy(models.Model):
     create_date = models.DateField(default=datetime.datetime.now(), verbose_name='Дата добавления')
     status = models.ForeignKey(ApplicantVacancyStatus, default =
     DEFAULT_APPLICANT_VACANCY_STATUS)
-
-
 
 

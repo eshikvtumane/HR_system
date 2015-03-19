@@ -5,11 +5,31 @@ $(function () {
    //Activate fullCalendar plugin
     $('#scheduler').fullCalendar({
         // put your options and callbacks here
-       header: {
-			left: 'prev,next today',
-			center: 'title',
-			right: 'month,agendaWeek,agendaDay'
-		}
+
+        header: {
+        left: 'title',
+        center: 'month,agendaWeek,agendaDay',
+        right: 'prev,next'
+      },
+        editable: true,
+      weekMode: 'liquid',
+      url: '#',
+      dayClick: function(date,jsEvent, view){
+
+        $(this).css('background-color','red');
+
+      },
+
+
+
+        events:[
+          {
+              title: "Интервью",
+              start: new Date(2015,2,20,12,30,0),
+              end: new Date(2015,2,20,13,0,0),
+              allDay: false
+          }
+      ]
 
     });
 

@@ -19,6 +19,7 @@ window.onload = function(){
             success: function (data) {
                var vacancy_id = data[0]["vacancy_id"];
                window.location.href = '/vacancies/' + vacancy_id;
+
             },
             error: function(data) {
                     console.log("ERROR")
@@ -73,12 +74,14 @@ window.onload = function(){
         console.log(datastring);
         $.ajax({
             type: 'Post',
-            url: '/vacancies/'+ $vacancy_id + '/',
+            url: '/vacancies/'+ $vacancy_id + '/' + 'edit/',
             dataType: 'json',
             data: datastring,
             success: function (data) {
 
-               //window.location.href = '/vacancies/' + vacancy_id;
+                $.notify("Данные вакансии успешно обновлены",'success',{
+                    position : 'top center'
+                })
             },
             error: function(data) {
                alert("Произошла ошибка!");

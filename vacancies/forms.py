@@ -39,7 +39,7 @@ class AddVacancyForm(ModelForm):
 
 
 
-class ViewVacancyForm(ModelForm):
+class EditVacancyForm(ModelForm):
 
    class Meta:
         model = Vacancy

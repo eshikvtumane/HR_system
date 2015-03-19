@@ -50,10 +50,25 @@
 
               <div class="box box-success">
                 <div class="box-header">
-                  {% for field, value in vacancy.get_fields %}
-                    <h5>{{field}}</h5>
-                    <strong>{{value}}</strong>
-                    {% endfor %}
+                  {% load vacancy_attr_verbose %}
+                    <h5>{% get_verbose_field_name vacancy 'position'  %}:</h5>
+                    <strong>{{vacancy.position}}</strong>
+                    <h5>{% get_verbose_field_name vacancy 'salary'  %}:</h5>
+                    <strong>{{vacancy.salary}}</strong>
+                    <h5>{% get_verbose_field_name vacancy 'end_date'  %}:</h5>
+                    <strong>{{vacancy.end_date}}</strong>
+                    <h5>{% get_verbose_field_name vacancy 'published_at'  %}:</h5>
+                    <strong>{{vacancy.published_at}}</strong>
+                     <h5>{% get_verbose_field_name vacancy 'head'  %}:</h5>
+                    <strong>{{vacancy.head}}</strong>
+                    <h5>{% get_verbose_field_name vacancy 'description'  %}:</h5>
+                    <strong>{{vacancy.published_at}}</strong>
+                     <h5>{% get_verbose_field_name vacancy 'status'  %}:</h5>
+                    <strong>{{vacancy.status}}</strong>
+                    <br>
+                    <br>
+                    <a href="/vacancies/{{ vacancy.id }}/edit">Редактировать вакансию</a>
+
                 </div>
 
               </div><!-- /.форма добавления вакансии -->
@@ -65,10 +80,7 @@
             <section class="col-lg-6 connectedSortable">
                  <div class="box box-success">
                     <div class="box-header">
-                        <h5>Дата публикации:</h5>
-                        <strong>{{vacancy.published_at}}</strong>
-                        <h5>Руководитель:</h5>
-                        <strong>{{vacancy.head}}</strong>
+
 
                 </div>
 

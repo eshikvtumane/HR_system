@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
 from django.template import RequestContext
 from forms import AddVacancyForm, EditVacancyForm
-from vacancies.models import Department, Head, Vacancy, Position, Status
+from .models import Department, Head, Vacancy, Position, Status, ApplicantVacancyEvent
 import json
 from django.core import serializers
 import datetime
@@ -32,8 +32,6 @@ class AddVacancy(View):
                     vacancy_id = vacancy_form.instance.id
                     response = json.dumps([{'vacancy_id':vacancy_id}])
                     return HttpResponse(response,content_type='application/json')
-
-
             else:
 
                     return HttpResponse("400")
@@ -46,7 +44,6 @@ class VacancyView(View):
         head = vacancy.head
         c = RequestContext(request,{ 'vacancy':vacancy,'head':head},)
         return render_to_response(self.template, c)
-
 
 
 class VacancyEdit(View):
@@ -77,6 +74,20 @@ def get_heads_ajax(request):
         heads = list(Head.objects.filter(department=department_id).values('id','name'))
         heads = json.dumps(heads)
         return HttpResponse(heads,content_type='application/json')
+
+
+def get_events_ajax(request):
+    if request.is_ajax:
+        result = []
+        events = ApplicantVacancyEvent.objects.all()
+        for event in events:
+            result.append({'title':event.event.name,
+                           'start':event.start.isoformat(),
+                           'end':event.end.isoformat(),'allDay': False})
+
+        response = json.dumps(result)
+        return HttpResponse(response,content_type='application/json')
+
 
 
 ###############################

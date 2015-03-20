@@ -26,6 +26,21 @@ $(document).ready(function(){
     $('#removeSource').click(function(){
         deleteOption('source');
     });
+
+
+    /*
+        Добавление статуса вакансии
+    */
+    $('#addVac').click(function(){
+        addSelect('add_vacancy', 'vacancy');
+    });
+
+    /*
+        Удаление  статуса вакансии
+    */
+    $('#removeVac').click(function(){
+        deleteOption('vacancy');
+    });
 });
 
 

@@ -35,13 +35,39 @@ $(document).ready(function(){
     });
 
 
-// сохранение списка специальностей их файла
+// сохранение списка источников из файла
     $('#btnAddSource').click(function(){
         saveMajor(
             'source_file',
             'source[]',
             '/administration/ajax_source_add/',
             'result_load_source_file',
+            'Нет добавленных файлов'
+        );
+    });
+
+
+    // сохранение списка введённых источников
+    var vacancy_status_url = '/administration/ajax_vacancy/'
+    $('#btnSaveVac').click(function(){
+    console.log('click');
+        saveMajor(
+            'vacancy',
+            'vacancy[]',
+            vacancy_status_url,
+            'result_vac_list',
+            'Нет добавленных статусов'
+            );
+    });
+
+
+// сохранение списка источников из файла
+    $('#btnAddVac').click(function(){
+        saveMajor(
+            'vac_file',
+            'vacancy[]',
+            vacancy_status_url,
+            'result_load_status_vacancy_file',
             'Нет добавленных файлов'
         );
     });

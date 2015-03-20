@@ -5,6 +5,7 @@ from django.views.generic import View
 from django.http import HttpResponse
 
 from applicants.models import Major, SourceInformation
+from vacancies.models import ApplicantVacancyStatus
 
 # Create your views here.
 # рендер страницы добавления значений в БД
@@ -70,4 +71,9 @@ class MajorSaveView(AjaxView):
 class SourceSaveView(AjaxView):
     def post(self, request):
         return self.savingValues(request, SourceInformation, 'source', 'source[]')
+
+# Сохранение статусов вакансий в БД
+class VacancyStatusSaveView(AjaxView):
+    def post(self, request):
+        return self.savingValues(request, ApplicantVacancyStatus, 'name', 'vacancy[]')
 

@@ -97,7 +97,60 @@
 
 
                   </div>
-              </div><!-- /.форма добавления пользователя -->
+              </div><!-- /.-->
+
+                <!-- Форма добавления статуса вакансий -->
+              <div class="box box-solid">
+
+                <div class="box-header form-horizontal">
+
+                        <h1>Добавление статуса вакансий</h1>
+
+                      <div>
+                          <div>
+                              <div>
+                                  <label>Введите название статуса вакансии</label>
+                                  <input type="text" id="add_vacancy" class="form-control">
+                              </div>
+                              <div style="margin-top: 3ex;">
+                                  <button value="Добавить" class="btn btn-primary" id="addVac">Добавить</button>
+                              </div>
+
+                          </div>
+
+                          <div>
+                              <div style="margin-top: 3ex;">
+                                  <select id="vacancy" style="width: 30em;" multiple></select>
+                              </div>
+
+                              <div style="margin-top: 3ex;">
+                                  <div id="result_vac_list"></div>
+                                  <div  style="margin-top: 2ex;">
+                                      <button value="Добавить" class="btn btn-success" id="btnSaveVac">Сохранить</button>
+                                      <button value="Удалить" class="btn btn-danger" id="removeVac">Удалить</button>
+                                  </div>
+
+                              </div>
+                          </div>
+
+                      </div>
+
+<hr/>
+                      <div style="margin-top: 3ex;">
+                          <h4>Добавить из файла</h4>
+                          <input type="file" name="vac_file" id="vac_file" value="Выбрать файл">
+
+                          <div style="padding-top: 3ex;">
+                              <div id="result_load_status_vacancy_file"></div>
+                            <button value="Сохранить данные из файла" class="btn btn-success" id="btnAddVac">Сохранить</button>
+                          </div>
+
+                      </div>
+
+
+                  </div>
+
+              </div>
 
 
                 <!-- Добавление вакансии -->
@@ -189,16 +242,7 @@
                 </div>
 
 
-              <!-- Форма ввода образования -->
-              <div class="box box-solid bg-light-blue-gradient">
 
-                <div class="box-body" id="edu_forms">
-
-
-
-                </div><!-- /.Форма ввода образования-->
-
-              </div>
 
               <div class="box box-solid bg-green-gradient">
                 <div class="box-footer text-black">

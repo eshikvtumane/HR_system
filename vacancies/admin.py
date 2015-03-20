@@ -1,5 +1,5 @@
 from django.contrib import admin
-from models import Head, Department, Status
+from models import Head, Department, Status, ApplicantVacancyStatus
 
 # Register your models here.
 class HeadInline(admin.StackedInline):
@@ -14,5 +14,9 @@ class DepartmentAdmin(admin.ModelAdmin):
 class StatusAdmin(admin.ModelAdmin):
     fields = []
 
+class ApplicantVacancyStatusAdmin(admin.ModelAdmin):
+    fields = []
+
 admin.site.register(Department, DepartmentAdmin)
 admin.site.register(Status, StatusAdmin)
+admin.site.register(ApplicantVacancyStatus, ApplicantVacancyStatusAdmin)

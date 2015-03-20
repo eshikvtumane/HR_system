@@ -1,5 +1,5 @@
 #-*- coding: utf8 -*-
-from applicants.models import Position, Applicant
+from applicants.models import Position, Applicant, SourceInformation
 from django.db import models
 import datetime
 from time import timezone
@@ -125,6 +125,7 @@ class ApplicantVacancy(models.Model):
 
     applicant = models.ForeignKey(Applicant)
     vacancy = models.ForeignKey('Vacancy')
+    #source = models.ForeignKey(SourceInformation)
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=datetime.datetime.now(), verbose_name='Дата добавления')

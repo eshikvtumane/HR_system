@@ -112,7 +112,7 @@ class Event(models.Model):
 
     name = models.CharField(max_length=50,verbose_name="Название события")
     date_time = models.DateTimeField(verbose_name='Дата назначения')
-    subject = models.ForeignKey(ApplicantVacancy)
+    subject = models.ForeignKey('ApplicantVacancy')
 
 
 

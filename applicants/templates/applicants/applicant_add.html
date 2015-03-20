@@ -239,6 +239,9 @@
                             <tr>
                                 <th class="col-sm-4">Предполагаемая должность</th>
                                 <th class="col-sm-5">Вакансия</th>
+                                <!--
+                                <th class="col-sm-5">Источник</th>
+                                -->
                                 <th class="col-sm-5">Уровень зарплаты в анкете</th>
                                 <th class="col-sm-5">Предлагаемая зарплата</th>
                             </tr>
@@ -257,6 +260,16 @@
                                         <option value>-------</option>
                                     </select>
                                 </td>
+                                <!--
+                                <td>
+                                    <select class='select-add' placeholder="Выберите источник" name="vacancies" id="sources">
+                                        <option value>-------</option>
+                                        {% for s in sources %}
+                                            <option value="{{ s.id }}">{{ s.source }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                -->
                                 <td>
                                     <input type="number" min="0" name="salary" id="salary" class="form-control">
                                 </td>

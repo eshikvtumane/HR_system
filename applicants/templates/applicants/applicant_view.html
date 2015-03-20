@@ -48,6 +48,10 @@
     <script src="{% static 'js/appliments/upload_photo.js' %}"></script> -->
 <!-- Инициализация элементов при загрузке страницы -->
     <script src="{% static 'js/appliments/form_init.js' %}"></script>
+
+
+<!-- Вывод статусов кандидатов по вакансиям -->
+    <script src="{% static 'js/appliments/load_history_status_applicant_vacancy.js' %}"></script>
 <!-- отправка данных на сервер -->
     <script src="{% static 'js/appliments/send_candidate_form.js' %}"></script>
 
@@ -142,16 +146,24 @@
                 <div class="box-header form-horizontal">
                     <h2>Вакансии</h2>
                     <table class="table">
-                        <thead>
+                        <tr>
                             <th class="col-sm-4">Предполагаемая должность</th>
                             <th class="col-sm-5">Вакансия</th>
                             <th class="col-sm-5">Уровень зарплаты в анкете</th>
                             <th class="col-sm-5">Предлагаемая зарплата</th>
-                        </thead>
+                        </tr>
                         <tbody>
                             {% for v in vacancies %}
                                 <tr>
-                                    <td>{{ v.vacancy.position.name }}</td>
+                                    <td>
+                                        {{ v.vacancy.position.name }}
+
+                                        <div style="margin-top: 2ex;">
+                                            <button type="button" class="btn btn-primary status_candidate_vacancy" value="{{ v.id }}" data-toggle="modal" data-target="#modalVacancyStatus">
+                                                Просмотреть статусы
+                                            </button>
+                                        </div>
+                                    </td>
                                     <td><a target="_blank" href="{% url 'vacancies:vacancy_view' v.vacancy.id %}">{{ v.vacancy.head.name }}, {{ v.vacancy.published_at }}</a></td>
                                     <td>{{ v.salary|intcomma }} руб.</td>
                                     <td>{{ v.suggested_salary|intcomma }} руб.</td>
@@ -537,6 +549,49 @@
                                 {% endfor %}
                               </tbody>
                           </table>
+
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+
+          <!--
+            Модальное окно с историей изменения статуса кандидата по вакансии
+          -->
+
+          <div class="modal fade" id="modalVacancyStatus" tabindex="-1" role="dialog" aria-labelledby="modalVacancyStatusLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h4>Изменения статуса кандидата по вакансии</h4>
+                      </div>
+                      <div class="modal-body">
+
+                          <div>
+                              <h4>Добавить статус</h4>
+
+                              <div id="divStatus">
+
+                                  <select class="select col-sm-7" placeholder="Выбор статуса">
+                                      <option value>-----</option>
+                                      {% for acs in applicant_vacancy_status %}
+                                        <option value="{{ acs.id }}">{{ acs.name }}</option>
+                                      {% endfor %}
+                                  </select>
+                              </div>
+                          </div>
+
+
+                          <div id="divHistoryStatusApplicantVacancy" align="center">
+
+                          </div>
 
                       </div>
                       <div class="modal-footer">

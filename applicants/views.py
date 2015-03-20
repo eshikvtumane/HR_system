@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyAddForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
-from vacancies.models import Vacancy, ApplicantVacancy
+from vacancies.models import Vacancy, ApplicantVacancy, ApplicantVacancyStatus
 
 import os
 from django.conf import settings
@@ -93,15 +93,12 @@ class SavingModels():
 
     def addForms(self, applicant_instance={}):
         args = {}
-        form = ApplicantForm(**applicant_instance)
-        edu_form = ApplicantEducationForm()
-        vacancy_form = VacancyAddForm()
-        positions = Position.objects.all()
 
-        args['applicant_form'] = form
-        args['edu_form'] = edu_form
-        args['vacancy_form'] = vacancy_form
-        args['positions'] = positions
+        args['applicant_form'] = ApplicantForm(**applicant_instance)
+        args['edu_form'] = ApplicantEducationForm()
+        args['vacancy_form'] = VacancyAddForm()
+        args['positions'] = Position.objects.all()
+        #args['sources'] = SourceInformation.objects.all()
 
         return args
 
@@ -267,6 +264,7 @@ class ApplicantView(View, SavingModels):
         args['applicant_id'] = applicant_id
 
         args['history_action'] = HistoryChangeApplicantInfo.objects.filter(applicant=applicant)
+        args['applicant_vacancy_status'] = ApplicantVacancyStatus.objects.all()
 
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
@@ -283,3 +281,12 @@ class ApplicantView(View, SavingModels):
             json_res = json.dumps(['200'])
 
         return HttpResponse(json_res, 'application/json')
+
+
+class ApplicantVacancyStatusAjax(View):
+    def get(self, request):
+        if request.is_ajax:
+            json_res = json.dumps([])
+
+
+        return HttpResponse(json_res, content_type='application/json')

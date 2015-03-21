@@ -25,7 +25,7 @@ DEFAULT_APPLICANT_VACANCY_STATUS = 1
 
 
 #######################
-
+#Словарь статусов вакансий
 class Status(models.Model):
     class Meta:
         db_table = 'Statuses'
@@ -37,9 +37,7 @@ class Status(models.Model):
     def __unicode__(self):
         return self.name
 
-
-
-
+#Словарь отделов компаний
 class Department(models.Model):
     class Meta:
         db_table = 'Departments'
@@ -65,9 +63,6 @@ class Head(models.Model):
         return self.name
 
 
-
-
-
 class Vacancy(models.Model):
     class Meta:
         db_table = 'Vacancies'
@@ -90,7 +85,10 @@ class Vacancy(models.Model):
         return [(field.name, field.value_to_string(self)) for field in
                 Vacancy._meta.fields]
 
+    def __unicode__(self):
+        return self.position.name + " " + str(self.published_at)
 
+#Словарь статусов для отношения Кандидат-Вакансия
 class ApplicantVacancyStatus(models.Model):
     class Meta:
         db_table = 'ApplicantVacancyStatuses'
@@ -131,5 +129,47 @@ class ApplicantVacancy(models.Model):
     create_date = models.DateField(default=datetime.datetime.now(), verbose_name='Дата добавления')
     status = models.ForeignKey(ApplicantVacancyStatus, default =
     DEFAULT_APPLICANT_VACANCY_STATUS)
+
+    def __unicode__(self):
+        return "%s %s %s %s %s"%(self.vacancy.position.name,str(
+            self.vacancy.published_at),self.applicant.first_name,\
+               self.applicant.last_name,self.applicant.middle_name)
+
+
+#Текущий статус кандидата по вакансии
+class ApplicantVacancyApplicantVacancyStatus(models.Model):
+    class Meta:
+        db_table = "ApplicantVacancyApplicantVacancyStatus"
+        verbose_name = 'Текущий статус кандидата по вакансии'
+        verbose_name_plural = 'Текущий статус кандидата по вакансии'
+
+    applicant_vacancy = models.ForeignKey('ApplicantVacancy')
+    applicant_vacancy_status = models.ForeignKey('ApplicantVacancyStatus')
+    date = models.DateTimeField(verbose_name='Дата присвоения',auto_now=True)
+
+
+#Событие, связанное с кандидатом
+class Event(models.Model):
+    class Meta:
+        db_table = 'Events'
+        verbose_name = 'Событие'
+        verbose_name_plural = 'События'
+
+
+    name = models.CharField(max_length=50,verbose_name="Название события")
+
+
+#Запланированное событие, связанное с кандидатом(собеседование,тел. звонок)
+class ApplicantVacancyEvent(models.Model):
+    class Meta:
+        db_table = "ApplicantVacancyEvents"
+        verbose_name = "Запланированное событие"
+        verbose_name_plural = 'Запланированные события'
+
+
+    start = models.DateTimeField(verbose_name="Начало события")
+    end = models.DateTimeField(verbose_name="Окончание события")
+    applicant_vacancy = models.ForeignKey('ApplicantVacancy')
+    event = models.ForeignKey('Event')
 
 

@@ -20,13 +20,14 @@ $(function () {
 
       },
 
-
+//      events:'vacancies/get_events/'
 
         events:[
           {
               title: "Интервью",
-              start: new Date(2015,2,20,12,30,0),
-              end: new Date(2015,2,20,13,0,0),
+              start: '2015-03-19T13:26:55+00:00'
+              //start: new Date(2015,2,20,12,0,0),
+              //end: new Date(2015,2,20,13,0,0),
               allDay: false
           }
       ]

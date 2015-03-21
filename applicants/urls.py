@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 from django.conf.urls import patterns, include, url
-from views import ApplicantAddView, CandidateSearchView, VacancySearchAjax, ApplicantView
+from views import ApplicantAddView, CandidateSearchView, VacancySearchAjax, ApplicantView, ApplicantVacancyStatusAjax
 
 urlpatterns = patterns('',
 
@@ -13,6 +13,8 @@ urlpatterns = patterns('',
 
     # выборка вакансий
     url(r'^vacancy_search/$', VacancySearchAjax.as_view(), name='vacancy_search'),
+    # добавление статуса кандидату
+    url(r'^status_add/$', ApplicantVacancyStatusAjax.as_view()),
 
     #url(r'^admin/', include(admin.site.urls)),
 )

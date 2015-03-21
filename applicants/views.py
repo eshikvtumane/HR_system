@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyAddForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
-from vacancies.models import Vacancy, ApplicantVacancy, ApplicantVacancyStatus
+from vacancies.models import Vacancy, ApplicantVacancy, ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus
 
 import os
 from django.conf import settings
@@ -286,7 +286,39 @@ class ApplicantView(View, SavingModels):
 class ApplicantVacancyStatusAjax(View):
     def get(self, request):
         if request.is_ajax:
-            json_res = json.dumps([])
+            request = request.GET
+
+            result_obj = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=request['applicant_vacancy']).values('date', 'applicant_vacancy_status__name')
+            result = [
+                {
+                    'date': i['date'].strftime('%d-%m-%Y'),
+                    'status': i['applicant_vacancy_status__name']
+                }
+                for i in result_obj
+            ]
 
 
-        return HttpResponse(json_res, content_type='application/json')
+            if result:
+                json_res = json.dumps(['200', result])
+            else:
+                json_res = json.dumps(['200'])
+        else:
+            json_res = json.dumps(['500'])
+
+        return HttpResponse(json_res, content_type='application/text')
+
+    def post(self, request):
+        if request.is_ajax:
+            request = request.POST
+            obj = ApplicantVacancyApplicantVacancyStatus(
+                applicant_vacancy=ApplicantVacancy.objects.get(pk=request['applicant_vacancy']),
+                applicant_vacancy_status = ApplicantVacancyStatus.objects.get(pk=request['status'])
+            )
+            obj.save()
+
+            js = [obj.date.strftime('%d-%m-%Y')]
+            json_res = json.dumps(['200', js])
+        else:
+            json_res = json.dumps(['500'])
+
+        return HttpResponse(json_res, content_type='application/text')

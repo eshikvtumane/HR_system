@@ -579,12 +579,14 @@
 
                               <div id="divStatus">
 
-                                  <select class="select col-sm-7" placeholder="Выбор статуса">
+                                  <select id="applicant_vacancy_status" class="select col-sm-7" placeholder="Выбор статуса">
                                       <option value>-----</option>
                                       {% for acs in applicant_vacancy_status %}
                                         <option value="{{ acs.id }}">{{ acs.name }}</option>
                                       {% endfor %}
                                   </select>
+
+                                  <div id="divBtnSaveStatus"></div>
                               </div>
                           </div>
 

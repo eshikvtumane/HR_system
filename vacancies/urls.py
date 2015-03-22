@@ -7,7 +7,11 @@ urlpatterns = patterns('',
     url(r'^(?P<id>[0-9]+)/$',VacancyView.as_view(),name='vacancy_view'),
     url(r'^(?P<id>[0-9]+)/edit/$',VacancyEdit.as_view(),name='vacancy_edit'),
     url(r'^get_heads/$','vacancies.views.get_heads_ajax'),
-    url(r'^get_events/$','vacancies.views.get_events_ajax')
+    url(r'^get_events/$','vacancies.views.get_events_ajax'),
+    url(r'^update_event/$','vacancies.views.update_event_ajax'),
+
+
+
 
     #url(r'^add/$', .as_view()),
     #url(r'^admin/', include(admin.site.urls)),

@@ -1,5 +1,32 @@
 "use strict";
 
+function saveData(event, delta, revertFunction){
+
+  $.ajax({
+    url: "/vacancies/update_event/",
+    type: "POST",
+    dataType: "json",
+    data: {
+      'id': event.id,
+      'start': event.start.format(),
+      'end': event.end.format()
+    },
+    success: function(data, textStatus) {
+      //if (!data)
+      //{
+      //  revertFunc();
+      //  return;
+      alert("yooooo");
+      //calendar.fullCalendar('updateEvent', event);
+    },
+    error: function() {
+      alert("error")
+    }
+  });
+
+}
+
+
 $(function () {
 
    //Activate fullCalendar plugin
@@ -16,34 +43,11 @@ $(function () {
         editable: true,
         url: '#',
         allDay: false,
-        slotMinutes: 5,
-        timezone:'Asia/Vladivostok',
-      dayClick: function(date,jsEvent, view){
+        //slotMinutes: 5,
+        //timezone:'Asia/Vladivostok',
+        eventResize: saveData,
 
-        //$(this).css('background-color','red');
-
-      },
-
-         events:'vacancies/get_events/'
-
-        //events:[
-        //  {
-        //      title: "Интервью",
-        //      start: '2015-03-20T12:15:00',
-        //      end: '2015-03-20T13:00:00'
-        //
-        //  },
-        //
-        //    {
-        //        title:'Lunch',
-        //        start: '2015-03-22T10:00:00'
-        //    }
-
-
-
-
-
-     // ]
+        events:'/vacancies/get_events/'
 
     });
 

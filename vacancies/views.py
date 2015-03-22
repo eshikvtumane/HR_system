@@ -8,6 +8,22 @@ from .models import Department, Head, Vacancy, Position, Status, ApplicantVacanc
 import json
 from django.core import serializers
 import datetime
+import pytz
+import json
+
+
+
+
+####HELPER FUNCTIONS######################
+def fromUTCtoLocal(time):
+
+    now_utc = time
+    local_tz = pytz.timezone("Asia/Vladivostok")
+    local_time = now_utc.astimezone(local_tz)
+    return local_time
+
+##########################################
+
 
 
 class AddVacancy(View):
@@ -82,14 +98,18 @@ def get_events_ajax(request):
         events = ApplicantVacancyEvent.objects.all()
         for event in events:
             result.append({'title':event.event.name,
-                           'start':event.start.isoformat(),
-                           'end':event.end.isoformat(),'allDay': False})
+                           'start':fromUTCtoLocal(event.start).isoformat(),
+                           'end':fromUTCtoLocal(event.end).isoformat(),'allDay': False})
 
         response = json.dumps(result)
         return HttpResponse(response,content_type='application/json')
 
 
+def update_event_ajax(request):
+    if request.is_ajax():
+        print request.b
 
-###############################
+
+
 
 

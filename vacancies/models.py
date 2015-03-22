@@ -2,7 +2,7 @@
 from applicants.models import Position, Applicant, SourceInformation
 from django.db import models
 import datetime
-from time import timezone
+from django.utils import timezone
 
 ####HELPER FUNCTIONS##########
 
@@ -72,7 +72,7 @@ class Vacancy(models.Model):
 
     salary = models.FloatField(verbose_name=u"Заработная плана")
     published_at = models.DateTimeField(verbose_name=u'Дата размещения',
-                                    default=datetime.datetime.now())
+                                    default=timezone.now)
     end_date = models.DateTimeField(verbose_name=u'Крайний срок')
     description = models.TextField(verbose_name=u"Описание")
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
@@ -126,8 +126,8 @@ class ApplicantVacancy(models.Model):
     #source = models.ForeignKey(SourceInformation)
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
-    create_date = models.DateField(default=datetime.datetime.now(), verbose_name='Дата добавления')
-    status = models.ForeignKey(ApplicantVacancyStatus, default =
+    create_date = models.DateField(default=timezone.now, verbose_name='Дата добавления')
+    status = models.ForeignKey('ApplicantVacancyStatus', default =
     DEFAULT_APPLICANT_VACANCY_STATUS)
 
     def __unicode__(self):
@@ -145,7 +145,7 @@ class ApplicantVacancyApplicantVacancyStatus(models.Model):
 
     applicant_vacancy = models.ForeignKey('ApplicantVacancy')
     applicant_vacancy_status = models.ForeignKey('ApplicantVacancyStatus')
-    date = models.DateTimeField(verbose_name='Дата присвоения',auto_now=True)
+    date = models.DateTimeField(verbose_name='Дата присвоения',default=timezone.now)
 
 
 #Событие, связанное с кандидатом

@@ -7,30 +7,43 @@ $(function () {
         // put your options and callbacks here
 
         header: {
-        left: 'title',
-        center: 'month,agendaWeek,agendaDay',
-        right: 'prev,next'
+        left: 'prev,next,today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
       },
+        lang:'ru',
+        weekMode: 'liquid',
         editable: true,
-      weekMode: 'liquid',
-      url: '#',
+        url: '#',
+        allDay: false,
+        slotMinutes: 5,
+        timezone:'Asia/Vladivostok',
       dayClick: function(date,jsEvent, view){
 
-        $(this).css('background-color','red');
+        //$(this).css('background-color','red');
 
       },
 
-//      events:'vacancies/get_events/'
+         events:'vacancies/get_events/'
 
-        events:[
-          {
-              title: "Интервью",
-              start: '2015-03-19T13:26:55+00:00'
-              //start: new Date(2015,2,20,12,0,0),
-              //end: new Date(2015,2,20,13,0,0),
-              allDay: false
-          }
-      ]
+        //events:[
+        //  {
+        //      title: "Интервью",
+        //      start: '2015-03-20T12:15:00',
+        //      end: '2015-03-20T13:00:00'
+        //
+        //  },
+        //
+        //    {
+        //        title:'Lunch',
+        //        start: '2015-03-22T10:00:00'
+        //    }
+
+
+
+
+
+     // ]
 
     });
 

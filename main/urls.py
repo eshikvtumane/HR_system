@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from views import MainPageView
+from views import MainPageView, GlobalSearchView
 
 
 urlpatterns = patterns('',
@@ -7,6 +7,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'HR_project.vSiews.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^$', MainPageView.as_view(),name="main_page"),
+    url(r'^$', MainPageView.as_view(), name="main_page"),
+    url(r'^global_search/$', GlobalSearchView.as_view(), name="global_search"),
     #url(r'^admin/', include(admin.site.urls)),
 )

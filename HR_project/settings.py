@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'bootstrapform',
     'sorl.thumbnail',
+    'pure_pagination',
     #'debug_toolbar',
     'main',
     'applicants',
@@ -70,6 +71,11 @@ TEMPLATE_CONTEXT_PROCESSORS=(
 ROOT_URLCONF = 'HR_project.urls'
 
 WSGI_APPLICATION = 'HR_project.wsgi.application'
+
+PAGINATION_SETTINGS = {
+    'PAGE_RANGE_DISPLAYED': 10,
+    'MARGIN_PAGES_DISPLAYED': 2,
+}
 
 
 # Database

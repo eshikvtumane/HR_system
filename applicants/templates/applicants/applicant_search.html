@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
+{% load staticfiles  %}
 
 {% block title %}
-
+    Поиск кандидатов
 {% endblock %}
 
 {% block styles %}
@@ -10,7 +11,8 @@
 {% endblock %}
 
 {% block scripts %}
-
+    <script src="/static/js/jquery.lazyload.js" type="text/javascript"></script>
+    <script src="/static/js/lazyload_init.js" type="text/javascript"></script>
 {% endblock %}
 
 {% block content %}
@@ -110,26 +112,24 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <td>Фото</td>
-                                    <td>ФИО</td>
-                                    <td>Email</td>
-                                    <td>Ссылка на страницу кандидата</td>
-
-                                    <td></td>
+                                    <th>Фото</th>
+                                    <th>ФИО</th>
+                                    <th>Email</th>
+                                    <th>Ссылка на страницу кандидата</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for a in applicants %}
+                                {% for a in applicants.object_list %}
                                     <tr>
                                         <td>
                                             {% thumbnail a.photo "200x200" crop="center" as im %}
-                                                <img src="{{ im.url }}">
+                                                <img class="lazy" data-original="{{ im.url }}">
                                             {% endthumbnail %}
 
                                         </td>
                                         <td>{{ a.first_name }} {{ a.last_name }} {{ a.middle_name }}</td>
                                         <td>{{ a.email }}</td>
-                                        <td><a href="{% url 'applicants:applicant_view' a.id %}" class="btn btn-success">Перейти на страницу</a></td>
+                                        <td><a target="_blank" href="{% url 'applicants:applicant_view' a.id %}" class="btn btn-success">Перейти на страницу</a></td>
 
                                         <td></td>
                                         </tr>
@@ -138,22 +138,46 @@
                         </table>
                     </div>
 
-                    <div class="pagination">
-                        <span class="step-links">
+                    {% load i18n %}
+                    <div align="center">
+                        <ul class="pagination pagination-lg">
                             {% if applicants.has_previous %}
-                                <a href="?page={{ applicants.previous_page_number }}">previous</a>
+                                <li>
+                                    <a href="?{{ applicants.previous_page_number.querystring }}" class="prev">&lsaquo;&lsaquo; {% trans "Предыдущая" %}</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <span class="disabled prev">&lsaquo;&lsaquo; {% trans "Предыдущая" %}</span>
+                                </li>
                             {% endif %}
-
-                            <span class="current">
-                                Page {{ applicants.number }} of {{ applicants.paginator.num_pages }}.
-                            </span>
-
+                            {% for page in applicants.pages %}
+                                {% if page %}
+                                    {% ifequal page applicants.number %}
+                                        <li>
+                                            <span class="current page">{{ page }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <a href="?{{ page.querystring }}" class="page">{{ page }}</a>
+                                        </li>
+                                    {% endifequal %}
+                                {% else %}
+                                    ...
+                                {% endif %}
+                            {% empty %}
+                                <h2>Нет данных</h2>
+                            {% endfor %}
                             {% if applicants.has_next %}
-                                <a href="?page={{ applicants.next_page_number }}">next</a>
+                                <li>
+                                    <a href="?{{ applicants.next_page_number.querystring }}" class="next">{% trans "Следующая" %} &rsaquo;&rsaquo;</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <span class="disabled next">{% trans "Следующая" %} &rsaquo;&rsaquo;</span>
+                                </li>
                             {% endif %}
-                        </span>
+                        </ul>
                     </div>
-                </div>
 
 
             </section><!-- /.Left col -->

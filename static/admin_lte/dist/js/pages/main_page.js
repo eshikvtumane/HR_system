@@ -1,5 +1,32 @@
 "use strict";
 
+function saveData(event, delta, revertFunction){
+
+  $.ajax({
+    url: "/vacancies/update_event/",
+    type: "POST",
+    dataType: "json",
+    data: {
+      'id': event.id,
+      'start': event.start.format(),
+      'end': event.end.format()
+    },
+    success: function(data, textStatus) {
+      //if (!data)
+      //{
+      //  revertFunc();
+      //  return;
+      alert("yooooo");
+      //calendar.fullCalendar('updateEvent', event);
+    },
+    error: function() {
+      alert("error")
+    }
+  });
+
+}
+
+
 $(function () {
 
    //Activate fullCalendar plugin
@@ -7,30 +34,20 @@ $(function () {
         // put your options and callbacks here
 
         header: {
-        left: 'title',
-        center: 'month,agendaWeek,agendaDay',
-        right: 'prev,next'
+        left: 'prev,next,today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
       },
+        lang:'ru',
+        weekMode: 'liquid',
         editable: true,
-      weekMode: 'liquid',
-      url: '#',
-      dayClick: function(date,jsEvent, view){
+        url: '#',
+        allDay: false,
+        //slotMinutes: 5,
+        //timezone:'Asia/Vladivostok',
+        eventResize: saveData,
 
-        $(this).css('background-color','red');
-
-      },
-
-//      events:'vacancies/get_events/'
-
-        events:[
-          {
-              title: "Интервью",
-              start: '2015-03-19T13:26:55+00:00'
-              //start: new Date(2015,2,20,12,0,0),
-              //end: new Date(2015,2,20,13,0,0),
-              allDay: false
-          }
-      ]
+        events:'/vacancies/get_events/'
 
     });
 

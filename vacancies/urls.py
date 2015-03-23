@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     url(r'^get_heads/$','vacancies.views.get_heads_ajax'),
     url(r'^get_events/$','vacancies.views.get_events_ajax'),
     url(r'^update_event/$','vacancies.views.update_event_ajax'),
+    url(r'^save_event/$','vacancies.views.save_event_ajax')
 
 
 

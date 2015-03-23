@@ -130,6 +130,20 @@ def update_event_ajax(request):
         event.save()
 
 
+def save_event_ajax(request):
+    if request.is_ajax():
+        new_start = datetime.datetime.strptime(request.POST['start'], "%d/%m/%Y %H:%M")
+
+        new_end = datetime.datetime.strptime(request.POST['end'], "%d/%m/%Y %H:%M")
+        event =  ApplicantVacancyEvent.objects.get(id=request.POST["id"])
+        try:
+            event.start = new_start
+            event.end = new_end
+            event.save()
+            return HttpResponse("200")
+        except:
+            return HttpResponse("400")
+
 
 
 

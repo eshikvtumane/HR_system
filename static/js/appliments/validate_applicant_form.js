@@ -77,6 +77,7 @@ function validateForm(send_fn, url, success_fn){
         });
 
         $.validate({
+        form: '#applicant_form',
         language : myLanguage,
         onSuccess : function() {
           send_fn(url, success_fn);

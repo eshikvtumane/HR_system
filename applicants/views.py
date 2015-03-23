@@ -1,9 +1,13 @@
 #-*- coding:utf8 -*-
-from django.shortcuts import render, render_to_response, get_object_or_404
+from django.shortcuts import render_to_response, get_object_or_404
+from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
+
 from django.views.generic import View
 from django.template import RequestContext
 from django.http import HttpResponse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyAddForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
@@ -219,31 +223,36 @@ class VacancySearchAjax(View):
             j = json.dumps(result)
             return HttpResponse(j, content_type='application/json')
 
+class PaginatorView(View):
+    def paginator(self, request, obj_list):
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
 
-class CandidateSearchView(View):
-    template = 'applicants/candidate_search.html'
-
-    @method_decorator(login_required)
-    def get(self, request):
+        # Provide Paginator with the request object for complete querystring generation
         args = {}
         args['form_search'] = CandidateSearchForm
-        applicants_list = Applicant.objects.all().values('id', 'first_name', 'last_name', 'middle_name', 'photo', 'email')
-        paginator = Paginator(applicants_list, 10)
-
-        page = request.GET.get('page')
-        try:
-            applicants = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            applicants = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            applicants = paginator.page(paginator.num_pages)
+        p = Paginator(obj_list, 10, request=request)
+        applicants = p.page(page)
 
 
         args['applicants'] = applicants
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
+
+
+class CandidateSearchView(PaginatorView):
+    template = 'applicants/applicant_search.html'
+
+    @method_decorator(login_required)
+    def get(self, request):
+        applicants_list = Applicant.objects.all().values('id', 'first_name', 'last_name', 'middle_name', 'photo', 'email')
+
+        return self.paginator(request, applicants_list)
+
+
+
 
 # вывод информации о кандидате
 class ApplicantView(View, SavingModels):
@@ -277,8 +286,12 @@ class ApplicantView(View, SavingModels):
             result = self.savingApplicantForm(request, 'Изменён', {'instance': instance})
 
             json_res = json.dumps(['200',result])
+            #return HttpResponseRedirect(reverse('applicants:applicant_view', kwargs={'applicant_id':int(applicant_id)}))
+            #url = reverse('applicant_view', kwargs={'applicant_id': int(applicant_id)})
+            #return redirect('applicants:applicant_view', applicant_id=int(applicant_id))
         else:
             json_res = json.dumps(['200'])
+
 
         return HttpResponse(json_res, 'application/json')
 

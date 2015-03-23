@@ -1,0 +1,61 @@
+<h2>Выбор вакансий</h2>
+                    <div id="vacancy_forms">
+                        <table id="vacancy" class="table">
+                            <tr>
+                                <th class="col-sm-4">Предполагаемая должность</th>
+                                <th class="col-sm-5">Вакансия</th>
+                                <th class="col-sm-5">Уровень зарплаты в анкете</th>
+                                <th class="col-sm-5">Предлагаемая зарплата</th>
+                            </tr>
+                            <tr class="data-wrapper">
+
+                                <td>
+                                    <select class='select' name="position" id="position" placeholder="Выберите должность">
+                                        <option value>-------</option>
+                                        {% for p in positions %}
+                                            <option value="{{ p.id }}">{{ p.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <select class='select-vacancy' placeholder="Выберите вакансию" name="vacancies" id="vacancies">
+                                        <option value>-------</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number" min="0" name="salary" id="salary" class="form-control">
+                                </td>
+                                <td>
+                                    <input type="number" min="0" name="suggested_salary" id="suggested_salary" class="form-control">
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div>
+                            <label>Источник:</label>
+                            <select class="select" >
+                                <option value>Выберите источник</option>
+                            </select>
+                        </div>
+
+
+                        <div id="result" align="center">
+                            <div id="loader">
+
+                            </div>
+                            <div id="message">
+
+                            </div>
+                        </div>
+
+                        <div align="center" style="margin-top: 2ex;">
+                            <button id='btnAddVacancy' class="btn btn-success add-new-data">
+                                <label>Добавить вакансию</label>
+                            </button>
+                        </div>
+
+                        <table id="tblAddingVacancy" class="table table-striped" style="margin-top: 2ex;">
+
+                        </table>
+
+                    </div>

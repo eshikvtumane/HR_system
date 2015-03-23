@@ -1,10 +1,70 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+<h2>Выбор образований</h2>
+    <div>
+        <div>
+           {{ edu_form.education.label_tag }}
+            {{ edu_form.education }}
+        </div>
+        <div>
+            {{ edu_form.major.label_tag }}
+            {{ edu_form.major }}
+        </div>
 
-</body>
-</html>
+        <div>
+            <div class="col-sm-6">
+                {{ edu_form.study_start.label_tag }}
+                {{ edu_form.study_start }}
+            </div>
+            <div class="col-sm-6">
+                {{ edu_form.study_end.label_tag }}
+                {{ edu_form.study_end }}
+            </div>
+        </div>
+
+
+        <!--
+        <select class="select-add" name="education" placeholder="Выберите тип образования">
+            <option style="display: none;" value="-1">Выберите тип образования</option>
+            {% for e in edu %}
+                <option value="{{ e.id }}">{{ e.type }}</option>
+            {% endfor %}
+
+        </select>
+
+        <select name="major" placeholder="Выберите специальность">
+            <option style="display: none;" value="-1">Выберите специальность</option>
+            {% for m in majors %}
+                <option value="{{ m.id }}">{{ m.name }}</option>
+            {% endfor %}
+        </select>
+
+        <div style="margin-top: 2ex;">
+            <div class="col-sm-5">
+                <label>c</label>
+                <input type="number" min="1900" id="study_start">
+            </div>
+            <div class="col-sm-6">
+                <label>по</label>
+                <input type="number" min="1900" id="study_end">
+            </div>
+        </div>
+    </div>
+-->
+
+        <div align="center">
+            <div id="messageEdu" style="margin-top: 2ex;">
+
+            </div>
+
+            <div class="col-sm-12"  style="margin-top: 2ex;">
+                <input type="button" class="btn btn-success" id="btnAddEdu" value="Добавить образование">
+            </div>
+        </div>
+
+
+        <div style="margin-top: 2ex;">
+            <table id="tblAddingEdu" class="table">
+
+            </table>
+        </div>
+
+    </div>

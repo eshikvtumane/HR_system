@@ -1,7 +1,5 @@
-"use strict";
 
 function saveData(event, delta, revertFunction){
-
   $.ajax({
     url: "/vacancies/update_event/",
     type: "POST",
@@ -29,6 +27,26 @@ function saveData(event, delta, revertFunction){
 
 $(function () {
 
+
+    //Initializing fullcalendar add_event dialog form
+    dialog = $( "#dialog_form" ).dialog({
+    autoOpen: false,
+    height: 300,
+    width: 350,
+    modal: true,
+
+});
+
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      //add event
+    });
+
+    $( "#open_dialog" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+
+
    //Activate fullCalendar plugin
     $('#scheduler').fullCalendar({
         // put your options and callbacks here
@@ -43,11 +61,12 @@ $(function () {
         editable: true,
         url: '#',
         allDay: false,
-        //slotMinutes: 5,
+        slotMinutes: 5,
         //timezone:'Asia/Vladivostok',
         eventResize: saveData,
+        eventDrop: saveData,
+        events:'/vacancies/get_events/',
 
-        events:'/vacancies/get_events/'
 
     });
 

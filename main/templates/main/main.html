@@ -50,7 +50,12 @@
 
 {% block content %}
       <!-- Right side column. Contains the navbar and content of the page -->
-      <div class="content-wrapper">
+
+
+
+
+
+<div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
@@ -144,8 +149,35 @@
 -->
 
 
+                <!-- Форма для добавления нового события-->
 
-               <div class="box box-info">
+                <div id="dialog_form" title="Basic dialog">
+  <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+</div>
+
+
+
+                <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+
+                      <form>
+                      <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Enter email">
+                      </div>
+                      <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                      </div>
+                      <button type="submit" class="btn btn-default">Submit</button>
+                        </form>
+                    </div>
+                  </div>
+                </div>
+
+
+                <div class="box box-info">
                 <div class="box-header">
                   <i class="fa fa-envelope"></i>
                   <h3 class="box-title">Расписание</h3>
@@ -157,7 +189,11 @@
                 <div class="box-body">
 
                     <div id='scheduler'></div>
-
+                    <button id="add_event" type="button" class="btn btn-primary"
+                            data-toggle="modal"
+                            data-target=".bs-example-modal-sm">Добавить
+                    событие</button>
+                    <button id="open_dialog">Открыть диалог</button>
                 </div>
                 <div class="box-footer clearfix">
 

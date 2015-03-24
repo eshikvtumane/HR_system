@@ -48,7 +48,6 @@ INSTALLED_APPS = (
     'applicants',
     'vacancies',
     'administration',
-    'schedule',
     'users',
 )
 

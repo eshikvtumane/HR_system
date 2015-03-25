@@ -1,133 +1,8 @@
 
-function saveData(event, delta, revertFunction){
-  $.ajax({
-    url: "/vacancies/update_event/",
-    type: "POST",
-    dataType: "json",
-    data: {
-      'id': event.id,
-      'start': event.start.format(),
-      'end': event.end.format()
-    },
-    success: function(data, textStatus) {
-      //if (!data)
-      //{
-      //  revertFunc();
-      //  return;
-      alert("yooooo");
-      //calendar.fullCalendar('updateEvent', event);
-    },
-    error: function() {
-      alert("error")
-    }
-  });
-
-}
-
-
-function editEventData(calEvent, jsEvent, view){
-    $("#event_id").val(calEvent.id);
-    $("#title").val(calEvent.title);
-    $("#start").val(moment(calEvent.start).format('DD/MM/YYYY hh:mm'));
-    $("#end").val(moment(calEvent.end).format('DD/MM/YYYY hh:mm'));
-  //
-  //$('#start').datetimepicker({
-  //      lang: 'ru',
-  //      timepicker: true,
-  //      format: 'd-m-Y'
-  //  });
-
-    //
-    $("#start,#stop").datetimepicker();
-
-
-    dialog.dialog( "open" );
-
-
-}
-
-
 $(function () {
 
-    //Initializing fullcalendar add_event dialog form
-    dialog = $( "#dialog_form" ).dialog({
-    autoOpen: false,
-    height: 300,
-    width: 350,
-    modal: true
 
-
-});
-
-    form = dialog.find( "form" ).on( "submit", function( event ) {
-      event.preventDefault();
-      //add event
-    });
-
-    $( "#open_dialog" ).button().on( "click", function() {
-      dialog.dialog( "open" );
-    });
-
-
-   //Activate fullCalendar plugin
-    $('#scheduler').fullCalendar({
-        // put your options and callbacks here
-
-        header: {
-        left: 'prev,next,today',
-        center: 'title',
-        right: 'month,agendaWeek,agendaDay'
-      },
-        lang:'ru',
-        weekMode: 'liquid',
-        editable: true,
-        url: '#',
-        allDay: false,
-        slotMinutes: 5,
-        //timezone:'Asia/Vladivostok',
-        eventResize: saveData,
-        eventDrop: saveData,
-        eventClick: editEventData,
-        events:'/vacancies/get_events/'
-
-
-    });
-
-
-$('#save_event').button().on('click',function(){
-    var event_id = $("#event_id").val();
-    var event = $('#scheduler').fullCalendar('clientEvents',event_id);
-    var new_start_time = $("#start").val();
-    var new_end_time = $('#end').val();
-    console.log(event);
-    $.ajax({
-    url: "/vacancies/save_event/",
-    type: "POST",
-    dataType: "json",
-    data: {
-      'id': event_id,
-      'start': new_start_time,
-      'end': new_end_time
-    },
-    success: function(data, textStatus) {
-      //if (!data)
-      //{
-      //  revertFunc();
-      //  return;
-      alert("yooooo");
-      //calendar.fullCalendar('updateEvent', event);
-    },
-    error: function() {
-      alert("error")
-    }
-  });
-});
-
-
-
-
-
-
+/*
   //Activate the iCheck Plugin
   $('input[type="checkbox"]').iCheck({
     checkboxClass: 'icheckbox_flat-blue',
@@ -170,7 +45,7 @@ $('#save_event').button().on('click',function(){
     alert("You chose: " + start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
   });
 
-  /* jQueryKnob */
+  *//* jQueryKnob *//*
   $(".knob").knob();
 
   //jvectormap data
@@ -186,7 +61,10 @@ $('#save_event').button().on('click',function(){
     "IN": 800, //India
     "GB": 320, //Great Britain
     "RU": 3000 //Russia
-  };
+  };*/
+
+
+
   //World map by jvectormap
   /*$('#world-map').vectorMap({
     map: 'world_mill_en',

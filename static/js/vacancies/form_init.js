@@ -32,7 +32,6 @@ window.onload = function(){
     //Выборка руководителей отделов
     $('#department').change(function(){
         department = $('#department').val();
-        console.log("Get_heads ajax request");
         $.ajax({
             type: 'GET',
             url: '/vacancies/get_heads/',
@@ -78,7 +77,15 @@ window.onload = function(){
             dataType: 'json',
             data: datastring,
             success: function (data) {
-
+                var errors = data[0]['errors'];
+                for (var key in errors){
+                    if(errors.hasOwnProperty(key)){
+                        $("<span/>",{
+                            text:key+":"+errors[key]
+                        }).appendTo("#error_list");
+                        console.log(key + "- >" + errors[key]);
+                    }
+                }
                 $.notify("Данные вакансии успешно обновлены",'success',{
                     position : 'top center'
                 })

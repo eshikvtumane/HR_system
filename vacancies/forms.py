@@ -54,6 +54,7 @@ class EditVacancyForm(ModelForm):
             'salary': forms.NumberInput(attrs={
                 'class': "form-control",
                 'name':'salary'
+
             }),
             'end_date': forms.DateInput(format=('%d-%m-%Y'),attrs={
                 'id':'end_date',

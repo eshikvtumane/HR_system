@@ -89,7 +89,10 @@ class VacancyEdit(View):
             if vacancy_form.is_valid():
                 vacancy_form.save()
                 return HttpResponse("200")
-            return HttpResponse('400')
+            data = []
+            data.append({"status":"400","errors":vacancy_form.errors})
+            data = json.dumps(data)
+            return HttpResponse(data,content_type="application/json")
 
 ###AJAX REQUESTS#################
 def get_heads_ajax(request):

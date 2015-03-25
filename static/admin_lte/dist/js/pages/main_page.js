@@ -1,7 +1,5 @@
-"use strict";
 
 function saveData(event, delta, revertFunction){
-
   $.ajax({
     url: "/vacancies/update_event/",
     type: "POST",
@@ -27,7 +25,49 @@ function saveData(event, delta, revertFunction){
 }
 
 
+function editEventData(calEvent, jsEvent, view){
+    $("#event_id").val(calEvent.id);
+    $("#title").val(calEvent.title);
+    $("#start").val(moment(calEvent.start).format('DD/MM/YYYY hh:mm'));
+    $("#end").val(moment(calEvent.end).format('DD/MM/YYYY hh:mm'));
+  //
+  //$('#start').datetimepicker({
+  //      lang: 'ru',
+  //      timepicker: true,
+  //      format: 'd-m-Y'
+  //  });
+
+    //
+    $("#start,#stop").datetimepicker();
+
+
+    dialog.dialog( "open" );
+
+
+}
+
+
 $(function () {
+
+    //Initializing fullcalendar add_event dialog form
+    dialog = $( "#dialog_form" ).dialog({
+    autoOpen: false,
+    height: 300,
+    width: 350,
+    modal: true
+
+
+});
+
+    form = dialog.find( "form" ).on( "submit", function( event ) {
+      event.preventDefault();
+      //add event
+    });
+
+    $( "#open_dialog" ).button().on( "click", function() {
+      dialog.dialog( "open" );
+    });
+
 
    //Activate fullCalendar plugin
     $('#scheduler').fullCalendar({
@@ -43,13 +83,47 @@ $(function () {
         editable: true,
         url: '#',
         allDay: false,
-        //slotMinutes: 5,
+        slotMinutes: 5,
         //timezone:'Asia/Vladivostok',
         eventResize: saveData,
-
+        eventDrop: saveData,
+        eventClick: editEventData,
         events:'/vacancies/get_events/'
 
+
     });
+
+
+$('#save_event').button().on('click',function(){
+    var event_id = $("#event_id").val();
+    var event = $('#scheduler').fullCalendar('clientEvents',event_id);
+    var new_start_time = $("#start").val();
+    var new_end_time = $('#end').val();
+    console.log(event);
+    $.ajax({
+    url: "/vacancies/save_event/",
+    type: "POST",
+    dataType: "json",
+    data: {
+      'id': event_id,
+      'start': new_start_time,
+      'end': new_end_time
+    },
+    success: function(data, textStatus) {
+      //if (!data)
+      //{
+      //  revertFunc();
+      //  return;
+      alert("yooooo");
+      //calendar.fullCalendar('updateEvent', event);
+    },
+    error: function() {
+      alert("error")
+    }
+  });
+});
+
+
 
 
 

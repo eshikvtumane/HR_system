@@ -22,6 +22,14 @@ def fromUTCtoLocal(time):
     local_time = now_utc.astimezone(local_tz)
     return local_time
 
+
+def fromLocaltoUTC(time):
+    now_local = time
+    local_tz = pytz.timezone("Asia/Vladivostok")
+    now_local = now_local.replace(tzinfo=local_tz)
+    utc_tz= pytz.timezone("UTC")
+    utc_time = now_local.astimezone(utc_tz)
+    return utc_time
 ##########################################
 
 
@@ -99,7 +107,8 @@ def get_events_ajax(request):
         for event in events:
             result.append({'title':event.event.name,
                            'start':fromUTCtoLocal(event.start).isoformat(),
-                           'end':fromUTCtoLocal(event.end).isoformat(),'allDay': False})
+                           'end':fromUTCtoLocal(event.end).isoformat(),
+                           'id': event.id})
 
         response = json.dumps(result)
         return HttpResponse(response,content_type='application/json')
@@ -107,8 +116,33 @@ def get_events_ajax(request):
 
 def update_event_ajax(request):
     if request.is_ajax():
-        print request.b
+        event =  ApplicantVacancyEvent.objects.get(id=request.POST["id"])
+        new_start =datetime.datetime.strptime(request.POST[
+                                                               'start'],
+                                           "%Y-%m-%dT%H:%M:%S")
 
+        new_end = datetime.datetime.strptime(request.POST[
+                                                               'end'],
+                                           "%Y-%m-%dT%H:%M:%S")
+
+        event.start = new_start
+        event.end = new_end
+        event.save()
+
+
+def save_event_ajax(request):
+    if request.is_ajax():
+        new_start = datetime.datetime.strptime(request.POST['start'], "%d/%m/%Y %H:%M")
+
+        new_end = datetime.datetime.strptime(request.POST['end'], "%d/%m/%Y %H:%M")
+        event =  ApplicantVacancyEvent.objects.get(id=request.POST["id"])
+        try:
+            event.start = new_start
+            event.end = new_end
+            event.save()
+            return HttpResponse("200")
+        except:
+            return HttpResponse("400")
 
 
 

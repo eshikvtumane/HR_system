@@ -53,7 +53,8 @@
     <script src="{% static 'js/appliments/load_history_status_applicant_vacancy.js' %}"></script>
 <!-- отправка данных на сервер -->
     <script src="{% static 'js/appliments/send_candidate_form.js' %}"></script>
-
+<!-- смена знака пола -->
+    <script src="{% static 'js/appliments/change_gender.js' %}"></script>
 
 {% endblock %}
 
@@ -62,6 +63,7 @@
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
+
           <h1>
             Страница кандидата
           </h1>
@@ -70,6 +72,9 @@
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
                     История изменений анкеты
                 </button>
+            </div>
+            <div style="margin-top: 2ex;">
+                <label>Дата создания:</label> {{ applicant_form.date_created.value }}
             </div>
 
           <ol class="breadcrumb">
@@ -81,7 +86,7 @@
  <!-- action="{% url 'applicants:applicant_add' %}" -->
 <form id="applicant_form" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-
+    {{ applicant_form.date_created }}
         <!-- Main content -->
         <section class="content">
           <!-- Main row -->
@@ -96,27 +101,7 @@
                       <input type="hidden" id="id" name="id" value="{{ applicant_id }}">
 
                       <div class="col-sm-12">
-                          <div class="group-control">
-                            <label>{{ applicant_form.first_name.label_tag }}</label>
-                            <div>
-                                {{ applicant_form.first_name }}
-                            </div>
-                        </div>
-
-                        <div class="group-control">
-                            <div style="display: inline-block;" class='col-sm-6'>
-                                <label>{{ applicant_form.last_name.label_tag }}</label>
-                                <div>
-                                    {{ applicant_form.last_name }}
-                                </div>
-                            </div>
-                            <div style="display: inline-block;" class='col-sm-6'>
-                                <label>{{ applicant_form.middle_name.label_tag }}</label>
-                                <div>
-                                    {{ applicant_form.middle_name }}
-                                </div>
-                            </div>
-                        </div>
+                          {% include 'applicants/includes/applicant_info.html' %}
 
                           <div class="group-control">
                             <div style="display: inline-block;" class='col-sm-6'>
@@ -126,12 +111,14 @@
                                     <input type="hidden" name="birthday" value="{{ applicant_form.birthday.value|date_format }}">
                                 </div>
                             </div>
+                              <!--
                             <div style="display: inline-block;" class='col-sm-6'>
                                 <label>Источник:</label>
                                 <div>
                                     {{ applicant_form.source }}
                                 </div>
                             </div>
+                            -->
                         </div>
 
                       </div>
@@ -157,16 +144,23 @@
                                     <td>
                                         {{ v.vacancy.position.name }}
 
-                                        <div style="margin-top: 2ex;">
-                                            <button type="button" class="btn btn-primary status_candidate_vacancy" value="{{ v.id }}" data-toggle="modal" data-target="#modalVacancyStatus">
-                                                Просмотреть статусы
-                                            </button>
-                                        </div>
                                     </td>
                                     <td><a target="_blank" href="{% url 'vacancies:vacancy_view' v.vacancy.id %}">{{ v.vacancy.head.name }}, {{ v.vacancy.published_at }}</a></td>
                                     <td>{{ v.salary|intcomma }} руб.</td>
                                     <td>{{ v.suggested_salary|intcomma }} руб.</td>
                                 </tr>
+                            <tr>
+                                <td>
+                                    <div style="margin-top: 2ex;">
+                                        <button type="button" class="btn btn-primary status_candidate_vacancy" value="{{ v.id }}" data-toggle="modal" data-target="#modalVacancyStatus">
+                                            Просмотреть статусы
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label>Источник:</label> {{ v.source.source }}
+                                </td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
@@ -273,7 +267,7 @@
               </div><!-- /.box -->
 
                 <!-- Portfolio -->
-              <div class="box box-solid bg-teal-gradient">
+              <div class="box box-solid bg-green-gradient">
                   <div class="box-header" align="center">
                       <h2>Портфолио</h2>
                       <table class="table">

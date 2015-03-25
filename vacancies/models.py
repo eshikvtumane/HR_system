@@ -1,5 +1,6 @@
 #-*- coding: utf8 -*-
 from applicants.models import Position, Applicant, SourceInformation
+from django.contrib.auth.models import User
 from django.db import models
 import datetime
 from django.utils import timezone
@@ -94,7 +95,9 @@ class ApplicantVacancyStatus(models.Model):
         db_table = 'ApplicantVacancyStatuses'
         verbose_name = 'Статус кандидата по вакансии'
         verbose_name_plural = 'Статусы кандидата по вакансии'
-    name = models.TextField()
+    name = models.TextField(verbose_name='Статус')
+    author = models.ForeignKey(User, verbose_name='Автор')
+    date_created = models.DateTimeField('Дата создания', default=datetime.datetime.now())
 
     def __unicode__(self):
         return self.name
@@ -123,7 +126,7 @@ class ApplicantVacancy(models.Model):
 
     applicant = models.ForeignKey(Applicant)
     vacancy = models.ForeignKey('Vacancy')
-    #source = models.ForeignKey(SourceInformation)
+    source = models.ForeignKey(SourceInformation)
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=timezone.now, verbose_name='Дата добавления')
@@ -132,7 +135,7 @@ class ApplicantVacancy(models.Model):
 
     def __unicode__(self):
         return "%s %s %s %s %s"%(self.vacancy.position.name,str(
-            self.vacancy.published_at),self.applicant.first_name,\
+            self.vacancy.published_at),self.applicant.first_name,
                self.applicant.last_name,self.applicant.middle_name)
 
 

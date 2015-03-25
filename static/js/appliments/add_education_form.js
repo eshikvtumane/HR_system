@@ -78,6 +78,8 @@ var createDict = function(vacancies, tbl_work){
     salary = document.getElementById('salary');
     suggested_salary = document.getElementById('suggested_salary');
 
+    source = document.getElementById('source[]');
+
     position_id = parseInt(position.value);
     position_name = position.options[position.selectedIndex].text;
     vacancy_id = parseInt(vacancy.value);
@@ -85,6 +87,7 @@ var createDict = function(vacancies, tbl_work){
 
     salary_sum = parseFloat(salary.value);
     suggested_salary_sum = parseFloat(suggested_salary.value);
+    source_val = source.value;
 
     var message = document.getElementById('message');
 
@@ -103,7 +106,8 @@ var createDict = function(vacancies, tbl_work){
                 //'position': position_id,
                 'vacancy': vacancy_id,
                 'salary': salary_sum,
-                'suggested_salary': suggested_salary_sum
+                'suggested_salary': suggested_salary_sum,
+                'source': source_val
         };
 
         salary.value = '';

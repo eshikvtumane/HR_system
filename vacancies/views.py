@@ -3,7 +3,7 @@ from django.shortcuts import render,render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
 from django.template import RequestContext
-from forms import AddVacancyForm, EditVacancyForm
+from forms import AddVacancyForm, EditVacancyForm, SearchVacancyForm
 from .models import Department, Head, Vacancy, Position, Status, ApplicantVacancyEvent
 import json
 from django.core import serializers
@@ -49,9 +49,11 @@ class AddVacancy(View):
         if request.is_ajax:
             post_data = request.POST.copy()
             post_data['end_date'] = datetime.datetime.strptime(post_data['end_date'],
-                                                       '%d-%m-%Y').date()
+                                                     '%d-%m-%Y').date()
+            post_data['author'] = request.user
             vacancy_form = AddVacancyForm(post_data)
             if vacancy_form.is_valid():
+                    vacancy_form.instance.author = request.user
                     vacancy_form.save()
                     vacancy_id = vacancy_form.instance.id
                     response = json.dumps([{'vacancy_id':vacancy_id}])
@@ -93,6 +95,16 @@ class VacancyEdit(View):
             data.append({"status":"400","errors":vacancy_form.errors})
             data = json.dumps(data)
             return HttpResponse(data,content_type="application/json")
+
+
+class VacancySearch(View):
+    template = 'vacancies/vacancy_search.html'
+    def get(self,request):
+        vacancy_form = SearchVacancyForm()
+        c = RequestContext(request,{'vacancy_form':vacancy_form})
+        return render_to_response(self.template,c)
+
+
 
 ###AJAX REQUESTS#################
 def get_heads_ajax(request):

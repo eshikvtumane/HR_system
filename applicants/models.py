@@ -81,7 +81,7 @@ class Education(models.Model):
 
     # Тип образования (высшее, неполное, заочное)
     type = models.CharField(max_length=255, verbose_name='Тип')
-    author = models.ForeignKey(User, verbose_name='Автор')
+    author = models.ForeignKey(User, verbose_name='Автор', default=None)
     date_created = models.DateTimeField(default=datetime.now(), verbose_name='Дата добавления')
 
     def __unicode__(self):
@@ -100,7 +100,7 @@ class Major(models.Model):
 
     # Название специальности
     name = models.TextField(verbose_name='Специальность')
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User,default=None)
     date_created = models.DateTimeField(default=datetime.now())
 
     def __unicode__(self):
@@ -135,7 +135,7 @@ class Position(models.Model):
         verbose_name_plural = 'Должности'
 
     name = models.TextField(verbose_name='Должность')
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User,default=None)
     date_created = models.DateTimeField(default=datetime.now())
 
     def __unicode__(self):
@@ -179,7 +179,7 @@ class SourceInformation(models.Model):
         verbose_name_plural = 'Источники'
 
     source = models.CharField(max_length=100)
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User,default=None)
     date_created = models.DateTimeField(default=datetime.now(), verbose_name='Дата создания')
 
     def __unicode__(self):

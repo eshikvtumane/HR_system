@@ -1,0 +1,97 @@
+{% extends 'base.html'%}
+{% load staticfiles  %}\
+{% block title %}
+    Поиск вакансий
+{% endblock %}
+
+{% block styles %}
+
+{% endblock %}
+
+
+{% block scripts %}
+    <script src="/static/js/jquery.lazyload.js" type="text/javascript"></script>
+    <script src="/static/js/lazyload_init.js" type="text/javascript"></script>
+{% endblock %}
+
+
+{% block content %}
+    <!-- Right side column. Contains the navbar and content of the page -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Поиск вакансий
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+            <li class="active">Поиск вакансий</li>
+          </ol>
+        </section>
+
+
+        <!-- Main content -->
+        <section class="content">
+          <!-- Main row -->
+          <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-12 connectedSortable">
+                <!--
+                    Форма поиска вакансий
+                -->
+              <div class="box box-success">
+                  <div class="box-header form-horizontal">
+                       <form id='frm_add_vacancy'>{% csrf_token %}
+
+                        {{ vacancy_form.position.label_tag}}
+                        {{ vacancy_form.position}}
+                        {{ vacancy_form.salary.label_tag}}
+                        {{ vacancy_form.salary}}
+                        {{ vacancy_form.end_date.label_tag}}
+                        {{ vacancy_form.end_date}}
+                       </form>
+                  </div>
+
+                  <div>
+                      <button class="btn btn-success">Поиск</button>
+                  </div>
+
+              </div><!-- /.форма поиска вакансий -->
+                <h2>Результаты поиска</h2>
+
+                    <div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Позиция</th>
+                                    <th>Зарплата</th>
+                                    <th>Дата создания</th>
+                                    <th>Руководитель</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for vacancy in vacancies %}
+                                    <tr>
+                                        <td>
+
+
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><a target="_blank"
+                                               href="" class="btn btn-success">Подробнее</a></td>
+
+
+                                        </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+
+            </section><!-- /.Left col -->
+
+            </div>
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+{% endblock %}

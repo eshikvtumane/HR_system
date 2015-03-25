@@ -51,6 +51,9 @@
               <div class="box box-success">
                 <div class="box-header">
                   {% load vacancy_attr_verbose %}
+
+                    <h5>{% get_verbose_field_name vacancy 'author'  %}:</h5>
+                    <strong>{{vacancy.author}}</strong>
                     <h5>{% get_verbose_field_name vacancy 'position'  %}:</h5>
                     <strong>{{vacancy.position}}</strong>
                     <h5>{% get_verbose_field_name vacancy 'salary'  %}:</h5>

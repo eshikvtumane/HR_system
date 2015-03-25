@@ -367,9 +367,10 @@
                   </a>
                   <ul class="treeview-menu">
                     <li class="active"><a
-                            href="{% url 'vacancies:vacancy_add' %}"><i
-                            class="fa fa-circle-o"></i> Добавить</a></li>
-                    <li><a href="#"><i class="fa fa-circle-o"></i> Найти</a></li>
+                            href="{% url 'vacancies:vacancy_add' %}">
+                            <i class="fa fa-plus"></i> Добавить</a></li>
+                    <li><a href="{% url 'vacancies:vacancy_search' %}">
+                             <i class="fa fa-search"></i>Найти</a></li>
                   </ul>
             </li>
 

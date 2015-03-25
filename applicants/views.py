@@ -307,6 +307,14 @@ class ApplicantView(View, SavingModels):
         return HttpResponse(json_res, 'application/json')
 
 
+
+
+class ApplicantAppointmentView(View):
+    def get(self,request):
+        pass
+
+
+
 class ApplicantVacancyStatusAjax(View):
     def get(self, request):
         if request.is_ajax:
@@ -346,3 +354,4 @@ class ApplicantVacancyStatusAjax(View):
             json_res = json.dumps(['500'])
 
         return HttpResponse(json_res, content_type='application/text')
+

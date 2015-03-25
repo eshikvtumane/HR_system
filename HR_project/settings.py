@@ -1,3 +1,4 @@
+#-*- coding:utf8 -*-
 """
 Django settings for HR_project project.
 
@@ -33,6 +34,7 @@ LOGIN_REDIRECT_URL = '/users/login'
 # Application definition
 
 INSTALLED_APPS = (
+    'grappelli',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -76,6 +78,8 @@ PAGINATION_SETTINGS = {
     'PAGE_RANGE_DISPLAYED': 10,
     'MARGIN_PAGES_DISPLAYED': 2,
 }
+
+GRAPPELLI_ADMIN_TITLE = 'ИС АПП - административная панель'
 
 
 # Database

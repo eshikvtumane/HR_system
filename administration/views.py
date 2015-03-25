@@ -7,6 +7,8 @@ from django.http import HttpResponse
 from applicants.models import Major, SourceInformation
 from vacancies.models import ApplicantVacancyStatus
 
+from datetime import datetime
+
 # Create your views here.
 # рендер страницы добавления значений в БД
 class ValueAddView(View):
@@ -38,11 +40,11 @@ class AjaxView(View):
 
             param = req.getlist(post_key)
 
-        return self.__recordDB(param, model, key)
+        return self.__recordDB(param, request.user, model, key)
 
 
     # запись переданных значений в БД
-    def __recordDB(self, file, model, key):
+    def __recordDB(self, file, user, model, key):
         try:
             # выборка всех записей из БД
             spec_db = model.objects.all().values(key)
@@ -53,7 +55,7 @@ class AjaxView(View):
             result_list = []
             for s in file:
                 if s not in obj_list:
-                    result_list.append(model(**{key: s}))
+                    result_list.append(model(**{key: s, 'author': user}))
 
             # запись сформированного списка в БД
             model.objects.bulk_create(result_list)

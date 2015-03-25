@@ -1,0 +1,42 @@
+<div class="col-sm-12">
+    <div class="col-sm-8">
+          <div class="group-control">
+            <label>{{ applicant_form.first_name.label_tag }}</label>
+            <div>
+                {{ applicant_form.first_name }}
+            </div>
+        </div>
+
+        <div class="group-control">
+            <div style="display: inline-block;" class='col-sm-6'>
+                <label>{{ applicant_form.last_name.label_tag }}</label>
+                <div>
+                    {{ applicant_form.last_name }}
+                </div>
+            </div>
+            <div style="display: inline-block;" class='col-sm-6'>
+                <label>{{ applicant_form.middle_name.label_tag }}</label>
+                <div>
+                    {{ applicant_form.middle_name }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-4">
+        <div>
+            {{ applicant_form.sex.label_tag }}
+            {{ applicant_form.sex }}
+        </div>
+        <div align="center" class="margin-top: 10px;">
+            {% if applicant_form.sex.value == '1' %}
+                <img id="gender_img" src="/media/gender/male.png" width=50ex>
+            {% elif applicant_form.sex.value == '2' %}
+                <img id="gender_img" src="/media/gender/female.png">
+            {% else %}
+                <img id="gender_img" src="">
+            {% endif %}
+        </div>
+
+    </div>
+</div>

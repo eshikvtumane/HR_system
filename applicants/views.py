@@ -1,15 +1,13 @@
 #-*- coding:utf8 -*-
 from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponseRedirect
-from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 
 from django.views.generic import View
 from django.template import RequestContext
 from django.http import HttpResponse
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
-from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyAddForm
+from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
 from vacancies.models import Vacancy, ApplicantVacancy, ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus
 
@@ -33,26 +31,30 @@ class SavingModels():
     def sourceCreate(self, source):
         try:
             convert_id = int(source)
-            return convert_id
+            return SourceInformation.objects.get(pk=convert_id)
         except:
-            source_obj = SourceInformation(source=source)
+            source_obj = SourceInformation(source=source, author=self.author)
             source_obj.save()
-            return source_obj.id
+            return source_obj
 
     def createMajor(self, major):
         try:
             convert_id = int(major)
             return convert_id
         except:
-            major_obj = Major(source=major)
+            major_obj = Major(name=major, author=self.author)
             major_obj.save()
             return major_obj.id
 
     def savingPhone(self, phones, user):
-        if phones:
-            phone_obj = [Phone(applicant=user, phone=p) for p in phones if p != '']
-            Phone.objects.bulk_create(phone_obj)
-        return
+        try:
+            if phones:
+                phone_obj = [Phone(applicant=user, phone=p) for p in phones if p != '']
+                Phone.objects.bulk_create(phone_obj)
+
+            return
+        except:
+            return
 
     def savingVacancies(self, json_vacancies, user):
         try:
@@ -62,11 +64,13 @@ class SavingModels():
             for k, v in enumerate(vacancies):
                 vacancies[v]['vacancy'] = Vacancy(vacancies[v]['vacancy'])
                 vacancies[v]['applicant'] = user
+                vacancies[v]['source'] = self.sourceCreate(vacancies[v]['source'])
                 vacancy_obj.append(ApplicantVacancy(**vacancies[v]))
 
             ApplicantVacancy.objects.bulk_create(vacancy_obj)
             return
-        except:
+        except Exception, e:
+            print e.message
             return
 
     def savingEducations(self, json_educations, user):
@@ -100,18 +104,20 @@ class SavingModels():
 
         args['applicant_form'] = ApplicantForm(**applicant_instance)
         args['edu_form'] = ApplicantEducationForm()
-        args['vacancy_form'] = VacancyAddForm()
+        args['vacancy_form'] = VacancyForm()
         args['positions'] = Position.objects.all()
-        #args['sources'] = SourceInformation.objects.all()
+        args['sources'] = SourceInformation.objects.all()
 
         return args
 
     def savingApplicantForm(self, request, type_change, applicant_instance={}):
         try:
             req = request.POST
+            self.author = request.user
             # создание объекта класса сохранения файлов
             sf = SavingFiles()
 
+            req['date_created'] = datetime.datetime.now()
             # конвертирование даты в формат, понятный БД
             try:
                 req['birthday'] = datetime.datetime.strptime(req['birthday'], "%d-%m-%Y").date()
@@ -127,9 +133,13 @@ class SavingModels():
             else:
                 req['icq'] = None
 
-            print applicant_instance
+
             applicant_form = ApplicantForm(request.POST, request.FILES, **applicant_instance)
-            new_applicant = applicant_form.save()
+            if applicant_form.is_valid():
+                new_applicant = applicant_form.save()
+            else:
+                print applicant_form.errors
+                return False
 
             self.savingPhone(req.getlist('phone'), new_applicant)
             self.savingVacancies(req['vacancies'], new_applicant)
@@ -160,7 +170,8 @@ class SavingModels():
             # добавление изменения в историю
             self.addHistoryChange(request.user, new_applicant, type_change)
             return new_applicant.id
-        except:
+        except Exception, e:
+            print e.message
             return False
 
 
@@ -296,6 +307,14 @@ class ApplicantView(View, SavingModels):
         return HttpResponse(json_res, 'application/json')
 
 
+
+
+class ApplicantAppointmentView(View):
+    def get(self,request):
+        pass
+
+
+
 class ApplicantVacancyStatusAjax(View):
     def get(self, request):
         if request.is_ajax:
@@ -335,3 +354,4 @@ class ApplicantVacancyStatusAjax(View):
             json_res = json.dumps(['500'])
 
         return HttpResponse(json_res, content_type='application/text')
+

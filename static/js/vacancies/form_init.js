@@ -7,7 +7,7 @@ window.onload = function(){
         timepicker: false,
         format: 'd-m-Y'
     });
-    //Сохранение вакансии
+    //Добавление вакансии
     $('#save_vacancy').click(function () {
         var datastring = $('#frm_add_vacancy').serialize();
         console.log(datastring);

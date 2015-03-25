@@ -2,7 +2,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
-
+import vacancies
 
 # Create your models here.
 
@@ -13,10 +13,15 @@ class Applicant(models.Model):
         verbose_name = 'Кандидат'
         verbose_name_plural = 'Кандидаты'
 
+    GENDER_LIST = (
+        ('1', 'Мужской'),
+        ('2', 'Женский'),
+    )
     # ФИО
     first_name = models.CharField(max_length=255, verbose_name='Фамилия')
     last_name = models.CharField(max_length=255, verbose_name='Имя')
     middle_name = models.CharField(max_length=255, verbose_name='Отчество', null=True, blank=True)
+    sex = models.CharField(max_length=1, choices=GENDER_LIST, verbose_name='Пол', null=True, blank=True)
 
     # Дата рождения
     birthday = models.DateField(verbose_name='Дата рождения')
@@ -43,13 +48,16 @@ class Applicant(models.Model):
     fb = models.URLField(verbose_name='Facebook', null=True, blank=True)
 
     # Источник
-    source = models.ForeignKey('SourceInformation')
+    #source = models.ForeignKey('SourceInformation', verbose_name='Источник')
+    date_created = models.DateTimeField(default=datetime.now(), verbose_name='Дата создания')
 
     def __unicode__(self):
         return '%s %s %s' % (self.first_name, self.last_name, self.middle_name)
 
     def getFullName(self):
         return '%s %s %s' % (self.first_name, self.last_name, self.middle_name)
+
+
 
 class Phone(models.Model):
     class Meta:
@@ -73,9 +81,14 @@ class Education(models.Model):
 
     # Тип образования (высшее, неполное, заочное)
     type = models.CharField(max_length=255, verbose_name='Тип')
+    author = models.ForeignKey(User, verbose_name='Автор', default=None)
+    date_created = models.DateTimeField(default=datetime.now(), verbose_name='Дата добавления')
 
     def __unicode__(self):
         return self.type
+
+    #def save(self, *args, **kwargs):
+#
 
 
 # Специальность
@@ -87,6 +100,8 @@ class Major(models.Model):
 
     # Название специальности
     name = models.TextField(verbose_name='Специальность')
+    author = models.ForeignKey(User,default=None)
+    date_created = models.DateTimeField(default=datetime.now())
 
     def __unicode__(self):
         return self.name
@@ -120,6 +135,9 @@ class Position(models.Model):
         verbose_name_plural = 'Должности'
 
     name = models.TextField(verbose_name='Должность')
+    author = models.ForeignKey(User,default=None)
+    date_created = models.DateTimeField(default=datetime.now())
+
     def __unicode__(self):
         return self.name
 
@@ -161,6 +179,8 @@ class SourceInformation(models.Model):
         verbose_name_plural = 'Источники'
 
     source = models.CharField(max_length=100)
+    author = models.ForeignKey(User,default=None)
+    date_created = models.DateTimeField(default=datetime.now(), verbose_name='Дата создания')
 
     def __unicode__(self):
         return self.source

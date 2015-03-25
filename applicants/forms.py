@@ -1,23 +1,16 @@
 #-*- coding: utf8 -*-
 from django import forms
 from models import Applicant, ApplicantEducation, Education, Major, Position, SourceInformation
+from vacancies.models import Vacancy
 
 # Create your forms here.
 class ApplicantForm(forms.ModelForm):
     """
         Форма для добавления кандидата в базу
     """
-    source = forms.ModelChoiceField(queryset=SourceInformation.objects.all(),
-                                       label='Источник',
-                                       widget=forms.Select(attrs={
-                                           'class':'select-add',
-                                            'placeholder':'Выберите источник'
-                                       })
-            )
 
     class Meta:
         model = Applicant
-        #exclude = ('id',)
         fields = '__all__'
         widgets = {
             'first_name': forms.TextInput(attrs={
@@ -37,6 +30,10 @@ class ApplicantForm(forms.ModelForm):
                  'class': "form-control",
                  'data-validation': "middle_name",
                 'autocomplete': 'off'
+            }),
+            'sex': forms.Select(attrs={
+                'class':'select',
+                'placeholder': 'Выберите пол'
             }),
             'birthday': forms.DateInput(attrs={
                 'class': "form-control",
@@ -88,7 +85,8 @@ class ApplicantForm(forms.ModelForm):
             'fb': forms.TextInput(attrs={
                 'class': "form-control",
                 'autocomplete': 'off'
-            })
+            }),
+            'date_created': forms.HiddenInput()
         }
 
 # Форма добавления образования
@@ -180,11 +178,49 @@ class CandidateSearchForm(forms.Form):
 
     salary = forms.IntegerField(label='Запрашиваемая зарплата',
                                 widget=forms.NumberInput(attrs={
-                                     'class': 'form-control'
+                                     'class': 'form-control',
                                  })
                                 )
 
+class VacancyForm(forms.Form):
 
+    position = forms.ModelChoiceField(queryset=Position.objects.all(),
+                                     widget=forms.Select(attrs={
+                                         'placeholder': 'Выберите должность',
+                                         'class':'select',
+                                         'id': 'position',
+                                         'name': 'position'
+                                     }
+                                    )
+    )
+
+    vacancy = forms.ModelChoiceField(queryset=[],
+                                     widget=forms.Select(attrs={
+                                         'placeholder': 'Выберите вакансию',
+                                         'class': 'select',
+                                         'id': 'vacancies',
+                                         'name': 'vacancies'
+                                     }
+                                    )
+    )
+    '''
+    salary = forms.IntegerField(widget=forms.NumberInput(attrs={
+                                        'id': 'salary',
+                                         'name': 'salary'
+                                }))
+    suggested_salary = forms.NumberInput(widget=forms.NumberInput(attrs={
+                                        'id': 'suggested_salary',
+                                         'name': 'suggested_salary'
+                                }))'''
+    source = forms.ModelChoiceField(queryset=SourceInformation.objects.all(),
+                                       label='Источник',
+                                       widget=forms.Select(attrs={
+                                           'class':'select-add',
+                                            'placeholder':'Выберите источник',
+                                            'id': 'source[]',
+                                            'name': 'source[]'
+                                       })
+    )
 
 
 

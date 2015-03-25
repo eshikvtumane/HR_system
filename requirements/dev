@@ -4,3 +4,5 @@ django-debug-toolbar
 django-scheduler
 selenium
 sorl-thumbnail
+django-pure-pagination
+django-grappelli

@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load humanize %}
-{% load ru_phone_format %}
 {% load date_format %}
 
 {% block title %}
@@ -54,7 +53,8 @@
     <script src="{% static 'js/appliments/load_history_status_applicant_vacancy.js' %}"></script>
 <!-- отправка данных на сервер -->
     <script src="{% static 'js/appliments/send_candidate_form.js' %}"></script>
-
+<!-- смена знака пола -->
+    <script src="{% static 'js/appliments/change_gender.js' %}"></script>
 
 {% endblock %}
 
@@ -63,6 +63,7 @@
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
+
           <h1>
             Страница кандидата
           </h1>
@@ -71,6 +72,10 @@
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
                     История изменений анкеты
                 </button>
+                <a href="">Назначить пользователю....</a>
+            </div>
+            <div style="margin-top: 2ex;">
+                <label>Дата создания:</label> {{ applicant_form.date_created.value }}
             </div>
 
           <ol class="breadcrumb">
@@ -82,7 +87,7 @@
  <!-- action="{% url 'applicants:applicant_add' %}" -->
 <form id="applicant_form" action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
-
+    {{ applicant_form.date_created }}
         <!-- Main content -->
         <section class="content">
           <!-- Main row -->
@@ -97,27 +102,7 @@
                       <input type="hidden" id="id" name="id" value="{{ applicant_id }}">
 
                       <div class="col-sm-12">
-                          <div class="group-control">
-                            <label>{{ applicant_form.first_name.label_tag }}</label>
-                            <div>
-                                {{ applicant_form.first_name }}
-                            </div>
-                        </div>
-
-                        <div class="group-control">
-                            <div style="display: inline-block;" class='col-sm-6'>
-                                <label>{{ applicant_form.last_name.label_tag }}</label>
-                                <div>
-                                    {{ applicant_form.last_name }}
-                                </div>
-                            </div>
-                            <div style="display: inline-block;" class='col-sm-6'>
-                                <label>{{ applicant_form.middle_name.label_tag }}</label>
-                                <div>
-                                    {{ applicant_form.middle_name }}
-                                </div>
-                            </div>
-                        </div>
+                          {% include 'applicants/includes/applicant_info.html' %}
 
                           <div class="group-control">
                             <div style="display: inline-block;" class='col-sm-6'>
@@ -127,12 +112,14 @@
                                     <input type="hidden" name="birthday" value="{{ applicant_form.birthday.value|date_format }}">
                                 </div>
                             </div>
+                              <!--
                             <div style="display: inline-block;" class='col-sm-6'>
                                 <label>Источник:</label>
                                 <div>
                                     {{ applicant_form.source }}
                                 </div>
                             </div>
+                            -->
                         </div>
 
                       </div>
@@ -158,75 +145,29 @@
                                     <td>
                                         {{ v.vacancy.position.name }}
 
-                                        <div style="margin-top: 2ex;">
-                                            <button type="button" class="btn btn-primary status_candidate_vacancy" value="{{ v.id }}" data-toggle="modal" data-target="#modalVacancyStatus">
-                                                Просмотреть статусы
-                                            </button>
-                                        </div>
                                     </td>
                                     <td><a target="_blank" href="{% url 'vacancies:vacancy_view' v.vacancy.id %}">{{ v.vacancy.head.name }}, {{ v.vacancy.published_at }}</a></td>
                                     <td>{{ v.salary|intcomma }} руб.</td>
                                     <td>{{ v.suggested_salary|intcomma }} руб.</td>
                                 </tr>
+                            <tr>
+                                <td>
+                                    <div style="margin-top: 2ex;">
+                                        <button type="button" class="btn btn-primary status_candidate_vacancy" value="{{ v.id }}" data-toggle="modal" data-target="#modalVacancyStatus">
+                                            Просмотреть статусы
+                                        </button>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label>Источник:</label> {{ v.source.source }}
+                                </td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
 
 
-                    <h2>Выбор вакансий</h2>
-                    <div id="vacancy_forms">
-                        <table id="vacancy" class="table">
-                            <tr>
-                                <th class="col-sm-4">Предполагаемая должность</th>
-                                <th class="col-sm-5">Вакансия</th>
-                                <th class="col-sm-5">Уровень зарплаты в анкете</th>
-                                <th class="col-sm-5">Предлагаемая зарплата</th>
-                            </tr>
-                            <tr class="data-wrapper">
-
-                                <td>
-                                    <select class='select' name="position" id="position" placeholder="Выберите должность">
-                                        <option value>-------</option>
-                                        {% for p in positions %}
-                                            <option value="{{ p.id }}">{{ p.name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </td>
-                                <td>
-                                    <select class='select-vacancy' placeholder="Выберите вакансию" name="vacancies" id="vacancies">
-                                        <option value>-------</option>
-                                    </select>
-                                </td>
-                                <td>
-                                    <input type="number" min="0" name="salary" id="salary" class="form-control">
-                                </td>
-                                <td>
-                                    <input type="number" min="0" name="suggested_salary" id="suggested_salary" class="form-control">
-                                </td>
-                            </tr>
-                        </table>
-
-
-                        <div id="result" align="center">
-                            <div id="loader">
-
-                            </div>
-                            <div id="message">
-
-                            </div>
-                        </div>
-
-                        <div align="center" style="margin-top: 2ex;">
-                            <button id='btnAddVacancy' class="btn btn-success add-new-data">
-                                <label>Добавить вакансию</label>
-                            </button>
-                        </div>
-
-                        <table id="tblAddingVacancy" class="table table-striped" style="margin-top: 2ex;">
-
-                        </table>
-
-                    </div>
+                    {% include 'applicants/includes/vacancy.html' %}
                 </div>
 
               </div>
@@ -234,88 +175,7 @@
                 <!-- Контакты -->
                 <div class="box box-success">
                     <div class="box-header form-horizontal">
-                        <h2>Контактные данные</h2>
-
-                        <!-- -->
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">Телефон:</label>
-
-                            <div class="clone-wrapper col-sm-10" style="margin-top: 1ex;  font-size: 3ex;">
-
-                                {% for p in phones %}
-                                    <div>
-                                        {{ p.phone|phone_format }}
-                                    </div>
-                                {% endfor %}
-
-                                <div class="clone-wrapper">
-                                    <div class="toclone col-sm-12" style="display: inline-block;">
-                                        <div style="display: inline-block;">
-                                            <div class="col-sm-8" style="display: inline-block;">
-                                                <input type="number" name="phone" class="form-control">
-                                            </div>
-
-                                            <div class="col-sm-4">
-                                                <button class="clone btn btn-success">+</button>
-                                                <button class="delete btn btn-danger">-</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </div>
-                        <!-- -->
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">{{ applicant_form.email.label_tag }}</label>
-                            <div class="col-sm-10">
-                                {{ applicant_form.email }}
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">{{ applicant_form.skype.label_tag }}</label>
-                            <div class="col-sm-10">
-                                {{ applicant_form.skype }}
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">{{ applicant_form.icq.label_tag }}</label>
-                            <div class="col-sm-10">
-                                {{ applicant_form.icq }}
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">{{ applicant_form.vk.label_tag }}</label>
-                            <div class="col-sm-10">
-                                <div class="col-sm-5">
-                                    {{ applicant_form.vk }}
-                                </div>
-                                <div class="col-sm-5">
-                                    {% if applicant_form.vk.value %}
-                                        <a target='_blank' href="{{ applicant_form.vk.value }}">Перейти на страницу</a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label class="control-label col-sm-2">{{ applicant_form.fb.label_tag }}</label>
-                            <div class="col-sm-10">
-                                <div class="col-sm-5">
-                                    {{ applicant_form.fb }}
-                                </div>
-                                <div class="col-sm-5">
-                                    {% if applicant_form.fb.value %}
-                                        <a target='_blank'  href="{{ applicant_form.fb.value }}">Перейти на страницу</a>
-                                    {% endif %}
-                                </div>
-
-                            </div>
-                        </div>
+                        {% include 'applicants/includes/contacts.html' %}
                     </div>
                 </div>
                 <!-- ./Контакты -->
@@ -364,64 +224,24 @@
                 <div class="box-header">
                     <h2>Образования кандидата</h2>
                     <table class="table">
-                        <thead>
+                        <tr>
                                 <th>Тип образования</th>
                                 <th>Специальность</th>
                                 <th>Период обучения</th>
-                        </thead>
+                        </tr>
                         {% for e in educations %}
                         <tbody>
                             <tr>
                                 <td>{{ e.education.type }}</td>
                                 <td>{{ e.major.name }}</td>
-                                <td>{{ e.study_start }} ‒ {{ e.study_end }} гг.</td>
+                                <td>{{ e.study_start }} ‒ {{ e.study_end }}</td>
                             </tr>
                         </tbody>
                         {% endfor %}
                     </table>
 
 
-                    <h2>Выбор образований</h2>
-                    <div>
-                        <div>
-                           {{ edu_form.education.label_tag }}
-                            {{ edu_form.education }}
-                        </div>
-                        <div>
-                            {{ edu_form.major.label_tag }}
-                            {{ edu_form.major }}
-                        </div>
-
-                        <div>
-                            <div class="col-sm-6">
-                                {{ edu_form.study_start.label_tag }}
-                                {{ edu_form.study_start }}
-                            </div>
-                            <div class="col-sm-6">
-                                {{ edu_form.study_end.label_tag }}
-                                {{ edu_form.study_end }}
-                            </div>
-                        </div>
-
-
-                        <div align="center">
-                            <div id="messageEdu" style="margin-top: 2ex;">
-
-                            </div>
-
-                            <div class="col-sm-12"  style="margin-top: 2ex;">
-                                <input type="button" class="btn btn-success" id="btnAddEdu" value="Добавить образование">
-                            </div>
-                        </div>
-
-
-                        <div style="margin-top: 2ex;">
-                            <table id="tblAddingEdu" class="table">
-
-                            </table>
-                        </div>
-
-                    </div><!-- /.Форма ввода образования-->
+                    {% include 'applicants/includes/educations.html' %}
                 </div>
               </div>
               <!-- /.Форма ввода образования -->
@@ -443,13 +263,12 @@
                       </table>
                       <hr>
 
-                    <h2>Добавить резюме</h2>
-                    <input type="file" name="resume[]" accept="application/msword, application/pdf, .odt, .docx" multiple>
+                        {% include 'applicants/includes/resume.html' %}
                   </div>
               </div><!-- /.box -->
 
                 <!-- Portfolio -->
-              <div class="box box-solid bg-teal-gradient">
+              <div class="box box-solid bg-green-gradient">
                   <div class="box-header" align="center">
                       <h2>Портфолио</h2>
                       <table class="table">
@@ -466,42 +285,14 @@
 
                       <hr>
 
-                    <h2>Добавить портфолио</h2>
-                    <input type="file" name="portfolio[]" accept="application/zip, .rar, .7z" multiple>
+                        {% include 'applicants/includes/portfolio.html' %}
                   </div>
               </div><!-- /.box -->
 
               <!-- Место жительства -->
               <div class="box box-solid bg-green-gradient">
                 <div class="box-footer text-black">
-                  <div class="row">
-                    <div class="col-sm-12">
-                        <h2>Адрес проживания</h2>
-                      <!-- Место проживания -->
-                        <div class="group-control">
-                            <label>{{ applicant_form.city.label_tag }}</label>
-                            <div>
-                                {{ applicant_form.city }}
-                            </div>
-                        </div>
-
-                        <div class="group-control">
-                            <div class="col-sm-6" style="display: inline-block;">
-                                <label>{{ applicant_form.street.label_tag }}</label>
-                                <div>
-                                    {{ applicant_form.street }}
-                                </div>
-                            </div>
-                            <div class="col-sm-6" style="display: inline-block;">
-                                <label>{{ applicant_form.building.label_tag }}</label>
-                                <div>
-                                    {{ applicant_form.building }}
-                                </div>
-                            </div>
-                        </div>
-
-                    </div><!-- /.col -->
-                  </div><!-- /.row -->
+                    {% include 'applicants/includes/address.html' %}
                 </div>
               </div><!-- /.box -->
 

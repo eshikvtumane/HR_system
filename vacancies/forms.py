@@ -2,7 +2,7 @@
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms import ModelForm
-from vacancies.models import Vacancy,Department,Status
+from vacancies.models import Vacancy,Department,Status,ApplicantVacancyEvent
 from applicants.models import Position
 
 
@@ -106,3 +106,25 @@ class SearchVacancyForm(ModelForm):
             }),
             'position':forms.Select(attrs={'class':'form-control','id':'position'})
         }
+
+
+
+class ApplicantVacancyEventForm(ModelForm):
+    class Meta:
+        model=ApplicantVacancyEvent
+        fields = { 'event' ,'start','end',}
+    widgets={
+
+        'event': forms.Select(attrs={'class':'form-control','id':'event'}),
+
+        'start': forms.DateTimeInput(attrs={
+            'id': 'start',
+            'class': 'form-control',
+            'name': 'start'
+        }),
+        'end': forms.DateTimeInput(attrs={
+            'id': 'end',
+            'class': 'form-control',
+            'name': 'end'
+        })
+    }

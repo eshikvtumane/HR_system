@@ -163,7 +163,8 @@ class Event(models.Model):
 
 
     name = models.CharField(max_length=50,verbose_name="Название события")
-
+    def __unicode__(self):
+        return self.name
 
 #Запланированное событие, связанное с кандидатом(собеседование,тел. звонок)
 class ApplicantVacancyEvent(models.Model):

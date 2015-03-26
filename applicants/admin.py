@@ -52,6 +52,7 @@ class YesterdayListFilter(admin.SimpleListFilter):
         )
 
 class BaseAdmin(admin.ModelAdmin):
+    change_list_template = "admin/change_list_filter_sidebar.html"
     readonly_fields = ('author', 'date_created',)
     list_filter = ('author', 'date_created')
 

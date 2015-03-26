@@ -159,7 +159,9 @@ class CandidateSearchForm(forms.Form):
                                  })
     )
     # почта
-    email = forms.EmailField(widget=forms.EmailInput())
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+                                     'class': 'form-control'
+                                 }))
     # опыт работы
     experience = forms.CharField(label='Опыт работы',
                                  widget=forms.TextInput(attrs={
@@ -171,12 +173,18 @@ class CandidateSearchForm(forms.Form):
     position =forms.ModelChoiceField(queryset=Position.objects.all(),
                                      label='Должность',
                                      widget=forms.Select(attrs={
+                                         'class': 'select col-sm-4',
                                          'placeholder': 'Выберите должность'
                                      }
                                 )
                             )
 
-    salary = forms.IntegerField(label='Запрашиваемая зарплата',
+    salary_start = forms.IntegerField(label='Запрашиваемая зарплата',
+                                widget=forms.NumberInput(attrs={
+                                     'class': 'form-control',
+                                 })
+                                )
+    salary_end = forms.IntegerField(label='Запрашиваемая зарплата',
                                 widget=forms.NumberInput(attrs={
                                      'class': 'form-control',
                                  })

@@ -1,18 +1,23 @@
 {% extends 'base.html' %}
 {% load thumbnail %}
 {% load staticfiles  %}
+{% load humanize %}
 
 {% block title %}
     Поиск кандидатов
 {% endblock %}
 
 {% block styles %}
-
-{% endblock %}
+    <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
+{% endblock styles %}
 
 {% block scripts %}
     <script src="/static/js/jquery.lazyload.js" type="text/javascript"></script>
     <script src="/static/js/lazyload_init.js" type="text/javascript"></script>
+
+<!-- кастомизация select -->
+    <script src="{% static 'js/selectize/selectize.js' %}"></script>
+    <script src="{% static 'js/selectize_init.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -41,64 +46,80 @@
                 -->
               <div class="box box-success">
                   <div class="box-header form-horizontal">
-                      <!-- ФИО -->
-                      <div>
-                            <div  class="form-group">
-                                <label class="control-label col-sm-2">Фамилия:</label>
-                                <div class="col-sm-10">
-                                    {{ form_search.first_name }}
+                      <form method="get" action="">
+                          {% csrf_token %}
+                          <!-- ФИО -->
+                          <div>
+                                <div  class="form-group">
+                                    <label class="control-label col-sm-2">Фамилия:</label>
+                                    <div class="col-sm-10">
+                                        {{ form_search.first_name }}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="control-label col-sm-2">Имя:</label>
-                                <div class="col-sm-10">
-                                    {{ form_search.last_name }}
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2">Имя:</label>
+                                    <div class="col-sm-10">
+                                        {{ form_search.last_name }}
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label class="control-label col-sm-2">Отчество:</label>
-                                <div class="col-sm-10">
-                                    {{ form_search.middle_name }}
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2">Отчество:</label>
+                                    <div class="col-sm-10">
+                                        {{ form_search.middle_name }}
+                                    </div>
                                 </div>
-                            </div>
-                      </div>
+                          </div>
 
-                      <div>
-                            <div class="form-group">
-                                <label class="control-label col-sm-2">Email:</label>
-                                <div class="col-sm-10">
-                                    {{ form_search.email }}
+                          <div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2">Email:</label>
+                                    <div class="col-sm-10">
+                                        {{ form_search.email }}
+                                    </div>
                                 </div>
-                            </div>
 
-                          <div class="form-group">
-                                <label class="control-label col-sm-2">Должность:</label>
-                                <div class="col-sm-10">
-                                    {{ form_search.position }}
+                              <div class="form-group">
+                                    <label class="control-label col-sm-2">Должность:</label>
+                                    <div class="col-sm-10">
+                                        {{ form_search.position }}
+                                    </div>
                                 </div>
-                            </div>
 
-                          <div class="form-group">
-                                <label class="control-label col-sm-2">Запрашиваемая зарплата:</label>
-                                <div class="col-sm-10">
-                                    {{ form_search.salary }}
-                                </div>
-                            </div>
+                              <div class="form-group">
+                                    <label class="control-label col-sm-2">Запрашиваемая зарплата:</label>
+                                    <div class="col-sm-5">
 
-                          <div class="form-group">
-                                <label class="control-label col-sm-2">Опыт работы:</label>
-                                <div class="col-sm-10">
-                                    {{ form_search.experience }}
+
+                                            <div class="col-sm-4">
+                                                от
+                                                {{ form_search.salary_start }}
+                                            </div>
+
+
+                                            <div class="col-sm-4">
+                                                до
+                                                {{ form_search.salary_end }}
+                                            </div>
+                                    </div>
                                 </div>
-                            </div>
-                      </div>
+
+                              <div class="form-group">
+                                    <label class="control-label col-sm-2">Опыт работы:</label>
+                                    <div class="col-sm-10">
+                                        {{ form_search.experience }}
+                                    </div>
+                                </div>
+                          </div>
+                          <div>
+                              <input type="submit" class="btn btn-success" value="Найти">
+                          </div>
+
+                      </form>
                   </div>
 
-                  <div>
-                      <button class="btn btn-success">Поиск</button>
-                  </div>
+
 
               </div><!-- /.форма добавления пользователя -->
 
@@ -114,6 +135,7 @@
                                 <tr>
                                     <th>Фото</th>
                                     <th>ФИО</th>
+                                    <th>Запрашиваемая зарплата</th>
                                     <th>Email</th>
                                     <th>Ссылка на страницу кандидата</th>
                                 </tr>
@@ -122,17 +144,22 @@
                                 {% for a in applicants.object_list %}
                                     <tr>
                                         <td>
-                                            {% thumbnail a.photo "200x200" crop="center" as im %}
+                                            {% thumbnail a.applicant__photo "200x200" crop="center" as im %}
                                                 <img class="lazy" data-original="{{ im.url }}">
                                             {% endthumbnail %}
 
                                         </td>
-                                        <td>{{ a.first_name }} {{ a.last_name }} {{ a.middle_name }}</td>
-                                        <td>{{ a.email }}</td>
-                                        <td><a target="_blank" href="{% url 'applicants:applicant_view' a.id %}" class="btn btn-success">Перейти на страницу</a></td>
+                                        <td>{{ a.applicant__first_name }} {{ a.applicant__last_name }} {{ a.applicant__middle_name }}</td>
+                                        <td>{{ a.salary|intcomma}}</td>
+                                        <td>{{ a.applicant__email }}</td>
 
-                                        <td></td>
-                                        </tr>
+                                        <td>
+                                            <a target="_blank" href="{% url 'applicants:applicant_view' a.applicant %}" class="btn btn-success">
+                                                Перейти на страницу
+                                            </a>
+                                        </td>
+
+                                    </tr>
                                 {% endfor %}
                             </tbody>
                         </table>

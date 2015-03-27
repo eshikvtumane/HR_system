@@ -245,7 +245,7 @@ class PaginatorView(View):
 
         # Provide Paginator with the request object for complete querystring generation
         args = {}
-        args['form_search'] = CandidateSearchForm(request.POST)
+        args['form_search'] = CandidateSearchForm(request.GET)
         p = Paginator(obj_list, 10, request=request)
         applicants = p.page(page)
 
@@ -267,27 +267,30 @@ class CandidateSearchView(PaginatorView):
         else:
             req = request.GET.copy()
 
-            salary_start = req['salary_start'].replace(' ', '')
-            salary_end   = req['salary_end'].replace(' ', '')
+            salary_start = int(req['salary_start'].replace(' ', ''))
+            salary_end   = int(req['salary_end'].replace(' ', ''))
             position     = req['position']
 
             applicant_fields = [
                 'first_name',
                 'last_name',
                 'middle_name',
-                'email'
+                'email',
+                'sex'
             ]
 
             query_list = {}
             if position:
                 query_list['vacancy__position'] = position
-            elif salary_start and not salary_end:
-                query_list['salary__gte'] = int(salary_start)
-            elif salary_end and not salary_start:
-                query_list['salary__lte'] = int(salary_end)
-            else:
-                query_list['salary__gte'] = int(salary_start)
-                query_list['salary__lte'] = int(salary_end)
+
+            if salary_start == salary_end:
+                range_salary = float(salary_start * 5) / 100.0
+                salary_start = float(salary_start) - range_salary
+                salary_end = float(salary_end + range_salary)
+
+            query_list['salary__gte'] = salary_start
+            query_list['salary__lte'] = salary_end
+
 
             for field in applicant_fields:
                 if req[field]:
@@ -314,6 +317,9 @@ class ApplicantView(View, SavingModels):
     def get(self, request, applicant_id):
 
         applicant = get_object_or_404(Applicant, id=applicant_id)
+        print '=' * 40
+        print [a for a in dir(applicant) if 'Age' in a]
+
         applicant_instance = {'instance': applicant}
         args = self.addForms(applicant_instance)
 

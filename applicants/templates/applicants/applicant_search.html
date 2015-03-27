@@ -8,17 +8,31 @@
 {% endblock %}
 
 {% block styles %}
+ <!--  -->
     <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'js/chosen/custom_chosen.css' %}" >
+
+    <!-- styles for slider -->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/ion.rangeSlider/css/normalize.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'js/ion.rangeSlider/css/ion.rangeSlider.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'js/ion.rangeSlider/css/ion.rangeSlider.skinHTML5.css' %}" >
 {% endblock styles %}
 
 {% block scripts %}
     <script src="/static/js/jquery.lazyload.js" type="text/javascript"></script>
     <script src="/static/js/lazyload_init.js" type="text/javascript"></script>
+<!-- кастомизация select -->
+<script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
+<script src="/static/js/chosen_init.js" type="text/javascript"></script>
+
+<script src="{% static 'js/ion.rangeSlider/js/ion.rangeSlider.min.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/ionSlider_init.js' %}" type="text/javascript"></script>
 
 <!-- кастомизация select -->
     <script src="{% static 'js/selectize/selectize.js' %}"></script>
     <script src="{% static 'js/selectize_init.js' %}"></script>
-{% endblock %}
+
+{% endblock scripts %}
 
 {% block content %}
     <!-- Right side column. Contains the navbar and content of the page -->
@@ -44,84 +58,91 @@
                 <!--
                     Форма поиска
                 -->
-              <div class="box box-success">
+<div class="box box-success">
                   <div class="box-header form-horizontal">
                       <form method="get" action="">
                           {% csrf_token %}
                           <!-- ФИО -->
-                          <div>
-                                <div  class="form-group">
-                                    <label class="control-label col-sm-2">Фамилия:</label>
-                                    <div class="col-sm-10">
+                          <div class="col-sm-6">
+                                  <div class="group-control">
+                                    <label>Фамилия:</label>
+                                    <div>
                                         {{ form_search.first_name }}
                                     </div>
                                 </div>
 
-                                <div class="form-group">
-                                    <label class="control-label col-sm-2">Имя:</label>
-                                    <div class="col-sm-10">
-                                        {{ form_search.last_name }}
+                                <div class="group-control" style="margin-top:1ex;">
+                                    <div style="display: inline-block;" class='col-sm-6'>
+                                        <label>Имя:</label>
+                                        <div>
+                                            {{ form_search.last_name }}
+                                        </div>
+                                    </div>
+                                    <div style="display: inline-block;" class='col-sm-6'>
+                                        <label>Отчество</label>
+                                        <div>
+                                            {{ form_search.middle_name }}
+                                        </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="form-group">
-                                    <label class="control-label col-sm-2">Отчество:</label>
-                                    <div class="col-sm-10">
-                                        {{ form_search.middle_name }}
+                          <div class="col-sm-4">
+                            <div class="group-control">
+                                <label>Email:</label>
+                                <div>
+                                    {{ form_search.email }}
+                                </div>
+                            </div>
+
+                            <div class="group-control" style="margin-top:1ex;">
+                                <label>Должность:</label>
+                                <div>
+                                    {{ form_search.position }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-2">
+                            <div class="group-control">
+                                <label>Пол:</label>
+                                <div>
+                                    {{ form_search.sex }}
+                                </div>
+                            </div>
+
+                            <div class="group-control" style="margin-top:1ex;">
+                                <label>Место жительства:</label>
+                                <div>
+                                    {{ form_search.city }}
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                          <div class="col-sm-12">
+                              <div class="form-group" style="margin-top:2ex;">
+                                  <div>
+                                      <label>Заработная плата:</label>
+                                  </div>
+
+                                    <div class="col-sm-12" style="margin-top:1ex;">
+                                          <input id="salary" type="text">
                                     </div>
+                                    {{ form_search.salary_start }}
+                                    {{ form_search.salary_end }}
+
                                 </div>
                           </div>
-
-                          <div>
-                                <div class="form-group">
-                                    <label class="control-label col-sm-2">Email:</label>
-                                    <div class="col-sm-10">
-                                        {{ form_search.email }}
-                                    </div>
-                                </div>
-
-                              <div class="form-group">
-                                    <label class="control-label col-sm-2">Должность:</label>
-                                    <div class="col-sm-10">
-                                        {{ form_search.position }}
-                                    </div>
-                                </div>
-
-                              <div class="form-group">
-                                    <label class="control-label col-sm-2">Запрашиваемая зарплата:</label>
-                                    <div class="col-sm-5">
-
-
-                                            <div class="col-sm-4">
-                                                от
-                                                {{ form_search.salary_start }}
-                                            </div>
-
-
-                                            <div class="col-sm-4">
-                                                до
-                                                {{ form_search.salary_end }}
-                                            </div>
-                                    </div>
-                                </div>
-
-                              <div class="form-group">
-                                    <label class="control-label col-sm-2">Опыт работы:</label>
-                                    <div class="col-sm-10">
-                                        {{ form_search.experience }}
-                                    </div>
-                                </div>
-                          </div>
-                          <div>
+                          <div class="col-sm-12">
                               <input type="submit" class="btn btn-success" value="Найти">
                           </div>
 
                       </form>
                   </div>
-
-
-
-              </div><!-- /.форма добавления пользователя -->
 
                 <!--
                     Результаты поиска

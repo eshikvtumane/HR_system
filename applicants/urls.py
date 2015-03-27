@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     # страница кандидата
     url(r'^view/(?P<applicant_id>[0-9]+)/$', ApplicantView.as_view(), name='applicant_view'),
      url(r'^view/(?P<applicant_id>[0-9]+)/add_event/$',
-         ApplicantEventAjax.as_view(), name='applicant_appointment'),
+         ApplicantEventAjax.as_view(), name='applicant_event'),
 
     # выборка вакансий
     url(r'^vacancy_search/$', VacancySearchAjax.as_view(), name='vacancy_search'),

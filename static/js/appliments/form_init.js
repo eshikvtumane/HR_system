@@ -44,6 +44,7 @@ $('#id_study_start').change(function(){
     $('#id_start, #id_end').datetimepicker({
         lang: 'ru',
         timepicker: true,
+        format: 'd/m/Y H:i',
         mask: true
     });
 

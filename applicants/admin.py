@@ -1,7 +1,7 @@
 #-*- coding:utf8 -*-
 from django.contrib import admin
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation
-from vacancies.models import Vacancy, ApplicantVacancy, ApplicantVacancyApplicantVacancyStatus as AVAVS
+from vacancies.models import Vacancy, ApplicantVacancy, ApplicantVacancyApplicantVacancyStatus
 from datetime import datetime, date, timedelta
 
 # Register your models here.
@@ -144,23 +144,59 @@ class ApplicantAdmin(admin.ModelAdmin):
     )
     fields = []
 
-    list_display = ('id', 'get_fullname', 'get_status', 'date_created')
+    list_display = ('id', 'get_fullname', 'get_status', 'date_created', 'get_link')
     list_filter = (YesterdayListFilter,)
     search_fields = ('last_name', 'first_name')
 
+    '''
+        TO BE REFACTORED !!!!
+        NOW!!!!
+    '''
     def get_status(self, obj):
-        #obj_vacancy = ApplicantVacancy.objects.filter(applicant=obj).values('id').reverse()[0]
+        result_statuses = ''
+        status = '<div><a target="_blank" href="/admin/vacancies/vacancy/%s">%s %s, %s</a> - %s</div><hr>'
 
-        return '111'
+        vacancy_statuses = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy__applicant=obj).values(
+                                                                            'applicant_vacancy__vacancy__id',
+                                                                            'applicant_vacancy__vacancy__position__name',
+                                                                            'applicant_vacancy__vacancy__head__name',
+                                                                            'applicant_vacancy__vacancy__published_at',
+                                                                            'applicant_vacancy_status__name')
+
+
+        list_ids = []
+        for vs in vacancy_statuses:
+            vs_id = vs['applicant_vacancy__vacancy__id']
+
+            if vs_id not in list_ids:
+                for delete_vs in vacancy_statuses:
+                    if vs_id == delete_vs['applicant_vacancy__vacancy__id']:
+                        result = delete_vs
+
+                list_ids.append(vs_id)
+                result_statuses += status % (
+                        result['applicant_vacancy__vacancy__id'],
+                        result['applicant_vacancy__vacancy__head__name'],
+                        result['applicant_vacancy__vacancy__position__name'],
+                        datetime.strftime(result['applicant_vacancy__vacancy__published_at'], '%d-%m-%Y'),
+                        result['applicant_vacancy_status__name']
+                    )
+        return result_statuses
 
     def get_fullname(self, obj):
         return '<a href="/admin/applicants/applicant/%s"><b>%s %s %s</b></a>' % (obj.id, obj.first_name, obj.last_name, obj.middle_name)
+
+    def get_link(self, obj):
+        return '<a target="_blank" href="/applicants/view/%s">Ссылка на страницу</a>' % (obj.id)
 
     get_status.short_description = 'Текущий статус'
     get_status.allow_tags = True
 
     get_fullname.short_description = 'ФИО'
     get_fullname.allow_tags = True
+
+    get_link.short_description = 'Ссылка на страницу'
+    get_link.allow_tags = True
 
 
 

@@ -13,7 +13,6 @@
 <!-- Стили для select -->
     <!--<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}" >-->
     <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
-    <link rel="stylesheet" type="text/css" href="{% static 'js/chosen/chosen.min.css' %}" >
 
     <!-- увеличение картинок -->
     <link rel="stylesheet" type="text/css" href="{% static 'js/fancy_box/source/jquery.fancybox.css' %}" >
@@ -55,6 +54,7 @@
     <script src="{% static 'js/appliments/send_candidate_form.js' %}"></script>
 <!-- смена знака пола -->
     <script src="{% static 'js/appliments/change_gender.js' %}"></script>
+    <script src="{% static 'js/appliments/add_event.js' %}"></script>
 
 {% endblock %}
 
@@ -72,6 +72,7 @@
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
                     История изменений анкеты
                 </button>
+
             </div>
             <div style="margin-top: 2ex;">
                 <label>Дата создания:</label> {{ applicant_form.date_created.value }}
@@ -159,6 +160,15 @@
                                 </td>
                                 <td>
                                     <label>Источник:</label> {{ v.source.source }}
+                                </td>
+                                <td>
+                                    <div style="margin-top: 2ex;">
+
+                                    <button type="button"
+                                            class="btn btn-primary " value="{{ v.id }}" data-toggle="modal" data-target="#event_modal">
+                                            Назначить пользователю
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -301,6 +311,60 @@
         </section><!-- /.content -->
 
     </form>
+
+
+          <!--
+            Модальное окно с назначением кандидату события
+
+          -->
+
+          <div class="modal fade" id="event_modal" tabindex="-1"
+               role="dialog"
+               aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h4>Назначение кандидату события</h4>
+                      </div>
+                      <div class="modal-body">
+
+                          <form id="frm_events">
+                              {% load bootstrap %}
+                               {{event_form|bootstrap}}
+
+                              <!--<div class="form-group">-->
+                                <!--<label for="start">Вид события</label>-->
+                                  <!--<input>-->
+                              <!--</div>-->
+                              <!--<div class="form-group">-->
+                               <!--<label for="start">Начало события</label>-->
+                               <!--<input type="datetime" class = "form-control"-->
+                                      <!--id="start">-->
+
+                              <!--</div>-->
+                              <!--<div class="form-group">-->
+                                <!--<label for="end">Окончание события</label>-->
+                                <!--<input type="datetime" class = "form-control"-->
+                                   <!--id="end">-->
+                              <!--</div>-->
+
+                          </form>
+
+                      </div>
+                      <div class="modal-footer">
+
+                          <button type="button" id="add_event"
+                                  class="btn btn-default">Назначить
+                          </button>
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+
 
           <!--
             Модальное окно с историей действий

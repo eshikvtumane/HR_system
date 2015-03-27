@@ -9,8 +9,9 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
-from vacancies.models import Vacancy, ApplicantVacancy, ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus
-
+from vacancies.models import Vacancy, ApplicantVacancy, \
+    ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus,ApplicantVacancyEvent
+from vacancies.forms import ApplicantVacancyEventForm
 import os
 from django.conf import settings
 from django.core.files.storage import default_storage
@@ -103,10 +104,10 @@ class SavingModels():
 
     def addForms(self, applicant_instance={}):
         args = {}
-
         args['applicant_form'] = ApplicantForm(**applicant_instance)
         args['edu_form'] = ApplicantEducationForm()
         args['vacancy_form'] = VacancyForm()
+        args['event_form'] = ApplicantVacancyEventForm()
         args['positions'] = Position.objects.all()
         args['sources'] = SourceInformation.objects.all()
 
@@ -354,6 +355,35 @@ class ApplicantView(View, SavingModels):
         return HttpResponse(json_res, 'application/json')
 
 
+
+
+class ApplicantEventAjax(View):
+    def post(self,request):
+        if request.is_ajax:
+            applicant_id = request.POST['applicant_id']
+            vacancy_id = request.POST['vacancy_id']
+            applicant = Applicant.objects.get(id=applicant_id )
+            vacancy = Vacancy.objects.get(id = vacancy_id)
+            applicant_vacancy = ApplicantVacancy(applicant=applicant,
+                                                 vacancy=vacancy)
+            event = request.POST["event"]
+            start = request.POST["start"]
+            end = request.POST["end"]
+            form = ApplicantVacancyEventForm({
+                'event':event,'start':start,'end':end})
+            if form.is_valid():
+                form.instance.applicant_vacancy = applicant_vacancy
+                form.save()
+                return HttpResponse ("200")
+            return HttpResponse("400")
+
+
+
+
+
+
+
+
 class ApplicantVacancyStatusAjax(View):
     def get(self, request):
         if request.is_ajax:
@@ -393,3 +423,4 @@ class ApplicantVacancyStatusAjax(View):
             json_res = json.dumps(['500'])
 
         return HttpResponse(json_res, content_type='application/text')
+

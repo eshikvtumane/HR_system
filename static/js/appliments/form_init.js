@@ -41,6 +41,13 @@ $('#id_study_start').change(function(){
         mask: true
     });
 
+    $('#id_start, #id_end').datetimepicker({
+        lang: 'ru',
+        timepicker: true,
+        mask: true
+    });
+
+
 
    $('.select').selectize();
 

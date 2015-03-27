@@ -82,6 +82,8 @@ class Vacancy(models.Model):
                                default=DEFAULT_VACANCY_STATUS)
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
 
+    author = models.ForeignKey(User,verbose_name=u'Автор',default=None)
+
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in
                 Vacancy._meta.fields]
@@ -96,7 +98,7 @@ class ApplicantVacancyStatus(models.Model):
         verbose_name = 'Статус кандидата по вакансии'
         verbose_name_plural = 'Статусы кандидата по вакансии'
     name = models.TextField(verbose_name='Статус')
-    author = models.ForeignKey(User, verbose_name='Автор')
+    author = models.ForeignKey(User, verbose_name='Автор',default=None)
     date_created = models.DateTimeField('Дата создания', default=datetime.datetime.now())
 
     def __unicode__(self):
@@ -126,7 +128,7 @@ class ApplicantVacancy(models.Model):
 
     applicant = models.ForeignKey(Applicant)
     vacancy = models.ForeignKey('Vacancy')
-    source = models.ForeignKey(SourceInformation)
+    source = models.ForeignKey(SourceInformation,default=None)
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=timezone.now, verbose_name='Дата добавления')
@@ -149,6 +151,7 @@ class ApplicantVacancyApplicantVacancyStatus(models.Model):
     applicant_vacancy = models.ForeignKey('ApplicantVacancy')
     applicant_vacancy_status = models.ForeignKey('ApplicantVacancyStatus')
     date = models.DateTimeField(verbose_name='Дата присвоения',default=timezone.now)
+    author = models.ForeignKey(User,verbose_name='Автор',default=None)
 
 
 #Событие, связанное с кандидатом
@@ -160,7 +163,8 @@ class Event(models.Model):
 
 
     name = models.CharField(max_length=50,verbose_name="Название события")
-
+    def __unicode__(self):
+        return self.name
 
 #Запланированное событие, связанное с кандидатом(собеседование,тел. звонок)
 class ApplicantVacancyEvent(models.Model):
@@ -174,5 +178,6 @@ class ApplicantVacancyEvent(models.Model):
     end = models.DateTimeField(verbose_name="Окончание события")
     applicant_vacancy = models.ForeignKey('ApplicantVacancy')
     event = models.ForeignKey('Event')
+    author = models.ForeignKey(User,verbose_name='Автор',default=None)
 
 

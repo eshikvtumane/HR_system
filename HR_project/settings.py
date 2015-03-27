@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'vacancies',
     'administration',
     'users',
+    'reports',
 )
 
 MIDDLEWARE_CLASSES = (

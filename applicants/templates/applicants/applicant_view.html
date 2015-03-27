@@ -111,14 +111,14 @@
                                     <input type="hidden" name="birthday" value="{{ applicant_form.birthday.value|date_format }}">
                                 </div>
                             </div>
-                              <!--
+
                             <div style="display: inline-block;" class='col-sm-6'>
-                                <label>Источник:</label>
+                                <label>Возраст:</label>
                                 <div>
-                                    {{ applicant_form.source }}
+                                    {{ applicant_form.birthday.value|age }} лет
                                 </div>
                             </div>
-                            -->
+
                         </div>
 
                       </div>

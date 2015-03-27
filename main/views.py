@@ -22,7 +22,7 @@ class MainPageView(View):
         return render_to_response(self.template, rc)
 
 class GlobalSearchView(PaginatorView):
-    template = 'applicants/applicant_search.html'
+    template = 'applicants/applicant_global_search.html'
     def get(self, request):
         query = request.GET['q']
 

@@ -2,7 +2,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
-import vacancies
+
 
 # Create your models here.
 
@@ -56,7 +56,6 @@ class Applicant(models.Model):
 
     def getFullName(self):
         return '%s %s %s' % (self.first_name, self.last_name, self.middle_name)
-
 
 
 class Phone(models.Model):

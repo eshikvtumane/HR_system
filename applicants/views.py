@@ -9,8 +9,9 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
-from vacancies.models import Vacancy, ApplicantVacancy, ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus
-
+from vacancies.models import Vacancy, ApplicantVacancy, \
+    ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus,ApplicantVacancyEvent
+from vacancies.forms import ApplicantVacancyEventForm
 import os
 from django.conf import settings
 from django.core.files.storage import default_storage
@@ -23,6 +24,8 @@ from django.utils.decorators import method_decorator
 
 
 import datetime
+from django.db.models import Q
+import operator
 
 # Create your views here.
 
@@ -101,10 +104,10 @@ class SavingModels():
 
     def addForms(self, applicant_instance={}):
         args = {}
-
         args['applicant_form'] = ApplicantForm(**applicant_instance)
         args['edu_form'] = ApplicantEducationForm()
         args['vacancy_form'] = VacancyForm()
+        args['event_form'] = ApplicantVacancyEventForm()
         args['positions'] = Position.objects.all()
         args['sources'] = SourceInformation.objects.all()
 
@@ -243,10 +246,9 @@ class PaginatorView(View):
 
         # Provide Paginator with the request object for complete querystring generation
         args = {}
-        args['form_search'] = CandidateSearchForm
+        args['form_search'] = CandidateSearchForm(request.GET)
         p = Paginator(obj_list, 10, request=request)
         applicants = p.page(page)
-
 
         args['applicants'] = applicants
         rc = RequestContext(request, args)
@@ -258,10 +260,53 @@ class CandidateSearchView(PaginatorView):
 
     @method_decorator(login_required)
     def get(self, request):
-        applicants_list = Applicant.objects.all().values('id', 'first_name', 'last_name', 'middle_name', 'photo', 'email')
+        if not request.GET:
+            applicant_vacancy_list = ApplicantVacancy.objects.all()\
+                .order_by('salary')\
+                .values('applicant', 'applicant__last_name', 'applicant__first_name', 'applicant__middle_name', 'applicant__email', 'applicant__photo', 'salary')\
+                .reverse()[:10]
+        else:
+            req = request.GET.copy()
 
-        return self.paginator(request, applicants_list)
+            salary_start = int(req['salary_start'].replace(' ', ''))
+            salary_end   = int(req['salary_end'].replace(' ', ''))
+            position     = req['position']
 
+            applicant_fields = [
+                'first_name',
+                'last_name',
+                'middle_name',
+                'email',
+                'sex'
+            ]
+
+            query_list = {}
+            if position:
+                query_list['vacancy__position'] = position
+
+            if salary_start == salary_end:
+                range_salary = float(salary_start * 5) / 100.0
+                salary_start = float(salary_start) - range_salary
+                salary_end = float(salary_end + range_salary)
+
+            query_list['salary__gte'] = salary_start
+            query_list['salary__lte'] = salary_end
+
+
+            for field in applicant_fields:
+                if req[field]:
+                    query_list['applicant__' + field + '__contains'] = req[field]
+
+            applicant_vacancy_list = ApplicantVacancy.objects.filter(**query_list)\
+                .order_by('salary')\
+                .values('applicant', 'applicant__last_name',
+                        'applicant__first_name', 'applicant__middle_name',
+                        'applicant__email', 'applicant__photo', 'salary')
+
+        return self.render(request, applicant_vacancy_list)
+
+    def render(self, request, result_list):
+        return self.paginator(request, result_list)
 
 
 
@@ -273,6 +318,9 @@ class ApplicantView(View, SavingModels):
     def get(self, request, applicant_id):
 
         applicant = get_object_or_404(Applicant, id=applicant_id)
+        print '=' * 40
+        print [a for a in dir(applicant) if 'Age' in a]
+
         applicant_instance = {'instance': applicant}
         args = self.addForms(applicant_instance)
 
@@ -309,9 +357,37 @@ class ApplicantView(View, SavingModels):
 
 
 
-class ApplicantAppointmentView(View):
-    def get(self,request):
-        pass
+class ApplicantEventAjax(View):
+    def post(self,request,applicant_id):
+        if request.is_ajax:
+            vacancy_id = request.POST['vacancy_id']
+            applicant = Applicant.objects.get(id=applicant_id )
+            vacancy = Vacancy.objects.get(id = vacancy_id)
+            applicant_vacancy = ApplicantVacancy.objects.get(
+                applicant=applicant,vacancy=vacancy)
+
+
+            event = request.POST["event"]
+            start = datetime.datetime.strptime(request.POST['start'],
+                                               "%d/%m/%Y %H:%M")
+
+            end = datetime.datetime.strptime(request.POST['end'], "%d/%m/%Y "
+                                                                  "%H:%M")
+            form = ApplicantVacancyEventForm({
+                'event':event,'start':start,'end':end})
+
+            if form.is_valid():
+                form.instance.applicant_vacancy = applicant_vacancy
+                form.instance.author = request.user
+                form.save()
+                return HttpResponse ("200")
+            print(form.errors)
+            return HttpResponse("400")
+
+
+
+
+
 
 
 

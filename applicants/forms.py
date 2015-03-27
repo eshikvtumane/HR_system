@@ -140,6 +140,12 @@ class VacancyAddForm(forms.Form):
 
 # Форма поиска
 class CandidateSearchForm(forms.Form):
+    GENDER_LIST = (
+        ('', 'Выберите пол'),
+        ('1', 'Мужской'),
+        ('2', 'Женский'),
+    )
+
     # фамилия
     first_name = forms.CharField(label='Фамилия',
                                  widget=forms.TextInput(attrs={
@@ -159,28 +165,35 @@ class CandidateSearchForm(forms.Form):
                                  })
     )
     # почта
-    email = forms.EmailField(widget=forms.EmailInput())
-    # опыт работы
-    experience = forms.CharField(label='Опыт работы',
-                                 widget=forms.TextInput(attrs={
-                                     'class': 'form-control'
+    email = forms.EmailField(widget=forms.EmailInput(attrs={
+                                         'class':'form-control',
+                                     }))
+    # пол
+    sex = forms.ChoiceField(choices=GENDER_LIST,
+                                 widget=forms.Select(attrs={
+                                     'class': 'select-chosen',
+                                     'data-placeholder': 'Выберите пол'
                                  })
                                  )
-
+    # Место жительства
+    city = forms.ChoiceField(
+                                 widget=forms.Select(attrs={
+                                     'class': 'select',
+                                     'placeholder': 'Выберите город'
+                                 })
+                                 )
     # должность
     position =forms.ModelChoiceField(queryset=Position.objects.all(),
                                      label='Должность',
                                      widget=forms.Select(attrs={
+                                         'class': 'select',
                                          'placeholder': 'Выберите должность'
                                      }
                                 )
                             )
 
-    salary = forms.IntegerField(label='Запрашиваемая зарплата',
-                                widget=forms.NumberInput(attrs={
-                                     'class': 'form-control',
-                                 })
-                                )
+    salary_start = forms.Field(widget=forms.HiddenInput())
+    salary_end = forms.Field(widget=forms.HiddenInput())
 
 class VacancyForm(forms.Form):
 
@@ -221,6 +234,3 @@ class VacancyForm(forms.Form):
                                             'name': 'source[]'
                                        })
     )
-
-
-

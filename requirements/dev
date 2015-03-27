@@ -6,3 +6,4 @@ selenium
 sorl-thumbnail
 django-pure-pagination
 django-grappelli
+xlwt

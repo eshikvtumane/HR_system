@@ -105,20 +105,6 @@ class ApplicantVacancyStatus(models.Model):
         return self.name
 
 
-
-class Event(models.Model):
-    class Meta:
-        db_table = 'Events'
-        verbose_name = 'Событие'
-        verbose_name_plural = 'События'
-
-
-    name = models.CharField(max_length=50,verbose_name="Название события")
-    date_time = models.DateTimeField(verbose_name='Дата назначения')
-    subject = models.ForeignKey('ApplicantVacancy')
-
-
-
 # Отношение Кандидат-Вакансии
 class ApplicantVacancy(models.Model):
     class Meta:
@@ -180,4 +166,5 @@ class ApplicantVacancyEvent(models.Model):
     event = models.ForeignKey('Event')
     author = models.ForeignKey(User,verbose_name='Автор')
 
+   
 

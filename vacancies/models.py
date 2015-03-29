@@ -27,11 +27,11 @@ DEFAULT_APPLICANT_VACANCY_STATUS = 1
 
 #######################
 #Словарь статусов вакансий
-class Status(models.Model):
+class VacancyStatus(models.Model):
     class Meta:
-        db_table = 'Statuses'
-        verbose_name = 'Статус'
-        verbose_name_plural = 'Статусы'
+        db_table = 'VacancyStatuses'
+        verbose_name = 'Статус вакансии'
+        verbose_name_plural = 'Статусы вакансии'
 
     name = models.TextField(max_length=50)
 
@@ -78,7 +78,7 @@ class Vacancy(models.Model):
     description = models.TextField(verbose_name=u"Описание")
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
 
-    status = models.ForeignKey(Status,verbose_name=u'Статус',
+    status = models.ForeignKey(VacancyStatus,verbose_name=u'Статус',
                                default=DEFAULT_VACANCY_STATUS)
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
 

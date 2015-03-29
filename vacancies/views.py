@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
 from django.template import RequestContext
 from forms import AddVacancyForm, EditVacancyForm, SearchVacancyForm
-from .models import Department, Head, Vacancy, Position, Status, ApplicantVacancyEvent
+from .models import Department, Head, Vacancy, Position, VacancyStatus, ApplicantVacancyEvent
 import json
 from django.core import serializers
 import datetime

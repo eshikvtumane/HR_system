@@ -81,6 +81,7 @@ function saveStatus(obj){
     var tbl = document.getElementById('tbl_statuses');
     var select_status = document.getElementById('applicant_vacancy_status');
      var status_id = select_status.value
+     var user_id = document.getElementById('user_id').value;
 
     if(status_id){
         $.ajax({
@@ -88,7 +89,8 @@ function saveStatus(obj){
             url: '/applicants/status_add/',
             data: {
                 'applicant_vacancy': obj.value,
-                'status': status_id
+                'status': status_id,
+                'user_id': user_id
             },
             dataType: 'json',
             success: function(data){

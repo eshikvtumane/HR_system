@@ -181,6 +181,7 @@ class ApplicantAdmin(admin.ModelAdmin):
                         datetime.strftime(result['applicant_vacancy__vacancy__published_at'], '%d-%m-%Y'),
                         result['applicant_vacancy_status__name']
                     )
+                #return '<hr>' + result_statuses
         return result_statuses
 
     def get_fullname(self, obj):

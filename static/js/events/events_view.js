@@ -8,7 +8,18 @@ $(function(){
         data:{
             'app_vacancy_id'
         }
-       })
+       },
+
+       success:function(){
+            $('#events_history').html("ALL GOOD!!!!")
+       },
+
+       error:function(){
+              $('#events_history').html("ERROR OCCURED!!")
+       }
+
+
+       )
 
 
     })

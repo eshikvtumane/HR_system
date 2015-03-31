@@ -5,6 +5,7 @@ from django.views.generic import View
 from applicants.models import Applicant
 from vacancies.forms import ApplicantVacancyEventForm
 from vacancies.models import ApplicantVacancy, Vacancy
+from .models import ApplicantVacancyEvent
 from django.template import RequestContext
 
 
@@ -46,7 +47,10 @@ class EventsAdd(View):
 
 
 def get_vacancy_events_ajax(request):
-    vacancy_events_id = request.POST["app_vacancy_id"]
+    app_vacancy_id = request.POST["app_vacancy_id"]
+    events = ApplicantVacancyEvent.objects.filter(applicant_vacancy=app_vacancy_id)
+    result = []
+    return HttpResponse(result,content_type='application/json')
 
 
 

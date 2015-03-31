@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+
+
+{% block title %}
+    Просмотр событий
+{% endblock %}
+
+
+{% block styles %}
+    <!-- Стили для datepicker -->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
+{% endblock %}
+
+
+
+{% block scripts %}
+<script src="{% static 'js/csrf_ajax.js' %}"></script>
+<script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
+<script src="{% static 'js/vacancies/form_init.js' %}"></script>
+{% endblock %}
+
+
+ {% block content %}
+     <!-- Right side column. Contains the navbar and content of the page -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Просмотр событий
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
+            <li class="active">Просмотр событий</li>
+          </ol>
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+
+          <!-- Main row -->
+          <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-12 connectedSortable">
+                <!--
+                    Форма добавления вакансии
+                -->
+
+              <div class="box box-success">
+                <div class="box-header">
+                    Вакансии</br>
+                    <select id='vacancy_slct'>
+                         {% for app_vacancy in app_vacancies %}
+                        <option
+                                value=" {{app_vacancy.id}}">{{app_vacancy.vacancy.position}}
+                        </option>
+
+                    {% endfor%}
+                    </select>
+
+                    <div id='events_history'></div>
+
+                </div>
+
+              </div><!-- /.форма добавления вакансии -->
+
+
+            </section><!-- /.Left col -->
+
+              <!-- right col (We are only adding the ID to make the widgets sortable)-->
+
+
+        </div><!-- /.row (main row) -->
+        </section><!-- /.content -->
+      </div><!-- /.content-wrapper -->
+
+
+
+        {% endblock %}

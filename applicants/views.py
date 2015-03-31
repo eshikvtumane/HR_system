@@ -10,7 +10,9 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
 from vacancies.models import Vacancy, ApplicantVacancy, \
-    ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus,ApplicantVacancyEvent
+    ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus
+
+from events.models import ApplicantVacancyEvent
 from vacancies.forms import ApplicantVacancyEventForm
 import os
 from django.conf import settings

@@ -2,7 +2,8 @@
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms import ModelForm
-from vacancies.models import Vacancy,Department,Status,ApplicantVacancyEvent
+from vacancies.models import Vacancy,Department,Status
+from events.models import ApplicantVacancyEvent
 from applicants.models import Position
 
 

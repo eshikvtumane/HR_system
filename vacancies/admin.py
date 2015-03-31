@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Head, Department, Status, Vacancy, ApplicantVacancy, \
-    ApplicantVacancyStatus,Event,ApplicantVacancyEvent, \
+    ApplicantVacancyStatus,\
     ApplicantVacancyApplicantVacancyStatus
 
 # Register your models here.
@@ -25,14 +25,6 @@ class ApplicantVacancyAdmin(admin.ModelAdmin):
 class  ApplicantVacancyStatusAdmin(admin.ModelAdmin):
     fields = []
 
-
-class EventAdmin(admin.ModelAdmin):
-    fields = []
-
-
-class  ApplicantVacancyEventAdmin(admin.ModelAdmin):
-    fields = []
-
 class ApplicantVacancyApplicantVacancyStatusAdmin(admin.ModelAdmin):
     fields = []
 
@@ -41,8 +33,6 @@ admin.site.register(Status, StatusAdmin)
 admin.site.register(Vacancy, VacancyAdmin)
 admin.site.register(ApplicantVacancy,ApplicantVacancyAdmin)
 admin.site.register(ApplicantVacancyStatus,ApplicantVacancyStatusAdmin)
-admin.site.register(Event,EventAdmin)
-admin.site.register(ApplicantVacancyEvent,ApplicantVacancyEventAdmin)
 admin.site.register(ApplicantVacancyApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatusAdmin)
 
 

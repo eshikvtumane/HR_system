@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui-month-picker/css/MonthPicker.css' %}" >
+{% endblock styles %}
+
+{% block scripts %}
+    <!-- кастомизация select
+    <script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
+    <script src="{% static 'js/chosen_init.js' %}"></script>
+     -->
+    <script src="{% static 'js/selectize/selectize.js' %}"></script>
+    <script src="{% static 'js/selectize_init.js' %}"></script>
+
+    <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
+    <script src="{% static 'js/reports/summary_statement_recruiter.js' %}"></script>
+
+    <!-- Month picker -->
+    <script src="{% static 'js/jquery-ui-month-picker/MonthPicker.js' %}"></script>
+<!-- Ajax loader -->
+<script src="{% static 'js/loader.js' %}"></script>
+{% endblock scripts %}
+
+
+
+{% block content %}
+    <!-- Right side column. Contains the navbar and content of the page -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Сводная ведомость по набору персонала
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="/"><i class="fa fa-dashboard"></i> Главная</a></li>
+            <li><a href="{% url 'reports:main_reports' %}"><i class="fa fa-dashboard"></i> Статистика и аналитика</a></li>
+            <li class="active"> Сводная ведомость по набору персонала</li>
+          </ol>
+        </section>
+
+            <!-- Main content -->
+        <section class="content">
+          <!-- Main row -->
+          <div class="row">
+            <!-- Left col -->
+            <section class="col-lg-7 connectedSortable">
+              <div class="box box-success">
+                  <div class="box-header" class='col-sm-12'>
+                      <div>
+                          Период
+                          <div>
+                            {{ form.period }}
+                          </div>
+                      </div>
+                      <div>
+                         Должность
+                          <div>
+                              {{ form.position }}
+                          </div>
+                      </div>
+                      <div>
+                          Вакансия
+                          <div>
+                              {{ form.vacancies }}
+                          </div>
+                      </div>
+                      <div>
+                          Источники размещения
+                          <div>
+                              {{ form.source }}
+                          </div>
+
+                          <button id="clearSource" class="btn btn-warning">Очистить источники</button>
+                      </div>
+                  </div>
+
+                  <div>
+                      <div id="loader"></div>
+                      <div id="message">
+                  </div>
+
+                      <button id="btnAddVacancyReport" class="btn btn-primary">Добавить вакансию</button>
+
+                      <table class="table" id="tblAddingVacancyReport">
+
+                      </table>
+
+                  </div>
+
+                  <button id="btnGenerateReport" class="btn btn-success">Генерировать отчёт</button>
+              </div>
+            </section>
+          </div>
+        </section>
+
+      </div>
+{% endblock content %}

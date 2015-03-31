@@ -14,6 +14,8 @@ from vacancies.models import Vacancy, ApplicantVacancy, \
 
 from events.models import ApplicantVacancyEvent
 from vacancies.forms import ApplicantVacancyEventForm
+from django.contrib.auth.models import User
+
 import os
 from django.conf import settings
 from django.core.files.storage import default_storage
@@ -422,7 +424,8 @@ class ApplicantVacancyStatusAjax(View):
             request = request.POST
             obj = ApplicantVacancyApplicantVacancyStatus(
                 applicant_vacancy=ApplicantVacancy.objects.get(pk=request['applicant_vacancy']),
-                applicant_vacancy_status = ApplicantVacancyStatus.objects.get(pk=request['status'])
+                applicant_vacancy_status = ApplicantVacancyStatus.objects.get(pk=request['status']),
+                author = User.objects.get(pk=request['user_id'])
             )
             obj.save()
 

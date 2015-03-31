@@ -6,7 +6,7 @@ from applicants.models import Position
 import datetime
 from test_models import create_vacancy
 
-from vacancies.forms import AddVacancyForm, ViewVacancyForm
+from vacancies.forms import AddVacancyForm, EditVacancyForm
 from vacancies.models import  Head
 class VacancyFormTest(TestCase):
     def test_vacancy_form_validation_at_addition(self):
@@ -26,7 +26,7 @@ class VacancyFormTest(TestCase):
         vacancy = create_vacancy()
         vacancy.save()
 
-        form = ViewVacancyForm({'salary':200.0,'end_date':datetime.datetime(2015,3,4),'description':"fdgdg",
+        form = EditVacancyForm({'salary':200.0,'end_date':datetime.datetime(2015,3,4),'description':"fdgdg",
                             'position':1,'status': 1},instance=vacancy)
         form.is_valid()
 

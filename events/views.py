@@ -1,4 +1,6 @@
 import datetime
+import json
+from collections import OrderedDict
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
 from django.views.generic import View
@@ -42,15 +44,34 @@ class EventsAdd(View):
                 form.instance.author = request.user
                 form.save()
                 return HttpResponse ("200")
-            print(form.errors)
             return HttpResponse("400")
 
 
 def get_vacancy_events_ajax(request):
-    app_vacancy_id = request.POST["app_vacancy_id"]
-    events = ApplicantVacancyEvent.objects.filter(applicant_vacancy=app_vacancy_id)
-    result = []
-    return HttpResponse(result,content_type='application/json')
+    app_vacancy_id = request.GET["app_vacancy_id"]
+    events = ApplicantVacancyEvent.objects.filter(
+        applicant_vacancy=app_vacancy_id).values('event__name','start','end',
+                                                 'author__username','happened')
+
+
+
+
+
+    response = [
+        {
+            'event':event['event__name'],
+            'start':str(event['start'].strftime('%d-%m-%Y %H:%M')),
+            'end': str(event['end'].strftime('%d-%m-%Y %H:%M')),
+            'author':event['author__username'],
+            'happened':event['happened']
+
+        }
+        for event in events
+    ]
+    print response
+    response = json.dumps(response)
+    print response
+    return HttpResponse(response,content_type='application/json')
 
 
 

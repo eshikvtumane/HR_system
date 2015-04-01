@@ -19,7 +19,7 @@
 {% block scripts %}
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
 <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
-<script src="{% static 'js/vacancies/form_init.js' %}"></script>
+<script src="{% static 'js/events/events_view.js' %}"></script>
 {% endblock %}
 
 
@@ -52,6 +52,7 @@
                 <div class="box-header">
                     Вакансии</br>
                     <select id='vacancy_slct'>
+                        <option value="">------</option>
                          {% for app_vacancy in app_vacancies %}
                         <option
                                 value=" {{app_vacancy.id}}">{{app_vacancy.vacancy.position}}
@@ -59,8 +60,22 @@
 
                     {% endfor%}
                     </select>
-
-                    <div id='events_history'></div>
+                    <div id="errors_box"></div>
+                    <div id='events_history'>
+                        <table class="table" id="events_table">
+                            <thead>
+                            <tr>
+                                <th>Тип события</th>
+                                <th>Начало</th>
+                                <th>Окончание</th>
+                                <th>Назначил</th>
+                                <th>Событие состоялось?</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
 
                 </div>
 

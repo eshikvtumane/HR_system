@@ -391,10 +391,6 @@ class ApplicantEventAjax(View):
 
 
 
-
-
-
-
 class ApplicantVacancyStatusAjax(View):
     def get(self, request):
         if request.is_ajax:

@@ -80,6 +80,7 @@ class Vacancy(models.Model):
 
     status = models.ForeignKey(Status,verbose_name=u'Статус',
                                default=DEFAULT_VACANCY_STATUS)
+
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
 
     author = models.ForeignKey(User,verbose_name=u'Автор')
@@ -90,6 +91,19 @@ class Vacancy(models.Model):
 
     def __unicode__(self):
         return self.position.name + " " + str(self.published_at)
+
+# Ведение истории по изменению статуса у вакансии
+class VacancyStatus(models.Model):
+    class Meta:
+        db_table = 'VacancyStatus'
+        verbose_name = 'Статус вакансии'
+        verbose_name_plural = 'Статусы вакансии'
+
+    vacancy = models.ForeignKey('Vacancy')
+    status = models.ForeignKey('Status', default=DEFAULT_VACANCY_STATUS)
+    date_change = models.DateTimeField(verbose_name=u'Дата изменения',
+                                    default=timezone.now)
+
 
 #Словарь статусов для отношения Кандидат-Вакансия
 class ApplicantVacancyStatus(models.Model):
@@ -138,6 +152,7 @@ class ApplicantVacancyApplicantVacancyStatus(models.Model):
     applicant_vacancy_status = models.ForeignKey('ApplicantVacancyStatus')
     date = models.DateTimeField(verbose_name='Дата присвоения',default=timezone.now)
     author = models.ForeignKey(User,verbose_name='Автор')
+    note = models.TextField(verbose_name='Примечание')
 
 
 #Событие, связанное с кандидатом

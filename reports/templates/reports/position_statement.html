@@ -3,7 +3,6 @@
 
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
-    <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui-month-picker/css/MonthPicker.css' %}" >
 {% endblock styles %}
 
 {% block scripts %}
@@ -14,11 +13,8 @@
     <script src="{% static 'js/selectize/selectize.js' %}"></script>
     <script src="{% static 'js/selectize_init.js' %}"></script>
 
-    <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
     <script src="{% static 'js/reports/summary_statement_recruiter.js' %}"></script>
 
-    <!-- Month picker -->
-    <script src="{% static 'js/jquery-ui-month-picker/MonthPicker.js' %}"></script>
 
 
     <script src="{% static 'js/jquery.fileDownload/src/Scripts/jquery.fileDownload.js' %}"></script>
@@ -66,39 +62,14 @@
                                   {{ form.position }}
                               </div>
                           </div>
-                          <div class="col-sm-3">
-                              Вакансия
-                              <div>
-                                  {{ form.vacancies }}
-                              </div>
-                          </div>
-                          <div class="col-sm-3">
-                              Источники размещения
-                              <div>
-                                  {{ form.source }}
-                              </div>
 
-                          </div>
-                          <div class="col-sm-3">
-                              <label></label><br>
-                              <button id="clearSource" class="btn btn-warning">Очистить источники</button>
-                          </div>
                       </div>
 
                       <div class="col-sm-12">
                           <div style="padding-top: 8ex;" align="center">
-                              <div id="loader"></div>
                               <div id="message"></div>
                               <button id="btnAddVacancyReport" class="btn btn-primary" style="margin-top: 2ex;">Добавить вакансию</button>
                           </div>
-
-                          <div style="padding-top: 2ex;" align="center">
-                              <table class="table" id="tblAddingVacancyReport">
-
-                          </table>
-                          </div>
-
-
                       </div>
                         <div class="col-sm-12">
                             <div style="padding-top: 4ex;" align="center">

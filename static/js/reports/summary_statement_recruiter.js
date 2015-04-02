@@ -3,33 +3,36 @@ $(document).ready(function(){
     var $select = $('#source').selectize();
 
     $('#btnAddVacancyReport').click(function(){
-    console.log(111);
            addVacancyReport();
-           console.log(111);
     });
 
     $('clearSource').click(function(){
         var control = $select[0].selectize;
         control.clearOptions();
     });
-
-    $('#btnGenerateReport').click(function(){
-        $.ajax({
-            type: 'POST',
-            url: '/reports/summary_statement/',
+});
+// формирование и скачивание отчёта
+$(document).on('submit', 'form#FileDownload', function(e){
+    var period = document.getElementById('period').value;
+    var vacancies_len = vacancies.length;
+    console.log(vacancies.length)
+    if(period != ''){
+        if(vacancies){
+            $.fileDownload($(this).prop('action'), {
+            //preparingMessageHtml: "Подождите, отчёт формируется ...",
+            //failMessageHtml: "Ошибка! Попробуйте произвести формировние отчёта позднее.",
+            httpMethod: 'GET',
             data: {
-                'period': $('#period').val(),
-                'vacancies': JSON.stringify(vacancies)
-            },
-            dataType: 'json',
-            success: function(data){
-                console.log(data);
-
-                div_loader.innerHTML = '';
-                div_message.innerHTML = 'Вакансии загружены';
-            }
-        });
-    });
+                    'period': $('#period').val(),
+                    'vacancies': JSON.stringify(vacancies)
+                }
+            });
+        }
+        e.preventDefault();
+        return;
+    }
+    document.getElementById('message').innerHTML = 'Выберите период и/или добавьте вакансии';
+    e.preventDefault();
 });
 
 // добавление вакансий
@@ -51,14 +54,15 @@ var createDict = function(vacancies, tbl_work){
     vacancy_id = parseInt(vacancy.value);
     vacancy_name = vacancy.options[vacancy.selectedIndex].text;
 
+
     var source_vals = $('#source').val();
-    var source_texts = $('#source option:selected').map(function() {
-        return $(this).text();
-    }).get().join(', ');
 
     var message = document.getElementById('message');
+    if(position_id != '' && vacancy_id != '' && source_vals){
+        var source_texts = $('#source option:selected').map(function() {
+            return $(this).text();
+        }).get().join(', ');
 
-    if(position_id != '' && position_name != ''){
         var arr = [
             position_name,
             vacancy_name,

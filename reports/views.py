@@ -1,13 +1,40 @@
-#-*- coding: utf8 -*-
+#-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.http import HttpResponse
 from django.views.generic import View
 
+from vacancies.models import ApplicantVacancy, Vacancy, ApplicantVacancyApplicantVacancyStatus, ApplicantVacancyStatus, Position
+from applicants.models import SourceInformation
+
 from forms import SummaryStatementRecruimentForm
+from datetime import datetime
 import json
 import xlwt
 
+from django.db.models import Q
+
+import pprint
+
 # Create your views here.
+'''
+    CONSTANTS
+'''
+MONTH = {
+    '01':u'Январь',
+    '02':u'Февраль',
+    '03':u'Март',
+    '04':u'Апрель',
+    '05':u'Май',
+    '06':u'Июнь',
+    '07':u'Июль',
+    '08':u'Август',
+    '09':u'Сентябрь',
+    '10':u'Октябрь',
+    '11':u'Ноябрь',
+    '12':u'Декабрь'
+}
+
 class MainReports(View):
     template = 'reports/reports.html'
     def get(self, request):
@@ -17,30 +44,218 @@ class MainReports(View):
 class GenerateReport():
     def __init__(self):
         self.wb = xlwt.Workbook(encoding='utf-8')
+        self.depth = 0
+        self.body_depth = 0
 
     def createWorksheet(self, sheet_name):
-        ws = self.wb.add_sheet(sheet_name)
+        return self.wb.add_sheet(sheet_name, cell_overwrite_ok=True)
 
-    def writeHead(self, ws, values, row_start, column_start=0):
+    def getWorksheet(self):
+        return self.wb
+
+    def writeValues(self, ws, row_start, column_start, values, empty_value='-'):
+
         for value in values:
-            if isinstance(value[0], dict):
-                print 'dict'
-                self.writeHead(ws, value[value.keys()[0]], row_start+1, column_start)
-                self.writeValues(value[0])
+            if len(value) == 2:
+                style = value[1]
             else:
-                ws.write(row_start, column_start, value[0])
+                style = ''
+
+            text = unicode(value[0])
+            if text == u'0' or text == u'':
+                text = empty_value
+            ws.write(row_start, column_start, text, self.__applyStyle(style))
 
             column_start += 1
-        return
 
-    def __writeDictionary(self, dictionary):
-        for key in dictionary.keys():
-            if isinstance(dictionary[key], dict):
-                pass
+    def writeMerge(self, ws, row_start, row_end, column_start, column_end, value, style=''):
+        ws.write_merge(row_start, row_end, column_start, column_end, value, self.__applyStyle(style))
 
-    def saveWorkbook(self, name='report'):
+    def writeMergeList(self, ws, row_start, row_end, column_start, column_end, values, style=''):
+        for value in values:
+            if len(value) == 2:
+                style = value[1]
+            else:
+                style = ''
+
+            try:
+                text = unicode(value[0])
+            except:
+                text = value[0]
+
+            if text != u'':
+                ws.write_merge(row_start, row_end, column_start, column_end, text, self.__applyStyle(style))
+
+            column_start += 1
+
+    def writeHeader(self, sheet, header, row_start, column_start=0):
+        row_start -= 1
+        self.writeHead(sheet, header, row_start, column_start)
+
+        row_end = self.depth + row_start - 1
+        self.mergeColumn(sheet, header, row_start, column_start, row_end)
+
+        #self.writeBody(sheet, body, row_end + 1, column_start)
+        return row_end + 1
+
+
+    def writeHead(self, ws, values, row_start, column_start, depth=0):
+        dict_count = 0
+        list_count = 0
+
+        depth += 1
+        total_length = 0
+        current_length = len(values)
+        for value in values:
+            try:
+                style = self.__applyStyle(value[1])
+                style_buf = value[1]
+            except Exception, e:
+                style = self.__applyStyle('')
+                style_buf = ''
+
+            if isinstance(value[0], dict):
+                length = self.writeHead(ws, value[0].values()[0], row_start+1, column_start, depth)
+
+                column_end = column_start - 1 + length
+
+                ws.write_merge(row_start, row_start, column_start, column_end, value[0].keys()[0], style)
+
+                column_start = column_end
+
+                total_length += length
+
+                dict_count += 1
+            else:
+                text = unicode(value[0])
+
+                if text == u'0':
+                    ws.write(row_start, column_start, '-', style)
+                else:
+                    ws.write(row_start, column_start, text, style)
+
+                    size = 0
+                    if 'align: rotation 90' in style_buf or 'align:rotation 90' in style_buf:
+                        size = len(text.split('\n')) + 1
+                    else:
+                        text_list = text.split('\n')
+                        for text in text_list:
+                            text_length = len(text)
+                            if size < text_length:
+                                size = text_length
+
+                    self.autoResizeColumnWidth(ws, column_start, size + 4)
+
+                list_count += 1
+
+            column_start += 1
+
+        if self.depth < depth:
+            self.depth = depth
+
+        if current_length > total_length:
+            total_length += current_length
+
+        if dict_count != 0 and list_count != 0:
+            total_length += list_count
+
+        return total_length
+
+    def writeBody(self, ws, values, row_start, column_start, depth=0):
+        dict_count = 0
+        list_count = 0
+
+        depth += 1
+        total_length = 0
+        current_length = len(values)
+        for value in values:
+            try:
+                style = self.__applyStyle(value[1])
+            except Exception, e:
+                style = self.__applyStyle('')
+
+            if isinstance(value[0], dict):
+                length = self.writeBody(ws, value[0].values()[0], row_start, column_start+1, depth)
+
+                row_end = row_start - 1 + length
+
+                ws.write_merge(row_start, row_end, column_start, column_start, value[0].keys()[0], style)
+
+                row_start = row_end
+
+                total_length += length
+
+                dict_count += 1
+            else:
+                text = value[0]
+                ws.write(row_start, column_start, text, style)
+
+                list_count += 1
+
+            row_start += 1
+
+        if self.depth < depth:
+            self.depth = depth
+
+        if current_length > total_length:
+            total_length += current_length
+
+        if dict_count != 0 and list_count != 0:
+            total_length += list_count
+
+        return total_length
+
+    def mergeColumn(self, ws, values, row_start, column_start, row_end):
+        dict_count = 0
+        list_count = 0
+
+        total_length = 0
+        current_length = len(values)
+        for value in values:
+            if isinstance(value[0], dict):
+                length = self.mergeColumn(ws, value[0].values()[0], row_start+1, column_start, row_end)
+
+                column_end = column_start - 1 + length
+                column_start = column_end
+
+                total_length += length
+
+                dict_count += 1
+            else:
+                ws.merge(row_start, row_end, column_start, column_start)
+                list_count += 1
+            column_start += 1
+
+        if current_length > total_length:
+            total_length += current_length
+
+        if dict_count != 0 and list_count != 0:
+            total_length += list_count
+
+        return total_length
+
+
+    def __applyStyle(self, style):
+        return xlwt.easyxf(style)
+
+    def autoResizeRowHeight(self, sheet, row_number, size):
+        row = sheet.row(row_number - 1)
+        row.height_mismatch = True
+        row.height = 256 * size
+
+    def autoResizeColumnWidth(self, sheet, column_number, size):
+        sheet.col(column_number).width = 256 * size
+
+
+    def saveWorkbook(self, name='report.xls'):
         self.wb.save(name)
-        return True
+
+    def saveWorkbookInResponse(self, name='report'):
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = 'attachment; filename=%s.xls' % name
+        self.saveWorkbook(response)
+        return response
+
 
 
 # Сводная ведомость по набору персонала
@@ -51,42 +266,344 @@ class SummaryStatementRecruitment(View):
         args['form'] = SummaryStatementRecruimentForm()
         return render_to_response(self.template, RequestContext(request, args))
 
-    def post(self, request):
-        vacancies = json.loads(request.POST['vacancies'])
-        period = request.POST['period'].split('/')
-        print vacancies
+class SummaryStatementRecruitmentGenerateAjax(View):
+    def get(self, request):
+        '''
+            Стили для значений в ячейках
+        '''
+        align_vert = 'align: vert center;'
+        align_horiz = ' align: horiz center;'
+        align = align_vert + align_horiz
+        border = 'borders: bottom thin, top thin, left thin, right thin;'
 
-        document_rows = []
+        header_style_horiz = align + 'font: bold on;' + border
+        header_style_vert = 'align: rotation 90;' + 'font: bold on;' + align + border
+        style_horiz = align  + border
+
+        gp = GenerateReport()
+        sheet = gp.createWorksheet(u'Сводная')
+
 
         header = [
-            [u'Вакансия', ''],
-            [u'Дата открытия/ возобновления'],
-            [u'Источник размещения'],
-            [u'Всего обращений (звонки, резюме, отклики, прозвон соискателей)'],
+            [u'Вакансия', header_style_horiz],
+            [u'Дата открытия/ \nвозобновления', header_style_horiz],
+            [u'Источник \nразмещения', header_style_horiz],
+            [u'Всего обращений \n(звонки, резюме, \nотклики, прозвон \nсоискателей)', header_style_horiz],
             [
                 {u'1-ое собеседование':[
-                        [u'Приглашены'],
-                        [u'Пришли']
+                        [u'Приглашены', header_style_horiz],
+                        [u'Пришли', header_style_horiz]
                     ]
-                }
+                },
+                header_style_horiz
             ],
             [
-                {u'1-ое собеседование':[
-                        [u'Приглашены'],
-                        [u'Пришли']
+                {u'2-ое собеседование':[
+                        [u'Приглашены', header_style_horiz],
+                        [u'Пришли', header_style_horiz]
                     ]
-                }
+                }, header_style_horiz
             ],
             [
                 {u'Первая неделя / ИС':[
-                        [u'Приглашены'],
-                        [u'Отказались/ не вышли'],
-                        [u'Думают'],
-                        [u'Вышли'],
-                        [u'Прошли первую неделю/ работают на ИС'],
+                        [u'Приглашены', header_style_vert],
+                        [u'Отказались/ \nне вышли', header_style_vert],
+                        [u'Думают', header_style_vert],
+                        [u'Вышли', header_style_vert],
+                        [u'Прошли \nпервую неделю/ \nработают на ИС', header_style_vert],
                     ]
-                }
+                }, header_style_horiz
             ]
         ]
 
-        document_rows.append(header)
+        column_start = 0
+
+
+        row_start = gp.writeHeader(sheet, header, 3, 0)
+        body = self.getData(request, row_start, column_start, gp, sheet, style_horiz)
+
+
+        gp.autoResizeColumnWidth(sheet, 0, 23)
+        gp.autoResizeRowHeight(sheet, 3, 2)
+        gp.autoResizeRowHeight(sheet, 4, 7)
+
+        sheet.portrait = False
+        sheet.set_fit_num_pages(1)
+        sheet.header_str = ''
+        sheet.footer_str = ''
+        return gp.saveWorkbookInResponse()
+
+
+    def getData(self, request, row_start, column_start, gp, sheet, style=''):
+        total_style = style + 'font: bold on;'
+        total_title_style = 'font: bold on;' + ' align: horiz right;'
+
+        request = request.GET
+        vacancies = json.loads(request['vacancies'])
+        period = request['period'].split('/')
+
+
+        # Заголовок отчёта
+        title_style = 'align: horiz center;' + 'font: bold on;'
+        title_text = 'Сводная ведомость по набору персонала за {0} {1} г.'.format(MONTH[period[0]].lower().encode('utf-8'), period[1].encode('utf-8'))
+        gp.writeMerge(sheet, 0, 0, 0, 13, title_text, title_style)
+
+        # Сохранение причин отказов от работы
+        rejection_list = []
+
+        # счётчик сносок
+        reserve_count = 1
+        # список людей, вышедших на работу с резерва
+        reserve_info_list = []
+
+        total_sums = [[0, total_style] for i in xrange(10)]
+
+        count = 0
+        # выбераем вакансии (присланные с клиента) из массива
+        for key in vacancies:
+            # получение данных о вакансии
+            vacancy_id = vacancies[key]['vacancy']
+            vacancy = Vacancy.objects.get(pk=vacancy_id)
+            # получение данных о кандидатах, претендующих на эту вакансию
+            vacancy_sources = ApplicantVacancy.objects.filter(
+                vacancy=vacancy
+            )
+
+            sources = vacancies[key]['source']
+
+            result_vacancy = []
+
+
+            # форматирование текста
+            position = vacancy.position.name.split(' ')
+            str_len = 23
+            result_position = ''
+            buf_position = ''
+
+            for pos in position:
+                if len(buf_position + pos) <= str_len:
+                    buf_position =  buf_position + ' ' + pos
+                    result_position += ' ' + pos
+                else:
+                    result_position += '\n' + buf_position
+                    buf_position = ' ' + pos
+
+            sources_len = len(sources) - 1
+            gp.writeMerge(sheet, row_start, row_start+sources_len, column_start, column_start, result_position, style)
+            gp.writeMerge(sheet, row_start, row_start+sources_len, column_start + 1, column_start + 1, str(vacancy.published_at.date()), style)
+
+
+            # сбор статистики по источникам
+            for source in sources:
+                # хранение количества людей по всем позициям(например, приглашены, пришли, думают и др.)
+                result_counter = []
+
+                # получение инофрмации об источнике
+                source_obj = SourceInformation.objects.get(pk=source)
+                source_name = source_obj.source
+                result_counter.append([source_name, style])
+
+                # выборка статусов по вакансию
+                result_status = ApplicantVacancyApplicantVacancyStatus.objects.filter(
+                                                        applicant_vacancy__vacancy = vacancy,
+                                                        applicant_vacancy__source=source_obj,
+                                                        date__month=period[0],
+                                                        date__year=period[1]
+                )
+
+                # выборка всех статусов по вакансии с определённого источника за определённый период
+                '''vacancy_info = vacancy_sources.filter(source=source_obj,
+                                                      date_created__month=period[0],
+                                                      date_created__year=period[1]
+                )'''
+                # общее количество заявок по вакансии из данного источника ()
+                #total_count = result_status.distinct('applicant_vacancy__applicant').count()
+                total_count = result_status.count()
+
+                # если нет заявок, то дальнейшую выборку не производим
+                if total_count != 0:
+                    # Добавляем общее количество заявок с данного источника
+                    result_counter.append([total_count, style])
+
+                    # 1-е собеседование
+                    # Приглашены
+                    result_counter.append([0, style])
+                    # Пришли
+                    result_counter.append([0, style])
+
+                    # 2-е собеседование
+                    # Приглашены
+                    result_counter.append([0, style])
+                    # Пришли
+                    result_counter.append([0, style])
+
+                    # Приглашены
+                    buf = result_status.filter(applicant_vacancy_status__name__contains='Предложение кандидату').count()
+                    result_counter.append([buf, style])
+
+                    # Отказались/не вышли
+                    rejection = result_status.filter(Q(applicant_vacancy_status__name__contains='Самоотказ') |
+                                                     Q(applicant_vacancy_status__name__contains='Предложение отклонено') |
+                                                     Q(applicant_vacancy_status__name__contains='Не вышли')
+                    ).values('note')
+
+                    rejection_count = rejection.count()
+                    result_counter.append([rejection_count, style])
+
+                    # сохранение причин отказа от работы
+                    for r in rejection:
+                        rejection_list.append([r['note']])
+
+                    # Думают
+                    result_counter.append([
+                        result_status.filter(applicant_vacancy_status__name__contains='Сделано предложение').count(),
+                        style
+                    ])
+                    '''
+                        Вышли
+                    '''
+                    # люди, которые вышли на работу
+                    went_to_work = result_status.filter(applicant_vacancy_status__name__contains='Вышел')
+                    # выборка людей, которые вышли на работу с резерва
+                    applicants = went_to_work.values('applicant_vacancy__applicant', 'applicant_vacancy__vacancy')
+                    reserve = []
+                    for i in applicants:
+                        reserve += result_status.filter(applicant_vacancy__applicant=i['applicant_vacancy__applicant'],
+                                                      applicant_vacancy__vacancy=i['applicant_vacancy__vacancy'],
+                                                      applicant_vacancy_status__name__contains='Резерв')\
+                            .values('applicant_vacancy__applicant__first_name',
+                                  'applicant_vacancy__applicant__last_name',
+                                  'applicant_vacancy__applicant__middle_name',
+                                  'applicant_vacancy__vacancy__head__name',
+                                  'applicant_vacancy__vacancy__published_at',
+                                  'date'
+                                )
+
+
+                    # Формирование сноски с информацией о людях из резерва                                                                              )
+
+                    if len(reserve) != 0:
+                        result_counter.append([went_to_work.count(), style])
+
+                        for r in reserve:
+                            reserve_info_list.append(['%s, %s, рук. %s - резерв с %s - %s %s %s' % (vacancy.position.name.encode("utf-8"),
+                                                                  source_name.encode("utf-8"),
+                                                                   r['applicant_vacancy__vacancy__head__name'].encode("utf-8"),
+                                                                  r['date'].date(),
+                                                                  r['applicant_vacancy__applicant__first_name'].encode("utf-8"),
+                                                                   r['applicant_vacancy__applicant__last_name'].encode("utf-8"),
+                                                                   r['applicant_vacancy__applicant__middle_name'].encode("utf-8")
+                                                    )
+                            ])
+                            reserve_count += 1
+                    else:
+                        result_counter.append([went_to_work.count(), style])
+
+                    # -----------------------------------------------------------------------
+
+                    '''
+                        Прошли первую неделю/работают на ИС
+                    '''
+                    result_counter.append([
+                        result_status.filter(Q(applicant_vacancy_status__name__contains='Испытательный срок') |
+                                        Q(applicant_vacancy_status__name__contains='Прошли первую рабочую неделю')
+
+                        ).count(),
+                        style
+                        ]
+                    )
+
+                else:
+                    result_counter = [[source_name, style]] + [[0, style]] * 10
+
+                for count, rs in enumerate(result_counter[1:]):
+                    print rs[0]
+                    total_sums[count][0] += rs[0]
+
+                gp.writeValues(sheet, row_start, column_start+2, result_counter)
+                row_start += 1
+
+
+        gp.writeMerge(sheet, row_start, row_start, 0, 2, u'Итого', total_title_style)
+        gp.writeValues(sheet, row_start, 3, total_sums)
+
+        gp.writeMerge(sheet, row_start+2, row_start+2, 0, 4, 'Вышли на работу с резерва:', '')
+        gp.writeMergeList(sheet, row_start+3, row_start+3, 0, 4, reserve_info_list, '')
+
+        # Причины отказа
+        gp.writeMerge(sheet, row_start+2, row_start+2, 6, 12, 'Причины отказа от предложений по работе:', '')
+        gp.writeMergeList(sheet, row_start+3, row_start+3, 6, 13, rejection_list, '')
+        return
+
+class PositionStatement(View):
+    template = 'reports/position_statement.html'
+    def get(self, request):
+        args = {}
+        args['form'] = SummaryStatementRecruimentForm()
+        return render_to_response(self.template, RequestContext(request, args))
+
+    def post(self, request):
+        year = request.POST['year']
+        position = request.POST['position']
+
+        title = '%s - %s' % (position.upper(), year)
+        header = [
+            ['№'],
+            ['Руководитель'],
+            ['Дата приёма'],
+            ['Дата \r\n увольнения'],
+            ['Период / \r\n срок работы'],
+            ['Отзыв']
+        ]
+
+        position_obj = Position.objects.get(pk=position)
+
+        statuses = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy__vacancy__name=position_obj,
+                                                                            date__year = year)
+        applicants = statuses.objects.filter(applicant_vacancy_status__name__contains='Принят на работу')\
+            .values('applicant_vacancy__applicant',
+                      'applicant_vacancy__vacancy',
+                      'applicant_vacancy__vacancy__head__name',
+                      'applicant_vacancy_status__name',
+                      'applicant_vacancy__applicant__first_name',
+                      'applicant_vacancy__applicant__last_name',
+                      'applicant_vacancy__applicant__middle_name',
+                      'applicant_vacancy__vacancy__published_at',
+                      'date'
+                    )
+
+
+
+        employer = []
+        for count, i in enumerate(applicants):
+            result = statuses.get(applicant_vacancy__applicant=i['applicant_vacancy__applicant'],
+                                          applicant_vacancy_status__name__contains='Уволен')\
+                .values('date', 'note')
+
+            if result:
+                dismissal = result.date.date()
+            else:
+                dismissal = datetime.now()
+
+            hiring_day = i['date'].date()
+            period = dismissal - hiring_day
+
+            if result.note:
+                characteristics = 'да'
+            else:
+                characteristics = ''
+
+            employer.append([
+                [count+1],
+                ['%s %s %s' % (i['applicant_vacancy__applicant__first_name'],
+                                i['applicant_vacancy__applicant__last_name'],
+                                i['applicant_vacancy__applicant__middle_name']
+                )],
+                [hiring_day],
+                [dismissal],
+                [period],
+                [characteristics]
+            ])
+
+
+

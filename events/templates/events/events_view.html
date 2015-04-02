@@ -55,7 +55,7 @@
                         <option value="">------</option>
                          {% for app_vacancy in app_vacancies %}
                         <option
-                                value=" {{app_vacancy.id}}">{{app_vacancy.vacancy.position}}
+                                value="{{app_vacancy.id}}">{{app_vacancy.vacancy.position}}
                         </option>
 
                     {% endfor%}
@@ -70,27 +70,40 @@
                                 <th>Окончание</th>
                                 <th>Назначил</th>
                                 <th>Событие состоялось?</th>
+                                <th>Комментарии</th>
                             </tr>
                             </thead>
                             <tbody>
                             </tbody>
                         </table>
+
+
                     </div>
+
 
                 </div>
 
-              </div><!-- /.форма добавления вакансии -->
+              </div>
 
-
-            </section><!-- /.Left col -->
-
-              <!-- right col (We are only adding the ID to make the widgets sortable)-->
+            </section>
 
 
         </div><!-- /.row (main row) -->
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
 
+
+
+
+             <!-- Диалоговое окно -->
+
+             <div id="event_description_box">
+
+            <label for="event_description_txt">Описание</label>
+            <textarea id='event_description_txt'></textarea>
+                 <button id='save_event_btn'>Сохранить</button>
+
+            </div>
 
 
         {% endblock %}

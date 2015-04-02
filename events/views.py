@@ -51,11 +51,7 @@ def get_vacancy_events_ajax(request):
     app_vacancy_id = request.GET["app_vacancy_id"]
     events = ApplicantVacancyEvent.objects.filter(
         applicant_vacancy=app_vacancy_id).values('event__name','start','end',
-                                                 'author__username','happened')
-
-
-
-
+                                                 'author__username','happened','description','id')
 
     response = [
         {
@@ -63,17 +59,30 @@ def get_vacancy_events_ajax(request):
             'start':str(event['start'].strftime('%d-%m-%Y %H:%M')),
             'end': str(event['end'].strftime('%d-%m-%Y %H:%M')),
             'author':event['author__username'],
-            'happened':event['happened']
+            'happened':event['happened'],
+            'description':event['description'],
+            'id': event['id']
 
         }
         for event in events
     ]
-    print response
+
     response = json.dumps(response)
-    print response
     return HttpResponse(response,content_type='application/json')
 
 
+def change_event_status_ajax(request):
+    app_vacancy_event = ApplicantVacancyEvent.objects.get(applicant_vacancy=request.POST['event_id'])
+    app_vacancy_event.happened = True
+    app_vacancy_event.description = request.POST['event_description']
+    response = []
+    try:
+        app_vacancy_event.save()
+        response.append({'status':'200'})
+        return HttpResponse(response,content_type='application/json')
+    except:
+        response.append({'status':'400'})
+    return HttpResponse(response,content_type='application/json')
 
 
 

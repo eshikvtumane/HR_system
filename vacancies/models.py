@@ -118,9 +118,6 @@ class ApplicantVacancy(models.Model):
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=timezone.now, verbose_name='Дата добавления')
-    status = models.ForeignKey('ApplicantVacancyStatus', default =
-    DEFAULT_APPLICANT_VACANCY_STATUS)
-
     def __unicode__(self):
         return "%s %s %s %s %s"%(self.vacancy.position.name,str(
             self.vacancy.published_at),self.applicant.first_name,
@@ -135,7 +132,8 @@ class ApplicantVacancyApplicantVacancyStatus(models.Model):
         verbose_name_plural = 'Текущий статус кандидата по вакансии'
 
     applicant_vacancy = models.ForeignKey('ApplicantVacancy')
-    applicant_vacancy_status = models.ForeignKey('ApplicantVacancyStatus')
+    applicant_vacancy_status = models.ForeignKey('ApplicantVacancyStatus',default =
+    DEFAULT_APPLICANT_VACANCY_STATUS)
     date = models.DateTimeField(verbose_name='Дата присвоения',default=timezone.now)
     author = models.ForeignKey(User,verbose_name='Автор')
 

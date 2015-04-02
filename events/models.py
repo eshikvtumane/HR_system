@@ -33,5 +33,6 @@ class ApplicantVacancyEvent(models.Model):
     event = models.ForeignKey('Event')
     happened = models.BooleanField(default=False)
     author = models.ForeignKey(User,verbose_name='Автор')
+    description = models.TextField(verbose_name='Описание',blank=True)
 
 

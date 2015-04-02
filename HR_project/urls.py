@@ -17,7 +17,7 @@ urlpatterns = patterns('',
     url(r'^grappelli/', include('grappelli.urls')),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^vacancies/', include('vacancies.urls',namespace='vacancies')),
-    url(r'^scheduler/', include('schedule.urls')),
+    url(r'^events/', include('events.urls',namespace='events')),
     url(r'^administration/', include('administration.urls', namespace='administration'))
 )
 

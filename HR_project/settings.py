@@ -27,8 +27,9 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-LOGIN_URL = '/users/login'
-LOGIN_REDIRECT_URL = '/users/login'
+LOGIN_URL = 'users:login'
+LOGOUT_URL = 'users:logout'
+LOGIN_REDIRECT_URL = 'users:login'
 
 
 # Application definition
@@ -52,6 +53,7 @@ INSTALLED_APPS = (
     'administration',
     'users',
     'reports',
+    'events'
 )
 
 MIDDLEWARE_CLASSES = (

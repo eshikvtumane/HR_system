@@ -70,7 +70,6 @@ window.onload = function(){
      $('#update_vacancy').click(function () {
         var datastring = $('#frm_update_vacancy').serialize();
         var $vacancy_id = $("#vacancy_id").val();
-        console.log(datastring);
         $.ajax({
             type: 'Post',
             url: '/vacancies/'+ $vacancy_id + '/' + 'edit/',

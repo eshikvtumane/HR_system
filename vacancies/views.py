@@ -5,7 +5,7 @@ from django.views.generic import View
 from django.template import RequestContext
 from forms import AddVacancyForm, EditVacancyForm, SearchVacancyForm
 from events.models import ApplicantVacancyEvent
-from .models import Department, Head, Vacancy, Position, VacancyStatus
+from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory
 from events.models import ApplicantVacancyEvent
 import json
 from django.core import serializers
@@ -78,7 +78,11 @@ class VacancyEdit(View):
     template = 'vacancies/vacancy_edit.html'
     def get(self,request,id):
         vacancy = Vacancy.objects.get(pk=id)
-        vacancy_form = EditVacancyForm(instance=vacancy)
+        #Выбираем последнюю запись из таблицы с историей изменения статусов вакансии для выбора последнего присвоенного
+        #вакансии статуса для установки дефолтного значения в виджете со статусами
+        last_vacancy_status_history = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
+        default_vacancy_status = last_vacancy_status_history.status
+        vacancy_form = EditVacancyForm(instance=vacancy,initial={'status':default_vacancy_status.id})
         c = RequestContext(request,{ 'vacancy':vacancy,'vacancy_form':vacancy_form})
         return render_to_response(self.template, c)
 
@@ -92,11 +96,15 @@ class VacancyEdit(View):
             vacancy_form = EditVacancyForm(post_data,instance=vacancy)
             if vacancy_form.is_valid():
                 vacancy_form.save()
+                VacancyStatusHistory.objects.create(vacancy=vacancy,status=VacancyStatus.objects.get(pk=request.POST[
+                    'status']))
                 return HttpResponse("200")
             data = []
             data.append({"status":"400","errors":vacancy_form.errors})
             data = json.dumps(data)
             return HttpResponse(data,content_type="application/json")
+
+
 
 
 class VacancySearch(View):
@@ -105,6 +113,9 @@ class VacancySearch(View):
         vacancy_form = SearchVacancyForm()
         c = RequestContext(request,{'vacancy_form':vacancy_form})
         return render_to_response(self.template,c)
+
+
+
 
 
 

@@ -70,7 +70,7 @@ $(function(){
     });
 
 
-   //Activate fullCalendar plugin
+   //активируем fullCalendar плагин
     $('#scheduler').fullCalendar({
         // put your options and callbacks here
 
@@ -87,10 +87,20 @@ $(function(){
         allDay: false,
         slotMinutes: 5,
         //timezone:'Asia/Vladivostok',
+        events:'/vacancies/get_events/',
         eventResize: saveData,
         eventDrop: saveData,
         eventClick: editEventData,
-        events:'/vacancies/get_events/'
+        dayClick: function(date,jsEvent,view){
+            var convertedDate = date.format()
+            var noTime = $.fullCalendar.moment(convertedDate);
+            alert(noTime);
+            $('#scheduler').fullCalendar('gotoDate', '2015-03-08');
+
+
+
+
+        }
 
 
     });

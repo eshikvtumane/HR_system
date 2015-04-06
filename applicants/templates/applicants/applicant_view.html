@@ -2,6 +2,7 @@
 {% load staticfiles %}
 {% load humanize %}
 {% load date_format %}
+{% load thumbnail %}
 
 {% block title %}
     Добавление кандидата
@@ -228,6 +229,7 @@
                                     {{ applicant_form.photo }}
                                 </div>
                                 <div>
+
                                     <img id='photo' style="width: 300px;" src="{{ applicant_form.instance.photo.url }}">
                                 </div>
 

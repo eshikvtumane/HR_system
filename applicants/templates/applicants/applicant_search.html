@@ -167,6 +167,7 @@
                                 {% for a in applicants.object_list %}
                                     <tr>
                                         <td>
+
                                             {% thumbnail a.applicant__photo "200x200" crop="center" as im %}
                                                 <img class="lazy" data-original="{{ im.url }}">
                                             {% endthumbnail %}

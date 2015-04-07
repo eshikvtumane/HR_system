@@ -15,7 +15,7 @@ function saveData(event, delta, revertFunction){
       //{
       //  revertFunc();
       //  return;
-      alert("yooooo");
+      alert("success");
       //calendar.fullCalendar('updateEvent', event);
     },
     error: function() {
@@ -29,8 +29,9 @@ function saveData(event, delta, revertFunction){
 function editEventData(calEvent, jsEvent, view){
     $("#event_id").val(calEvent.id);
     $("#title").val(calEvent.title);
-    $("#start").val(moment(calEvent.start).format('DD/MM/YYYY hh:mm'));
-    $("#end").val(moment(calEvent.end).format('DD/MM/YYYY hh:mm'));
+    $("#start").val(calEvent.start.format('DD/MM/YYYY'));
+    $("#end").val(calEvent.end.format('DD/MM/YYYY hh:mm'));
+
   //
   //$('#start').datetimepicker({
   //      lang: 'ru',
@@ -39,7 +40,6 @@ function editEventData(calEvent, jsEvent, view){
   //  });
 
     //
-    $("#start,#stop").datetimepicker();
 
 
     dialog.dialog( "open" );
@@ -58,16 +58,15 @@ $(function(){
     modal: true
 
 
+
 });
+
+    $("#start,#end").datetimepicker();
 
     form = dialog.find( "form" ).on( "submit", function( event ) {
       event.preventDefault();
-      //add event
     });
 
-    $( "#open_dialog" ).button().on( "click", function() {
-      dialog.dialog( "open" );
-    });
 
 
    //активируем fullCalendar плагин
@@ -86,19 +85,14 @@ $(function(){
         url: '#',
         allDay: false,
         slotMinutes: 5,
-        //timezone:'Asia/Vladivostok',
+        timezone:'Asia/Vladivostok',
         events:'/vacancies/get_events/',
         eventResize: saveData,
         eventDrop: saveData,
         eventClick: editEventData,
         dayClick: function(date,jsEvent,view){
-            var convertedDate = date.format()
-            var noTime = $.fullCalendar.moment(convertedDate);
-            alert(noTime);
-            $('#scheduler').fullCalendar('gotoDate', '2015-03-08');
-
-
-
+            $('#scheduler').fullCalendar('changeView', 'agendaDay');
+            $('#scheduler').fullCalendar('gotoDate', date.format());
 
         }
 

@@ -35,4 +35,12 @@ class ApplicantVacancyEvent(models.Model):
     author = models.ForeignKey(User,verbose_name='Автор')
     description = models.TextField(verbose_name='Описание',blank=True)
 
+    def __unicode__(self):
+
+        result_string = '{event} назначено по вакансии {vacancy} для {applicant} на {start} - {end}'.format(event=str(
+            self.event),vacancy = str(self.applicant_vacancy.vacancy.position),applicant =
+        str(self.applicant_vacancy.applicant),start=str(self.start), end=str( self.end))
+
+        return result_string.decode('utf-8')
+
 

@@ -59,8 +59,8 @@ class Vacancy(models.Model):
     salary = models.FloatField(verbose_name=u"Заработная плана")
     published_at = models.DateTimeField(verbose_name=u'Дата размещения',
                                     default=timezone.now)
-    end_date = models.DateTimeField(verbose_name=u'Крайний срок')
-    description = models.TextField(verbose_name=u"Описание")
+    end_date = models.DateField(verbose_name=u'Крайний срок',null=True,blank=True)
+    description = models.TextField(verbose_name=u"Описание",null=True,blank=True)
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
     author = models.ForeignKey(User,verbose_name=u'Автор')

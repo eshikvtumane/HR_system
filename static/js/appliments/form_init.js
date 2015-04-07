@@ -50,17 +50,32 @@ $('#id_study_start').change(function(){
 
 
 
-   $('.select').selectize();
+    //инициализируем selectize.js на необходимых select элементах
+    $('select').each(function(){
+       if ($(this).attr('class') == 'select'){
+           $(this).selectize();
+       }
 
-   $('.select-add').selectize({
-        create: true,
-        createOnBlur: true,
+
+       else if($(this).attr('class') == 'select-add'){
+
+             $(this).selectize({
+
+                 create: true,
+                 createOnBlur: true
+
+             });
+        }
     });
+
+
 
     $('.clone-wrapper').cloneya({
         limit: 3
     });
-}
+};
+
+
 
 function loadCanvas() {
     if ($('#imageCanvas').length > 0) {

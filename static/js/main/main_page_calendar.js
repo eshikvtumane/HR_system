@@ -30,7 +30,7 @@ function editEventData(calEvent, jsEvent, view){
     $("#event_id").val(calEvent.id);
     $("#title").val(calEvent.title);
     $("#start").val(calEvent.start.format('DD/MM/YYYY'));
-    $("#end").val(calEvent.end.format('DD/MM/YYYY hh:mm'));
+    $("#end").val(calEvent.end.format('DD/MM/YYYY HH:mm'));
 
   //
   //$('#start').datetimepicker({

@@ -128,38 +128,6 @@ def get_heads_ajax(request):
         return HttpResponse(heads,content_type='application/json')
 
 
-def get_events_ajax(request):
-    if request.is_ajax:
-        result = []
-        events = ApplicantVacancyEvent.objects.all()
-        for event in events:
-            result.append({'title':event.event.name,
-                           'start':fromUTCtoLocal(event.start).isoformat(),
-                           'end':fromUTCtoLocal(event.end).isoformat(),
-                           'id': event.id})
-
-        response = json.dumps(result)
-        return HttpResponse(response,content_type='application/json')
-
-
-def update_event_ajax(request):
-    if request.is_ajax():
-        event =  ApplicantVacancyEvent.objects.get(id=request.POST["id"])
-        new_start =datetime.datetime.strptime(request.POST[
-                                                               'start'],
-                                           "%Y-%m-%dT%H:%M:%S")
-
-        new_end = datetime.datetime.strptime(request.POST[
-                                                               'end'],
-                                           "%Y-%m-%dT%H:%M:%S")
-        try:
-            event.start = new_start
-            event.end = new_end
-            event.save()
-            return HttpResponse('200')
-        except:
-            return HttpResponse('400')
-
 
 
 

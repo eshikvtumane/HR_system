@@ -8,7 +8,11 @@ urlpatterns = patterns('',
 
      url(r'^(?P<applicant_id>[0-9]+)/add_event/$',EventsAdd.as_view(), name='add_event'),
 
+     url(r'^get_events/$','events.views.get_events_ajax'),
+
      url(r'^get_vacancy_events/$', 'events.views.get_vacancy_events_ajax', name='get_vacancy_events'),
 
-     url(r'^change_event_status$', 'events.views.change_event_status_ajax', name='change_event_status')
+     url(r'^change_event_status$', 'events.views.change_event_status_ajax', name='change_event_status'),
+
+     url(r'^update_event/$','events.views.update_event_ajax')
 )

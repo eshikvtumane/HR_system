@@ -4,12 +4,12 @@ function changeEvent(event, delta, revertFunction){
       console.dir(event.start);
     updateEvent(event.id,event.start.format(),event.end.format())
 
-
 }
 
+//отправка изменённых данных события на сервер
 function updateEvent(event_id,event_start,event_end){
     $.ajax({
-    url: "/vacancies/update_event/",
+    url: "/events/update_event/",
     type: "POST",
     dataType: "json",
     data: {
@@ -23,13 +23,18 @@ function updateEvent(event_id,event_start,event_end){
       //  revertFunc();
       //  return;
       //calendar.fullCalendar('updateEvent', event);
-
-        $.notify("Данные вакансии успешно обновлены",'success',{
+        if ($("#edit_event").attr('display') !== 'none'){
+                dialog.dialog('close');
+        }
+        $.notify("Событие успешно обновлено",'success',{
                     position : 'top center'
                 })
     },
     error: function() {
-      alert("error")
+
+        $.notify("Произошла ошибка! Попробуйте обновить событие ещё раз",'error',{
+                    position : 'top center'
+                })
     }
   });
 
@@ -43,7 +48,7 @@ function editEventData(calEvent, jsEvent, view){
     $("#title").val(calEvent.title);
     $("#start").val(calEvent.start.format('DD/MM/YYYY HH:mm'));
     $("#end").val(calEvent.end.format('DD/MM/YYYY HH:mm'));
-
+    $('#profile_link').attr('href',calEvent.profile_link)
     dialog.dialog( "open" );
 
 }
@@ -70,8 +75,8 @@ $(function(){
   //Инициализируем диалоговое окно с редактированием события
     dialog = $( "#edit_event" ).dialog({
     autoOpen: false,
-    height: 300,
-    width: 350,
+    height: 350,
+    width: 400,
     modal: true
 
 
@@ -104,7 +109,10 @@ $(function(){
         allDay: false,
         slotMinutes: 5,
         timezone:'Asia/Vladivostok',
-        events:'/vacancies/get_events/',
+        events:'/events/get_events/',
+        eventRender:function(event,element,view){
+                element.attr('profile_link',event.profile_link)
+        },
         eventResize: changeEvent,
         eventDrop: changeEvent,
         eventClick: editEventData,

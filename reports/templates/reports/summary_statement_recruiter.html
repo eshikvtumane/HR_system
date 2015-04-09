@@ -89,7 +89,7 @@
                           <div style="padding-top: 8ex;" align="center">
                               <div id="loader"></div>
                               <div id="message"></div>
-                              <button id="btnAddVacancyReport" class="btn btn-primary" style="margin-top: 2ex;">Добавить вакансию</button>
+                              <button id="btnAddVacancyReport" class="btn btn-primary" style="margin-top: 2ex;">Добавить вакансию в ведомость</button>
                           </div>
 
                           <div style="padding-top: 2ex;" align="center">
@@ -101,9 +101,16 @@
 
                       </div>
                         <div class="col-sm-12">
+                            <div class="progress">
+                                  <div class="progress-bar progress-bar-striped active" role="progressbar"
+                                  aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                                    100%
+                                  </div>
+                            </div>
+
                             <div style="padding-top: 4ex;" align="center">
                                 <form action="{% url 'reports:statement_recruitment_report_generate' %}" id="FileDownload">
-                                  <button type="submit" id="btnGenerateReport" class="btn btn-success">Генерировать отчёт</button>
+                                  <button type="submit" id="btnGenerateReport" class="btn btn-success">Генерировать ведомость</button>
                               </form>
                             </div>
 

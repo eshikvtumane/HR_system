@@ -7,8 +7,9 @@ from django.views.generic import View
 from vacancies.models import ApplicantVacancy, Vacancy, ApplicantVacancyApplicantVacancyStatus, ApplicantVacancyStatus, Position
 from applicants.models import SourceInformation
 
-from forms import SummaryStatementRecruimentForm
+from forms import SummaryStatementRecruimentForm, PositionStatementForm
 from datetime import datetime
+from dateutil import relativedelta as rdelta
 import json
 import xlwt
 
@@ -72,7 +73,7 @@ class GenerateReport():
         ws.write_merge(row_start, row_end, column_start, column_end, value, self.__applyStyle(style))
 
     def writeMergeList(self, ws, row_start, row_end, column_start, column_end, values, style=''):
-        for value in values:
+        for count, value in enumerate(values):
             if len(value) == 2:
                 style = value[1]
             else:
@@ -84,9 +85,8 @@ class GenerateReport():
                 text = value[0]
 
             if text != u'':
-                ws.write_merge(row_start, row_end, column_start, column_end, text, self.__applyStyle(style))
+                ws.write_merge(row_start+count, row_end+count, column_start, column_end, text, self.__applyStyle(style))
 
-            column_start += 1
 
     def writeHeader(self, sheet, header, row_start, column_start=0):
         row_start -= 1
@@ -256,7 +256,19 @@ class GenerateReport():
         self.saveWorkbook(response)
         return response
 
+class CellStyle():
+    def __init__(self):
+        self.align_vert = 'align: vert center;'
+        self.align_horiz = ' align: horiz center;'
+        self.border = 'borders: bottom thin, top thin, left thin, right thin;'
+        self.align = self.align_vert + self.align_horiz
 
+    def alignCenterBold(self):
+        header_style_horiz = self.align + 'font: bold on;' + self.border
+        return header_style_horiz
+
+    def alignCenter(self):
+        return self.align + self.border
 
 # Сводная ведомость по набору персонала
 class SummaryStatementRecruitment(View):
@@ -281,7 +293,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
         style_horiz = align  + border
 
         gp = GenerateReport()
-        sheet = gp.createWorksheet(u'Сводная')
+        sheet = gp.createWorksheet(u'Ведомость')
 
 
         header = [
@@ -468,7 +480,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
                     applicants = went_to_work.values('applicant_vacancy__applicant', 'applicant_vacancy__vacancy')
                     reserve = []
                     for i in applicants:
-                        reserve += result_status.filter(applicant_vacancy__applicant=i['applicant_vacancy__applicant'],
+                        reserve = result_status.filter(applicant_vacancy__applicant=i['applicant_vacancy__applicant'],
                                                       applicant_vacancy__vacancy=i['applicant_vacancy__vacancy'],
                                                       applicant_vacancy_status__name__contains='Резерв')\
                             .values('applicant_vacancy__applicant__first_name',
@@ -484,7 +496,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
 
                     if len(reserve) != 0:
                         result_counter.append([went_to_work.count(), style])
-
+                        print 'Reserve', len(reserve), reserve.count(), reserve
                         for r in reserve:
                             reserve_info_list.append(['%s, %s, рук. %s - резерв с %s - %s %s %s' % (vacancy.position.name.encode("utf-8"),
                                                                   source_name.encode("utf-8"),
@@ -517,7 +529,6 @@ class SummaryStatementRecruitmentGenerateAjax(View):
                     result_counter = [[source_name, style]] + [[0, style]] * 10
 
                 for count, rs in enumerate(result_counter[1:]):
-                    print rs[0]
                     total_sums[count][0] += rs[0]
 
                 gp.writeValues(sheet, row_start, column_start+2, result_counter)
@@ -539,28 +550,49 @@ class PositionStatement(View):
     template = 'reports/position_statement.html'
     def get(self, request):
         args = {}
-        args['form'] = SummaryStatementRecruimentForm()
+        args['form'] = PositionStatementForm()
         return render_to_response(self.template, RequestContext(request, args))
 
     def post(self, request):
+        style = CellStyle()
         year = request.POST['year']
         position = request.POST['position']
 
-        title = '%s - %s' % (position.upper(), year)
-        header = [
-            ['№'],
-            ['Руководитель'],
-            ['Дата приёма'],
-            ['Дата \r\n увольнения'],
-            ['Период / \r\n срок работы'],
-            ['Отзыв']
-        ]
+        gp = GenerateReport()
+        sheet = gp.createWorksheet(u'Информация по персоналу')
+        column_start = 0
+        row_start = 0
+
+        sheet.set_fit_num_pages(1)
+        sheet.header_str = ''
+        sheet.footer_str = ''
 
         position_obj = Position.objects.get(pk=position)
 
-        statuses = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy__vacancy__name=position_obj,
+        title = '%s - %s' % (position_obj.name.upper(), year)
+        title_style = 'align: horiz center;' + 'font: bold on;'
+
+        style_header = style.alignCenterBold()
+        header = [
+            [u'№', style_header],
+            [u'ФИО', style_header],
+            [u'Руководитель', style_header],
+            [u'Дата приёма', style_header],
+            [u'Дата \r\n увольнения', style_header],
+            [u'Период / \r\n срок работы', style_header],
+            [u'Отзыв', style_header]
+        ]
+
+        gp.writeMerge(sheet, row_start, row_start, column_start, column_start+len(header)-1, title, title_style)
+        row_start += 3
+        gp.writeHeader(sheet, header, row_start, 0)
+        gp.autoResizeRowHeight(sheet, row_start, 2)
+        gp.autoResizeColumnWidth(sheet, 1, 30)
+
+        statuses = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy__vacancy=position_obj,
                                                                             date__year = year)
-        applicants = statuses.objects.filter(applicant_vacancy_status__name__contains='Принят на работу')\
+
+        applicants = statuses.filter(applicant_vacancy_status__name__contains='Принят на работу')\
             .values('applicant_vacancy__applicant',
                       'applicant_vacancy__vacancy',
                       'applicant_vacancy__vacancy__head__name',
@@ -573,37 +605,96 @@ class PositionStatement(View):
                     )
 
 
-
-        employer = []
+        style_body = style.alignCenter()
         for count, i in enumerate(applicants):
-            result = statuses.get(applicant_vacancy__applicant=i['applicant_vacancy__applicant'],
-                                          applicant_vacancy_status__name__contains='Уволен')\
-                .values('date', 'note')
+            try:
+                result = statuses.get(applicant_vacancy__applicant=i['applicant_vacancy__applicant'],
+                                              applicant_vacancy_status__name__contains='Уволен')\
+                    .values('date', 'note')
+            except:
+                result = None
 
-            if result:
-                dismissal = result.date.date()
-            else:
-                dismissal = datetime.now()
 
             hiring_day = i['date'].date()
-            period = dismissal - hiring_day
+            if result:
+                dismissal = result.date.date()
+                period = self.dateString(rdelta.relativedelta(dismissal, hiring_day))
+            else:
+                period = self.dateString(rdelta.relativedelta(datetime.now(), hiring_day))
+                dismissal = '-'
 
-            if result.note:
+
+            if isinstance(result, ApplicantVacancyApplicantVacancyStatus) and result.note.rstrip():
                 characteristics = 'да'
             else:
                 characteristics = ''
 
-            employer.append([
-                [count+1],
+            employer = [
+                [count+1, style_body],
                 ['%s %s %s' % (i['applicant_vacancy__applicant__first_name'],
                                 i['applicant_vacancy__applicant__last_name'],
                                 i['applicant_vacancy__applicant__middle_name']
-                )],
-                [hiring_day],
-                [dismissal],
-                [period],
-                [characteristics]
-            ])
+                ), style_body],
+                [i['applicant_vacancy__vacancy__head__name'], style_body],
+                [hiring_day, style_body],
+                [dismissal, style_body],
+                [period, style_body],
+                [characteristics, style_body]
+            ]
+
+            gp.writeValues(sheet, row_start, 0, employer)
+            row_start += 1
+        return gp.saveWorkbookInResponse()
+
+    def dateString(self, period):
+        print 'period', period
+        years = period.year
+        months = period.months
+        days = period.days
+
+
+        year_words = [
+            u'год',
+            u'года',
+            u'лет'
+        ]
+        month_words = [
+            u'месяц',
+            u'месяца',
+            u'месяцев',
+        ]
+        day_words = [
+            u'день',
+            u'дня',
+            u'день'
+        ]
+
+        result = self.__getDeclension(years, year_words) + \
+                self.__getDeclension(months, month_words) + \
+                self.__getDeclension(days, day_words)
+
+        return u' '.join(result)
+
+    def __getDeclension(self, number, word_list):
+        string_list = []
+        print type(number)
+        if number != 0 and isinstance(number, int):
+            print True
+            number = str(number)
+            number_len = len(number)
+            int_number = int(number[number_len-1])
+            string_list.append(number)
+            if int_number == 1:
+                string_list.append(word_list[0])
+            elif int_number > 1 and int_number < 5:
+                string_list.append(word_list[1])
+            else:
+                string_list.append(word_list[2])
+        else:
+            print False
+        return string_list
+
+
 
 
 

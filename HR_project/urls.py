@@ -18,7 +18,9 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
     url(r'^vacancies/', include('vacancies.urls',namespace='vacancies')),
     url(r'^events/', include('events.urls',namespace='events')),
-    url(r'^administration/', include('administration.urls', namespace='administration'))
+    url(r'^administration/', include('administration.urls', namespace='administration')),
+    url(r'^email_constructor/', include('email_constructor.urls', namespace='email_constructor')),
+
 )
 
 

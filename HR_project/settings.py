@@ -53,7 +53,8 @@ INSTALLED_APPS = (
     'administration',
     'users',
     'reports',
-    'events'
+    'events',
+    'email_constructor'
 )
 
 MIDDLEWARE_CLASSES = (

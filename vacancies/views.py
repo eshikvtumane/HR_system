@@ -15,27 +15,6 @@ import json
 
 
 
-
-####HELPER FUNCTIONS######################
-def fromUTCtoLocal(time):
-
-    now_utc = time
-    local_tz = pytz.timezone("Asia/Vladivostok")
-    local_time = now_utc.astimezone(local_tz)
-    return local_time
-
-
-def fromLocaltoUTC(time):
-    now_local = time
-    local_tz = pytz.timezone("Asia/Vladivostok")
-    now_local = now_local.replace(tzinfo=local_tz)
-    utc_tz= pytz.timezone("UTC")
-    utc_time = now_local.astimezone(utc_tz)
-    return utc_time
-##########################################
-
-
-
 class AddVacancy(View):
     template = 'vacancies/vacancy_add.html'
     def get(self,request):
@@ -57,6 +36,7 @@ class AddVacancy(View):
             if vacancy_form.is_valid():
                     vacancy_form.instance.author = request.user
                     vacancy_form.save()
+                    VacancyStatusHistory.objects.create(vacancy=vacancy_form.instance)
                     vacancy_id = vacancy_form.instance.id
                     response = json.dumps([{'vacancy_id':vacancy_id}])
                     return HttpResponse(response,content_type='application/json')

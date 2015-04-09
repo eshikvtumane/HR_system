@@ -14,7 +14,7 @@ class Event(models.Model):
         verbose_name_plural = 'События'
 
 
-    name = models.CharField(max_length=50,verbose_name="Название события")
+    name = models.CharField(max_length=50,verbose_name="Название действия")
     def __unicode__(self):
         return self.name
 
@@ -23,12 +23,12 @@ class Event(models.Model):
 class ApplicantVacancyEvent(models.Model):
     class Meta:
         db_table = "ApplicantVacancyEvents"
-        verbose_name = "Запланированное событие"
-        verbose_name_plural = 'Запланированные события'
+        verbose_name = "Назначенное действие"
+        verbose_name_plural = 'Назначенное действие'
 
 
-    start = models.DateTimeField(verbose_name="Начало события")
-    end = models.DateTimeField(verbose_name="Окончание события")
+    start = models.DateTimeField(verbose_name="Начало")
+    end = models.DateTimeField(verbose_name="Окончание")
     applicant_vacancy = models.ForeignKey(ApplicantVacancy)
     event = models.ForeignKey('Event')
     happened = models.BooleanField(default=False)

@@ -8,7 +8,7 @@ $('#add_event').click(function(){
         'id':'save_event',
         'class': 'btn btn-default',
         'text': 'Назначить'
-    })
+    });
     $save_event_btn.val(vacancy_id.toString());
     $div_modal_footer.append($save_event_btn);
 
@@ -18,7 +18,7 @@ $("#save_event").click(function(){
    var vacancy_id = $(this).val();
    var start = $('#id_start').val();
    var end = $('#id_end').val();
-   var event_id = $('#id_event').val()
+   var event_id = $('#id_event').val();
    $.ajax({
     url: "/applicants/view/"+applicant_id+"/add_event/",
     type: "POST",
@@ -35,7 +35,9 @@ $("#save_event").click(function(){
       //{
       //  revertFunc();
       //  return;
-      alert("yooooo");
+        $('#event_modal').modal('hide');
+        $('#email_modal').modal('show');
+
       //calendar.fullCalendar('updateEvent', event);
     },
     error: function() {

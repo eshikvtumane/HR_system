@@ -77,6 +77,26 @@ $('#id_study_start').change(function(){
 
 
 
+
+//отлавливаем клики по пунктам меню вакансии
+
+$('#show_vacancy_statuses').click(function(e){
+
+    e.preventDefault();
+    $('#modalVacancyStatus').modal('show');
+});
+
+
+$('#assign_event').click(function(e){
+
+    e.preventDefault();
+    $('#event_modal').modal('show');
+});
+
+
+
+
+
 function loadCanvas() {
     if ($('#imageCanvas').length > 0) {
         var canvas = document.getElementById('imageCanvas');

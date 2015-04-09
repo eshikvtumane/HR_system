@@ -31,7 +31,7 @@ $(document).ready(function(){
         button_save_status.setAttribute('value', $(this).val());
         button_save_status.setAttribute('onclick', 'saveStatus(this);');
         button_save_status.appendChild(document.createTextNode('Добавить статус'));
-        console.log(button_save_status)
+        console.log(button_save_status);
 
         document.getElementById('divBtnSaveStatus').innerHTML = '';
         document.getElementById('divBtnSaveStatus').appendChild(button_save_status);
@@ -80,7 +80,7 @@ $(document).ready(function(){
 function saveStatus(obj){
     var tbl = document.getElementById('tbl_statuses');
     var select_status = document.getElementById('applicant_vacancy_status');
-     var status_id = select_status.value
+     var status_id = select_status.value;
      var user_id = document.getElementById('user_id').value;
 
     if(status_id){

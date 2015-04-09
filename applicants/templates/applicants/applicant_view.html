@@ -155,36 +155,49 @@
                                 </tr>
                             <tr>
                                 <td>
-                                    <div style="margin-top: 2ex;">
-                                        <button type="button" class="btn btn-primary status_candidate_vacancy" value="{{ v.id }}" data-toggle="modal" data-target="#modalVacancyStatus">
-                                            Просмотреть статусы
-                                        </button>
-                                    </div>
+
+
                                 </td>
                                 <td>
                                     <label>Источник:</label> {{ v.source.source }}
                                 </td>
                                 <td>
-                                    <div style="margin-top: 2ex;">
 
-                                    <button type="button"
-                                            class="btn btn-primary "
-                                            value="{{ v.id }}"
-                                            data-toggle="modal"
-                                            data-target="#event_modal"
-                                            id="add_event">
-                                            Назначить пользователю
-                                        </button>
+                                </td>
+                                <td>
+                                     <div class="btn-group">
+                                      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        Действия по вакансии <span class="caret"></span>
+                                      </button>
+                                      <ul class="dropdown-menu" role="menu">
+                                        <li>{% comment %}<button type="button" class="btn btn-primary status_candidate_vacancy" value="{{ v.id }}" data-toggle="modal" data-target="#modalVacancyStatus">
+                                            Просмотреть статусы
+                                        </button>{% endcomment %}
 
+                                        <a href="#" id='show_vacancy_statuses'>Статусы кандидата по вакансии</a>
+                                        </li>
+
+
+
+                                          <li>
+                                              <a href="#" id='assign_event'>Назначить пользователю действие</a>
+
+                                          </li>
+
+                                          <li>  <a  href="{% url 'events:events_view' applicant_id %}">Посмотреть
+                                            историю назначенных действий
+                                            </a></li>
+
+                                          <input id='vacancy_id'  type="hidden"  value="{{ v.id }}">
+
+                                      </ul>
                                     </div>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                     <a href="{% url 'events:events_view' applicant_id %}">Посмотреть
-                                            историю
-                                            событий</a>
+
 
                     {% include 'applicants/includes/vacancy.html' %}
                 </div>
@@ -324,8 +337,77 @@
     </form>
 
 
+
+
+        <!--
+            Модальное окно с назначением кандидату действия
+
+          -->
+
+          <div class="modal fade" id="email_modal" tabindex="-1"
+               role="dialog"
+               aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                      </div>
+                      <div class="modal-body">
+
+
+
+                        <div class="">
+                            <div class="box-header">
+                              <i class="fa fa-envelope"></i>
+                              <h3 class="box-title">Отправка оповещения</h3>
+
+                            </div>
+                            <div class="box-body">
+                              <form action="#" method="post">
+                                <div class="form-group">
+                                  <input type="email" class="form-control" name="emailto" placeholder="Адрес"/>
+                                </div>
+                                <div class="form-group">
+                                  <input type="text" class="form-control" name="subject" placeholder="Тема"/>
+                                </div>
+                                <div>
+                                  <textarea class="textarea" placeholder="Сообщение" style="width: 100%; height: 125px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                                </div>
+                              </form>
+                            </div>
+                            <div class="box-footer clearfix">
+                              <button class="pull-right btn btn-default" id="sendEmail">Отправить<i class="fa fa-arrow-circle-right"></i></button>
+                            </div>
+                          </div>
+
+
+
+
+
+                      </div>
+                      <div class="modal-footer">
+
+
+                      </div>
+                  </div>
+              </div>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
           <!--
-            Модальное окно с назначением кандидату события
+            Модальное окно с назначением кандидату действия
 
           -->
 
@@ -338,7 +420,7 @@
                           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                               <span aria-hidden="true">&times;</span>
                           </button>
-                          <h4>Назначение кандидату события</h4>
+                          <h4>Назначение кандидату действия</h4>
                       </div>
                       <div class="modal-body">
 
@@ -346,30 +428,14 @@
                               {% load bootstrap %}
                                {{event_form|bootstrap}}
 
-                              <!--<div class="form-group">-->
-                                <!--<label for="start">Вид события</label>-->
-                                  <!--<input>-->
-                              <!--</div>-->
-                              <!--<div class="form-group">-->
-                               <!--<label for="start">Начало события</label>-->
-                               <!--<input type="datetime" class = "form-control"-->
-                                      <!--id="start">-->
 
-                              <!--</div>-->
-                              <!--<div class="form-group">-->
-                                <!--<label for="end">Окончание события</label>-->
-                                <!--<input type="datetime" class = "form-control"-->
-                                   <!--id="end">-->
-                              <!--</div>-->
 
                           </form>
 
                       </div>
                       <div class="modal-footer">
-<!--
-                          <button type="button" id="save_event"
-                                  class="btn btn-default">Назначить
-                          </button>-->
+
+
                       </div>
                   </div>
               </div>

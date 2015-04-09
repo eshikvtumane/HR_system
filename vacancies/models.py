@@ -93,7 +93,7 @@ class Vacancy(models.Model):
         return self.position.name + " " + str(self.published_at)
 
 # Ведение истории по изменению статуса у вакансии
-class VacancyStatus(models.Model):
+'''class VacancyStatus(models.Model):
     class Meta:
         db_table = 'VacancyStatus'
         verbose_name = 'Статус вакансии'
@@ -102,7 +102,7 @@ class VacancyStatus(models.Model):
     vacancy = models.ForeignKey('Vacancy')
     status = models.ForeignKey('Status', default=DEFAULT_VACANCY_STATUS)
     date_change = models.DateTimeField(verbose_name=u'Дата изменения',
-                                    default=timezone.now)
+                                    default=timezone.now)'''
 
 
 #Словарь статусов для отношения Кандидат-Вакансия

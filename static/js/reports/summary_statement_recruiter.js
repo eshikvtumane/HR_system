@@ -6,7 +6,7 @@ $(document).ready(function(){
            addVacancyReport();
     });
 
-    $('clearSource').click(function(){
+    $('#clearSource').click(function(){
         var control = $select[0].selectize;
         control.clearOptions();
     });

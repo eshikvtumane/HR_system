@@ -33,7 +33,14 @@
             <section class="col-lg-7 connectedSortable">
               <div class="box box-success">
                   <div class="box-header" class='col-sm-12'>
-                      <a href="{% url 'reports:statement_recruitment_report' %}">Сводная ведомость по набору персонала</a>
+                      <div>
+                          <a href="{% url 'reports:statement_recruitment_report' %}">Сводная ведомость по набору персонала</a>
+                      </div>
+                      <div>
+                          <a href="{% url 'reports:employers_info_report' %}">Ведомость с информацией о работниках с определённой должностью</a>
+                      </div>
+
+
                   </div>
               </div>
             </section>

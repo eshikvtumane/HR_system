@@ -6,7 +6,8 @@ $(document).ready(function(){
     });
 
 
-    $('#btnAddVacancy').click(function(){
+    $('#btnAddVacancy').click(function(e){
+           e.preventDefault();
            addVacancy();
 
     });

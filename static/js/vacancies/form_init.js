@@ -76,7 +76,7 @@ window.onload = function(){
             dataType: 'json',
             data: datastring,
             success: function (data) {
-                var errors = data[0]['errors'];
+               /* var errors = data[0]['errors'];
                 for (var key in errors){
                     if(errors.hasOwnProperty(key)){
                         $("<span/>",{
@@ -84,7 +84,7 @@ window.onload = function(){
                         }).appendTo("#error_list");
                         console.log(key + "- >" + errors[key]);
                     }
-                }
+                }*/
                 $.notify("Данные вакансии успешно обновлены",'success',{
                     position : 'top center'
                 })

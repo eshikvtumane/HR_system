@@ -5,21 +5,6 @@ from django.db import models
 import datetime
 from django.utils import timezone
 
-####HELPER FUNCTIONS##########
-
-
-##############################
-
-
-
-####HELPER CLASSES###########
-
-# class ConvertedDateTime(models.DateTimeField):
-#     def get_prep_value(self, value):
-#         return str(datetime.datetime.strptime(value,'%d-%m-%Y'))
-
-##############################################
-
 #####CONSTANTS############
 DEFAULT_VACANCY_STATUS = 1
 DEFAULT_APPLICANT_VACANCY_STATUS = 1
@@ -74,15 +59,10 @@ class Vacancy(models.Model):
     salary = models.FloatField(verbose_name=u"Заработная плана")
     published_at = models.DateTimeField(verbose_name=u'Дата размещения',
                                     default=timezone.now)
-    end_date = models.DateTimeField(verbose_name=u'Крайний срок')
-    description = models.TextField(verbose_name=u"Описание")
+    end_date = models.DateField(verbose_name=u'Крайний срок',null=True,blank=True)
+    description = models.TextField(verbose_name=u"Описание",null=True,blank=True)
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
-
-    status = models.ForeignKey(VacancyStatus,verbose_name=u'Статус',
-                               default=DEFAULT_VACANCY_STATUS)
-
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
-
     author = models.ForeignKey(User,verbose_name=u'Автор')
 
     def get_fields(self):
@@ -93,16 +73,16 @@ class Vacancy(models.Model):
         return self.position.name + " " + str(self.published_at)
 
 # Ведение истории по изменению статуса у вакансии
-'''class VacancyStatus(models.Model):
+class VacancyStatusHistory(models.Model):
     class Meta:
-        db_table = 'VacancyStatus'
-        verbose_name = 'Статус вакансии'
-        verbose_name_plural = 'Статусы вакансии'
+        db_table = 'VacancyStatusHistory'
+        verbose_name = 'История изменения статуса вакансии'
+        verbose_name_plural = 'История изменения статуса вакансии'
 
     vacancy = models.ForeignKey('Vacancy')
-    status = models.ForeignKey('Status', default=DEFAULT_VACANCY_STATUS)
+    status = models.ForeignKey('VacancyStatus', default=DEFAULT_VACANCY_STATUS)
     date_change = models.DateTimeField(verbose_name=u'Дата изменения',
-                                    default=timezone.now)'''
+                                    default=timezone.now)
 
 
 #Словарь статусов для отношения Кандидат-Вакансия
@@ -150,7 +130,7 @@ class ApplicantVacancyApplicantVacancyStatus(models.Model):
     DEFAULT_APPLICANT_VACANCY_STATUS)
     date = models.DateTimeField(verbose_name='Дата присвоения',default=timezone.now)
     author = models.ForeignKey(User,verbose_name='Автор')
-    note = models.TextField(verbose_name='Примечание')
+    note = models.TextField(verbose_name='Примечание',blank=True,null=True)
 
 
 

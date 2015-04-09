@@ -10,9 +10,8 @@ $(function(){
         data:{
             'app_vacancy_id': vacancy_id
         },
-
-
        success:function(data){
+            //создаём массив для вывода полей из json-response-object в определённом порядке
             var field_names =  ['event','start','end','author','happened','description'];
             $('#events_table').find('tbody').empty();
             for (i=0;i<data.length;i++){
@@ -57,9 +56,14 @@ $(function(){
               $('#events_table').find('tbody').append($row);
             };
 
-
               $('.is_happened_chk').change(function(){
+                //создаём указатель на чекбокс, чтобы в дальнейшем обратиться к нему
+                var chkbox = this;
                 $('#event_description_box').dialog('open');
+                //если пользователь решил не изменять состояние события и закрыл диалоговое окно
+                $('.ui-dialog-titlebar-close').on('click',function(){
+                    chkbox.checked = false;
+                })
 
 
                 $('#save_event_btn').val($(this).val());
@@ -71,7 +75,7 @@ $(function(){
 
        error:function(){
               $('#events_table').find('tbody').empty();
-              $('#errors_box').html("ERROR OCCURED!!");
+
        }
 
 
@@ -84,7 +88,6 @@ $(function(){
 
             autoOpen:false,
             modal: true
-
             });
 
     //сохраняем изменённое состояние события а также его описание, введенное в диалоговом окне в базе данных

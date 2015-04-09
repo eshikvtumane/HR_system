@@ -41,10 +41,15 @@ class AddVacancyForm(ModelForm):
 
 
 class EditVacancyForm(ModelForm):
+   status = forms.ModelChoiceField(queryset=VacancyStatus.objects.all(),
+                                   label='Статус',
+                                   widget=forms.Select(attrs={
+                                     'class':'select' })
 
+         )
    class Meta:
         model = Vacancy
-        fields = ("salary","end_date","description",'position','status')
+        fields = ("salary","end_date","description",'position')
         labels = {
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),
@@ -69,9 +74,8 @@ class EditVacancyForm(ModelForm):
                 'class':'form-control'
 
 
-            }),
+            })
 
-            'status':forms.Select(attrs={'class':'form-control','id':'status'})
 
 
         }

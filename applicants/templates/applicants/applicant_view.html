@@ -2,9 +2,10 @@
 {% load staticfiles %}
 {% load humanize %}
 {% load date_format %}
+{% load thumbnail %}
 
 {% block title %}
-    Добавление кандидата
+    Страница кандидата
 {% endblock %}
 
 {% block styles %}
@@ -23,7 +24,7 @@
 <script src="{% static 'js/selectize/selectize.js' %}"></script>
 <!-- увеличение картинок -->
 <script src="{% static 'js/fancy_box/source/jquery.fancybox.js' %}"></script>
-<script src="{% static 'js/fancy_box_init.js' %}"></script>
+{#<script src="{% static 'js/fancy_box_init.js' %}"></script>#}
 
 <script src="{% static 'js/appliments/update_applicant.js' %}"></script>
 
@@ -174,17 +175,16 @@
                                             id="add_event">
                                             Назначить пользователю
                                         </button>
-                                        <a
-                                                href="{% url 'events:events_view' applicant_id %}">Посмотреть
-                                            историю
-                                            событий</a>
+
                                     </div>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-
+                     <a href="{% url 'events:events_view' applicant_id %}">Посмотреть
+                                            историю
+                                            событий</a>
 
                     {% include 'applicants/includes/vacancy.html' %}
                 </div>
@@ -228,6 +228,7 @@
                                     {{ applicant_form.photo }}
                                 </div>
                                 <div>
+
                                     <img id='photo' style="width: 300px;" src="{{ applicant_form.instance.photo.url }}">
                                 </div>
 

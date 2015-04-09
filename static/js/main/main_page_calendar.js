@@ -1,76 +1,98 @@
 
+//сохранение событие после изменения(посредством resize или drop)
+function changeEvent(event, delta, revertFunction){
+      console.dir(event.start);
+    updateEvent(event.id,event.start.format(),event.end.format())
 
-function saveData(event, delta, revertFunction){
-  $.ajax({
-    url: "/vacancies/update_event/",
+}
+
+//отправка изменённых данных события на сервер
+function updateEvent(event_id,event_start,event_end){
+    $.ajax({
+    url: "/events/update_event/",
     type: "POST",
     dataType: "json",
     data: {
-      'id': event.id,
-      'start': event.start.format(),
-      'end': event.end.format()
+      'id': event_id,
+      'start': event_start,
+      'end': event_end
     },
     success: function(data, textStatus) {
       //if (!data)
       //{
       //  revertFunc();
       //  return;
-      alert("yooooo");
       //calendar.fullCalendar('updateEvent', event);
+        if ($("#edit_event").attr('display') !== 'none'){
+                dialog.dialog('close');
+        }
+        $.notify("Событие успешно обновлено",'success',{
+                    position : 'top center'
+                })
     },
     error: function() {
-      alert("error")
+
+        $.notify("Произошла ошибка! Попробуйте обновить событие ещё раз",'error',{
+                    position : 'top center'
+                })
     }
   });
+
 
 }
 
 
+//открытие диалоговой формы редактирования события
 function editEventData(calEvent, jsEvent, view){
     $("#event_id").val(calEvent.id);
     $("#title").val(calEvent.title);
-    $("#start").val(moment(calEvent.start).format('DD/MM/YYYY hh:mm'));
-    $("#end").val(moment(calEvent.end).format('DD/MM/YYYY hh:mm'));
-  //
-  //$('#start').datetimepicker({
-  //      lang: 'ru',
-  //      timepicker: true,
-  //      format: 'd-m-Y'
-  //  });
-
-    //
-    $("#start,#stop").datetimepicker();
-
-
+    $("#start").val(calEvent.start.format('DD/MM/YYYY HH:mm'));
+    $("#end").val(calEvent.end.format('DD/MM/YYYY HH:mm'));
+    $('#profile_link').attr('href',calEvent.profile_link)
     dialog.dialog( "open" );
 
 }
 
 
+
+function stringToMomentDate(str){
+    console.log(str);
+    d = parseInt(str.substr(0,2));
+    m = parseInt(str.substr(3,5));
+    y = parseInt(str.substr(6,10));
+    h = parseInt(str.substr(11,13));
+    min = parseInt(str.substr(14,15));
+    return moment({years:y,months:m-1,days:d,hours:h,minuntes:min});
+}
+
+
+
+
+//при загрузке страницы...
 $(function(){
 
 
-  //Initializing fullcalendar add_event dialog form
-    dialog = $( "#dialog_form" ).dialog({
+  //Инициализируем диалоговое окно с редактированием события
+    dialog = $( "#edit_event" ).dialog({
     autoOpen: false,
-    height: 300,
-    width: 350,
+    height: 350,
+    width: 400,
     modal: true
 
 
+
 });
+    //инициализируем jqueryui datepicker плагин на форме редактирования события
+    $("#start,#end").datetimepicker();
+
 
     form = dialog.find( "form" ).on( "submit", function( event ) {
       event.preventDefault();
-      //add event
-    });
-
-    $( "#open_dialog" ).button().on( "click", function() {
-      dialog.dialog( "open" );
     });
 
 
-   //Activate fullCalendar plugin
+
+   //активируем fullCalendar плагин
     $('#scheduler').fullCalendar({
         // put your options and callbacks here
 
@@ -86,43 +108,29 @@ $(function(){
         url: '#',
         allDay: false,
         slotMinutes: 5,
-        //timezone:'Asia/Vladivostok',
-        eventResize: saveData,
-        eventDrop: saveData,
+        timezone:'Asia/Vladivostok',
+        events:'/events/get_events/',
+        eventRender:function(event,element,view){
+                element.attr('profile_link',event.profile_link)
+        },
+        eventResize: changeEvent,
+        eventDrop: changeEvent,
         eventClick: editEventData,
-        events:'/vacancies/get_events/'
+        dayClick: function(date,jsEvent,view){
+            $('#scheduler').fullCalendar('changeView', 'agendaDay');
+            $('#scheduler').fullCalendar('gotoDate', date.format());
+
+        }
 
 
     });
 
-
+//сохранение события при его изменение через диалоговоую форму
 $('#save_event').button().on('click',function(){
     var event_id = $("#event_id").val();
-    var event = $('#scheduler').fullCalendar('clientEvents',event_id);
-    var new_start_time = $("#start").val();
-    var new_end_time = $('#end').val();
-    console.log(event);
-    $.ajax({
-    url: "/vacancies/save_event/",
-    type: "POST",
-    dataType: "json",
-    data: {
-      'id': event_id,
-      'start': new_start_time,
-      'end': new_end_time
-    },
-    success: function(data, textStatus) {
-      //if (!data)
-      //{
-      //  revertFunc();
-      //  return;
-      alert("yooooo");
-      //calendar.fullCalendar('updateEvent', event);
-    },
-    error: function() {
-      alert("error")
-    }
-  });
+    var new_start_time = stringToMomentDate($("#start").val());
+    var new_end_time = stringToMomentDate($('#end').val());
+    updateEvent(event_id,new_start_time.format(),new_end_time.format());
 });
 
 
@@ -151,4 +159,4 @@ $('#save_event').button().on('click',function(){
 
 
 
-})
+});

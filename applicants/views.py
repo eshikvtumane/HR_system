@@ -307,6 +307,7 @@ class CandidateSearchView(PaginatorView):
                         'applicant__first_name', 'applicant__middle_name',
                         'applicant__email', 'applicant__photo', 'salary')
 
+        print applicant_vacancy_list
         return self.render(request, applicant_vacancy_list)
 
     def render(self, request, result_list):

@@ -367,6 +367,7 @@ class ApplicantEventAjax(View):
         if request.is_ajax:
             vacancy_id = request.POST['vacancy_id']
             applicant = Applicant.objects.get(id=applicant_id )
+            print "dasdad" + vacancy_id
             vacancy = Vacancy.objects.get(id = vacancy_id)
             applicant_vacancy = ApplicantVacancy.objects.get(
                 applicant=applicant,vacancy=vacancy)

@@ -156,3 +156,13 @@ def update_event_ajax(request):
             return HttpResponse('400')
 
 
+
+def delete_event_ajax(request):
+    if request.is_ajax():
+        event = ApplicantVacancyEvent.objects.get(id=request.POST["event_id"])
+        try:
+            event.delete()
+            return HttpResponse('200')
+        except:
+            return  HttpResponse('400')
+

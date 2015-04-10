@@ -42,6 +42,48 @@ function updateEvent(event_id,event_start,event_end){
 }
 
 
+//удаление действия через диалогвоое окно
+function deleteEvent(event_id)
+{
+    $.ajax({
+
+        url:'/events/delete_event/',
+        type: 'POST',
+        data: {
+            'event_id':event_id
+        },
+        success:function(data){
+           if ($("#edit_event").attr('display') !== 'none'){
+                dialog.dialog('close');
+
+          }
+
+
+            $('#scheduler').fullCalendar('removeEvents',event_id);
+            $.notify("Событие успешно удалено",'success',{
+                    position : 'top center'
+                })
+
+
+        },
+
+        error:function(){
+
+              $.notify("Произошла ошибка! Попробуйте удалить событие ещё раз",'error',{
+                    position : 'top center'
+                })
+        }
+
+    })
+}
+
+
+
+
+
+
+
+
 //открытие диалоговой формы редактирования события
 function editEventData(calEvent, jsEvent, view){
     $("#event_id").val(calEvent.id);
@@ -133,7 +175,10 @@ $('#save_event').button().on('click',function(){
     updateEvent(event_id,new_start_time.format(),new_end_time.format());
 });
 
-
+$('#delete_event').button().on('click',function(){
+    var event_id = $("#event_id").val();
+    deleteEvent(event_id);
+});
 
 
 		/* initialize the external events

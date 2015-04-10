@@ -143,15 +143,18 @@
                             <th class="col-sm-5">Предлагаемая зарплата</th>
                         </tr>
                         <tbody>
-                            {% for v in vacancies %}
+                            {% for app_vacancy in vacancies %}
                                 <tr>
                                     <td>
-                                        {{ v.vacancy.position.name }}
+                                        {{ app_vacancy.vacancy.position.name }}
 
                                     </td>
-                                    <td><a target="_blank" href="{% url 'vacancies:vacancy_view' v.vacancy.id %}">{{ v.vacancy.head.name }}, {{ v.vacancy.published_at }}</a></td>
-                                    <td>{{ v.salary|intcomma }} руб.</td>
-                                    <td>{{ v.suggested_salary|intcomma }} руб.</td>
+                                    <td><a target="_blank"
+                                           href="{% url 'vacancies:vacancy_view' app_vacancy.vacancy.id %}">
+                                        {{app_vacancy.vacancy.head.name }}, {{ app_vacancy.vacancy.published_at }}</a></td>
+
+                                    <td>{{ app_vacancy.salary|intcomma }} руб.</td>
+                                    <td>{{ app_vacancy.suggested_salary|intcomma }} руб.</td>
                                 </tr>
                             <tr>
                                 <td>
@@ -159,7 +162,7 @@
 
                                 </td>
                                 <td>
-                                    <label>Источник:</label> {{ v.source.source }}
+                                    <label>Источник:</label> {{ app_vacancy.source.source }}
                                 </td>
                                 <td>
 
@@ -170,7 +173,10 @@
                                         Действия по вакансии <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu" role="menu">
-                                        <li>{% comment %}<button type="button" class="btn btn-primary status_candidate_vacancy" value="{{ v.id }}" data-toggle="modal" data-target="#modalVacancyStatus">
+                                        <li>{% comment %}<button type="button"
+                                                                 class="btn btn-primary status_candidate_vacancy"
+                                                                 value="{{ app_vacancy.id }}" data-toggle="modal"
+                                                                 data-target="#modalVacancyStatus">
                                             Просмотреть статусы
                                         </button>{% endcomment %}
 
@@ -188,7 +194,7 @@
                                             историю назначенных действий
                                             </a></li>
 
-                                          <input id='vacancy_id'  type="hidden"  value="{{ v.id }}">
+                                          <input id='vacancy_id'  type="hidden"  value="{{ app_vacancy.vacancy.id }}">
 
                                       </ul>
                                     </div>

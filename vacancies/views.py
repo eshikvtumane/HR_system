@@ -5,7 +5,8 @@ from django.views.generic import View
 from django.template import RequestContext
 from forms import AddVacancyForm, EditVacancyForm, SearchVacancyForm
 from events.models import ApplicantVacancyEvent
-from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory
+from applicants.models import Applicant
+from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory, ApplicantVacancy
 from events.models import ApplicantVacancyEvent
 import json
 from django.core import serializers
@@ -49,8 +50,12 @@ class VacancyView(View):
     template = 'vacancies/vacancy_view.html'
     def get(self,request,id):
         vacancy = Vacancy.objects.get(pk=id)
+        app_vacancies = ApplicantVacancy.objects.filter(vacancy_id = vacancy.id)
+        applicants = []
+        for app_vacancy in app_vacancies:
+            applicants.append(app_vacancy.applicant)
         head = vacancy.head
-        c = RequestContext(request,{ 'vacancy':vacancy,'head':head},)
+        c = RequestContext(request,{ 'vacancy':vacancy,'head':head,'applicants':applicants})
         return render_to_response(self.template, c)
 
 

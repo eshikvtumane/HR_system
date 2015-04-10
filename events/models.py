@@ -10,8 +10,8 @@ from vacancies.models import ApplicantVacancy
 class Event(models.Model):
     class Meta:
         db_table = 'Events'
-        verbose_name = 'Событие'
-        verbose_name_plural = 'События'
+        verbose_name = 'Действие'
+        verbose_name_plural = 'Действие'
 
 
     name = models.CharField(max_length=50,verbose_name="Название действия")

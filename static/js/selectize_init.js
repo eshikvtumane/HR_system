@@ -1,6 +1,6 @@
 $(document).ready(function(){
-    $('.select').selectize();
-    $('.multi-select').selectize({
-
+    $('.select').each(function(){
+            $(this).selectize();
     });
+
 });

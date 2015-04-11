@@ -27,7 +27,7 @@ class Applicant(models.Model):
     birthday = models.DateField(verbose_name='Дата рождения')
 
     # Фотография кандидата
-    photo = models.FileField(upload_to='photo_applicants', default='no-photo.gif', verbose_name='Фото кандидата', null=True, blank=True)
+    photo = models.FileField(upload_to='photo_applicants', default='default.gif', verbose_name='Фото кандидата', null=True, blank=True)
 
     # Место жительства
     city = models.TextField(verbose_name='Город')

@@ -37,19 +37,7 @@ function sendApplicantForm(url, fn){
             data: fd,
             processData: false,
             contentType: false,
-            success: fn/*function(data){
-                if('200' == data[0]){
-                    var url = '/applicants/view/' + data[1];
-                    window.location.href = url;
-                    div_result.innerHTML = 'Добавление прошло успешно';
-                }
-                else{
-                    div_result.innerHTML = 'Произошла ошибка. Пожалуйста, попробуйте повторить сохранение позднее';
-                    console.log(data);
-                }
-
-                document.getElementById('save_loader').innerHTML = '';
-            }*/
+            success: fn
         });
         return false;
    //});

@@ -358,7 +358,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
         # Заголовок отчёта
         title_style = 'align: horiz center;' + 'font: bold on;'
         title_text = 'Сводная ведомость по набору персонала за {0} {1} г.'.format(MONTH[period[0]].lower().encode('utf-8'), period[1].encode('utf-8'))
-        gp.writeMerge(sheet, 0, 0, 0, 13, title_text, title_style)
+        gp.writeMerge(sheet, 0, 0, 0, 12, title_text, title_style)
 
         # Сохранение причин отказов от работы
         rejection_list = []
@@ -677,9 +677,7 @@ class PositionStatement(View):
 
     def __getDeclension(self, number, word_list):
         string_list = []
-        print type(number)
         if number != 0 and isinstance(number, int):
-            print True
             number = str(number)
             number_len = len(number)
             int_number = int(number[number_len-1])
@@ -690,8 +688,6 @@ class PositionStatement(View):
                 string_list.append(word_list[1])
             else:
                 string_list.append(word_list[2])
-        else:
-            print False
         return string_list
 
 

@@ -39,8 +39,6 @@
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <!-- Добавление формы для выбора образования -->
     <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
-<!-- Добавление эскиза загруженного изображения на страницу -->
-    <script src="{% static 'js/appliments/upload_photo.js' %}"></script>
 <!-- Инициализация элементов при загрузке страницы -->
     <script src="{% static 'js/appliments/form_init.js' %}"></script>
 <!-- отправка данных на сервер -->
@@ -143,19 +141,7 @@
                 <div class="box box-solid">
 
                     <div class="box-body">
-                        <div>
-                            <h2>{{ applicant_form.photo.label_tag }}</h2>
-                            <div align="center">
-                                <div>
-                                    {{ applicant_form.photo }}
-                                </div>
-                                <div style="margin-top: 3ex;">
-                                    <canvas id="imageCanvas">
-                                    </canvas>
-                                </div>
-                            </div>
-
-                        </div>
+                        {% include 'applicants/includes/photo.html' %}
                     </div>
                 </div>
 

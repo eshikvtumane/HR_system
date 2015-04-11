@@ -43,8 +43,6 @@
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <!-- Добавление формы для выбора образования -->
     <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
-<!-- Добавление эскиза загруженного изображения на страницу
-    <script src="{% static 'js/appliments/upload_photo.js' %}"></script> -->
 <!-- Инициализация элементов при загрузке страницы -->
     <script src="{% static 'js/appliments/form_init.js' %}"></script>
 
@@ -53,8 +51,6 @@
     <script src="{% static 'js/appliments/load_history_status_applicant_vacancy.js' %}"></script>
 <!-- отправка данных на сервер -->
     <script src="{% static 'js/appliments/send_candidate_form.js' %}"></script>
-<!-- смена знака пола -->
-    <script src="{% static 'js/appliments/change_gender.js' %}"></script>
     <script src="{% static 'js/appliments/add_event.js' %}"></script>
 
 {% endblock %}
@@ -119,7 +115,7 @@
                             <div style="display: inline-block;" class='col-sm-6'>
                                 <label>Возраст:</label>
                                 <div>
-                                    {{ applicant_form.birthday.value|age }} лет
+                                    {{ applicant_form.birthday.value|age }}
                                 </div>
                             </div>
 
@@ -221,20 +217,7 @@
                 <div class="box box-solid">
 
                     <div class="box-body">
-                        <div>
-                            <h2>{{ applicant_form.photo.label_tag }}</h2>
-                            <div align="center">
-                                <div style="margin-bottom: 2ex;">
-                                    {{ applicant_form.photo }}
-                                </div>
-                                <div>
-
-                                    <img id='photo' style="width: 300px;" src="{{ applicant_form.instance.photo.url }}">
-                                </div>
-
-                            </div>
-
-                        </div>
+                        {% include 'applicants/includes/photo.html' %}
                     </div>
                 </div>
 

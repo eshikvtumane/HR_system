@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Head, Department, VacancyStatus, Vacancy, \
+from .models import Head, Department, VacancyStatus, Vacancy,VacancyStatusHistory, \
     ApplicantVacancy, \
     ApplicantVacancyStatus,\
     ApplicantVacancyApplicantVacancyStatus
@@ -15,6 +15,9 @@ class DepartmentAdmin(admin.ModelAdmin):
     fields = []
 
 class VacancyStatusAdmin(admin.ModelAdmin):
+    fields = []
+
+class VacancyStatusHistoryAdmin(admin.ModelAdmin):
     fields = []
 
 class VacancyAdmin(admin.ModelAdmin):
@@ -35,5 +38,5 @@ admin.site.register(Vacancy, VacancyAdmin)
 admin.site.register(ApplicantVacancy,ApplicantVacancyAdmin)
 admin.site.register(ApplicantVacancyStatus,ApplicantVacancyStatusAdmin)
 admin.site.register(ApplicantVacancyApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatusAdmin)
-
+admin.site.register(VacancyStatusHistory, VacancyStatusHistoryAdmin)
 

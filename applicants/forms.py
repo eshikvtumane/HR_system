@@ -183,7 +183,7 @@ class CandidateSearchForm(forms.Form):
     # пол
     sex = forms.ChoiceField(choices=GENDER_LIST,
                                  widget=forms.Select(attrs={
-                                     'class': 'select-chosen',
+                                     'class': 'select',
                                      'data-placeholder': 'Выберите пол'
                                  })
                                  )

@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^search/$', CandidateSearchView.as_view(), name='applicant_search'),
     # страница кандидата
     url(r'^view/(?P<applicant_id>[0-9]+)/$', ApplicantView.as_view(), name='applicant_view'),
-     url(r'^view/(?P<applicant_id>[0-9]+)/add_event/$',
+     url(r'^view/(?P<applicant_id>[0-9]+)/add_event$',
          ApplicantEventAjax.as_view(), name='applicant_event'),
 
     # выборка вакансий

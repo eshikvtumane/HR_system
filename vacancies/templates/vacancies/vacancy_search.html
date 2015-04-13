@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block styles %}
-
+      <link href="{% static 'css/icons.css'%}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 
@@ -49,17 +49,14 @@
                         {{ vacancy_form.salary}}
                         {{ vacancy_form.end_date.label_tag}}
                         {{ vacancy_form.end_date}}
+                       <button class="btn btn-success">Поиск</button>
                        </form>
-                  </div>
-
-                  <div>
-                      <button class="btn btn-success">Поиск</button>
                   </div>
 
               </div><!-- /.форма поиска вакансий -->
                 <h2>Результаты поиска</h2>
 
-                    <div>
+                    <div id="search_results">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -67,25 +64,71 @@
                                     <th>Зарплата</th>
                                     <th>Дата создания</th>
                                     <th>Руководитель</th>
+                                    <th>Статус</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for vacancy in vacancies %}
+                                {% for vacancy_dict in vacancies_list.object_list %}
                                     <tr>
-                                        <td>
 
+                                        <td>{{ vacancy_dict.vacancy.position}}</td>
+                                        <td>{{ vacancy_dict.vacancy.salary}}</td>
+                                        <td>{{ vacancy_dict.vacancy.published_at }}</td>
+                                        <td>{{ vacancy_dict.vacancy.head }} </td>
+                                        <td>
+                                            <div class="icon-vacancy icon-vacancy-{{ vacancy_dict.status_icon }}">{{ vacancy_dict.current_status }}</div>
 
                                         </td>
-                                        <td></td>
-                                        <td></td>
                                         <td><a target="_blank"
-                                               href="" class="btn btn-success">Подробнее</a></td>
+                                               href=" {% url 'vacancies:vacancy_view' vacancy_dict.vacancy.id %}" class="btn btn-success">Подробнее</a></td>
 
 
                                         </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+
+                     {% load i18n %}
+                    <div align="center">
+                        <ul class="pagination pagination-lg">
+                            {% if vacancies_list.has_previous %}
+                                <li>
+                                    <a href="?{{ vacancies_list.previous_page_number.querystring }}" class="prev">&lsaquo;&lsaquo; {% trans "Предыдущая" %}</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <span class="disabled prev">&lsaquo;&lsaquo; {% trans "Предыдущая" %}</span>
+                                </li>
+                            {% endif %}
+                            {% for page in vacancies_list.pages %}
+                                {% if page %}
+                                    {% ifequal page vacancies_list.number %}
+                                        <li>
+                                            <span class="current page">{{ page }}</span>
+                                        </li>
+                                    {% else %}
+                                        <li>
+                                            <a href="?{{ page.querystring }}" class="page">{{ page }}</a>
+                                        </li>
+                                    {% endifequal %}
+                                {% else %}
+                                    ...
+                                {% endif %}
+                            {% empty %}
+                                <h2>Нет данных</h2>
+                            {% endfor %}
+                            {% if vacancies_list.has_next %}
+                                <li>
+                                    <a href="?{{ vacancies_list.next_page_number.querystring }}" class="next">{% trans "Следующая" %} &rsaquo;&rsaquo;</a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <span class="disabled next">{% trans "Следующая" %} &rsaquo;&rsaquo;</span>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
                     </div>
 
 

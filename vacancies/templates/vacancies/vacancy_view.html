@@ -84,7 +84,8 @@
                  <div class="box box-success">
                     <div class="box-header">
                         <h4>Кандидаты на данную должность</h4>
-                        <div>
+                        <div class="well">
+
                             <ul id='applicant_list'>
                             {% for applicant in applicants  %}
                                 <li> {{applicant.first_name}} {{applicant.last_name}} {{applicant.middle_name}}</br>

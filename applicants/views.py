@@ -261,7 +261,7 @@ class PaginatorView(View):
         return render_to_response(self.template, rc)
 
 
-class CandidateSearchView(PaginatorView):
+class ApplicantSearchView(PaginatorView):
     template = 'applicants/applicant_search.html'
 
     @method_decorator(login_required)
@@ -302,14 +302,14 @@ class CandidateSearchView(PaginatorView):
             for field in applicant_fields:
                 if req[field]:
                     query_list['applicant__' + field + '__contains'] = req[field]
-
+            print(query_list)
             applicant_vacancy_list = ApplicantVacancy.objects.filter(**query_list)\
                 .order_by('salary')\
                 .values('applicant', 'applicant__last_name',
                         'applicant__first_name', 'applicant__middle_name',
                         'applicant__email', 'applicant__photo', 'salary')
 
-        print applicant_vacancy_list
+
         return self.render(request, applicant_vacancy_list)
 
     def render(self, request, result_list):

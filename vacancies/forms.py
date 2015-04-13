@@ -49,7 +49,7 @@ class EditVacancyForm(ModelForm):
          )
    class Meta:
         model = Vacancy
-        fields = ("salary","end_date","description",'position')
+        fields = ("salary","end_date","description")
         labels = {
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),

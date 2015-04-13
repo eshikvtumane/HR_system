@@ -1,7 +1,7 @@
 #-*- coding:utf-8 -*-
 from django.conf.urls import patterns, include, url
 from views import ApplicantAddView, ApplicantSearchView, VacancySearchAjax, \
-    ApplicantView, ApplicantVacancyStatusAjax,ApplicantEventAjax
+    ApplicantView, ApplicantVacancyStatusAjax
 
 urlpatterns = patterns('',
 
@@ -11,9 +11,6 @@ urlpatterns = patterns('',
     url(r'^search/$', ApplicantSearchView.as_view(), name='applicant_search'),
     # страница кандидата
     url(r'^view/(?P<applicant_id>[0-9]+)/$', ApplicantView.as_view(), name='applicant_view'),
-     url(r'^view/(?P<applicant_id>[0-9]+)/add_event$',
-         ApplicantEventAjax.as_view(), name='applicant_event'),
-
     # выборка вакансий
     url(r'^vacancy_search/$', VacancySearchAjax.as_view(), name='vacancy_search'),
     # добавление статуса кандидату

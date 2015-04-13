@@ -12,6 +12,8 @@ urlpatterns = patterns('',
 
      url(r'^get_vacancy_events/$', 'events.views.get_vacancy_events_ajax', name='get_vacancy_events'),
 
+     url(r'^add_event$','events.views.add_event', name='add_event'),
+
      url(r'^change_event_status$', 'events.views.change_event_status_ajax', name='change_event_status'),
 
      url(r'^update_event/$','events.views.update_event_ajax'),

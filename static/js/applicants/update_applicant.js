@@ -1,9 +1,7 @@
 $(document).ready(function(){
-console.log('111');
     var id = document.getElementById('id').value;
     var url = '/applicants/view/' + id + '/';
     validateForm(sendApplicantForm, url, fn);
-    console.log('222');
 });
 
 

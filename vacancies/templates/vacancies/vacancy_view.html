@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load staticfiles %}
+{% load humanize %}
 
 
 
@@ -57,7 +58,7 @@
                     <h5>{% get_verbose_field_name vacancy 'position'  %}:</h5>
                     <strong>{{vacancy.position}}</strong>
                     <h5>{% get_verbose_field_name vacancy 'salary'  %}:</h5>
-                    <strong>{{vacancy.salary}}</strong>
+                    <strong><i class="fa fa-rub"></i> {{vacancy.salary|intcomma}}</strong>
                     <h5>{% get_verbose_field_name vacancy 'end_date'  %}:</h5>
                     <strong>{{vacancy.end_date}}</strong>
                     <h5>{% get_verbose_field_name vacancy 'published_at'  %}:</h5>

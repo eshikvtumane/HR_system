@@ -1,8 +1,6 @@
 $(document).ready(function(){
-console.log('111');
     var url = '/applicants/add/';
     validateForm(sendApplicantForm, url, fn);
-    console.log('222');
 });
 
 

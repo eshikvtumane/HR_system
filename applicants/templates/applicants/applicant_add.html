@@ -27,9 +27,9 @@
 
 <!-- Добавление валидации -->
     <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
-    <script src="{% static 'js/appliments/validate_applicant_form.js' %}"></script>
+    <script src="{% static 'js/applicants/validate_applicant_form.js' %}"></script>
 
-<script src="{% static 'js/appliments/create_applicant.js' %}"></script>
+<script src="{% static 'js/applicants/create_applicant.js' %}"></script>
 
 
 <!-- Плагин для клонирования формы -->
@@ -38,16 +38,14 @@
 <!-- Скрипт работы для datepicker -->
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <!-- Добавление формы для выбора образования -->
-    <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
-<!-- Добавление эскиза загруженного изображения на страницу -->
-    <script src="{% static 'js/appliments/upload_photo.js' %}"></script>
+    <script src="{% static 'js/applicants/add_education_form.js' %}"></script>
 <!-- Инициализация элементов при загрузке страницы -->
-    <script src="{% static 'js/appliments/form_init.js' %}"></script>
+    <script src="{% static 'js/applicants/form_init.js' %}"></script>
 <!-- отправка данных на сервер -->
-    <script src="{% static 'js/appliments/send_candidate_form.js' %}"></script>
+    <script src="{% static 'js/applicants/send_candidate_form.js' %}"></script>
 
 <!-- смена знака пола -->
-    <script src="{% static 'js/appliments/change_gender.js' %}"></script>
+    <script src="{% static 'js/applicants/change_gender.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -143,19 +141,7 @@
                 <div class="box box-solid">
 
                     <div class="box-body">
-                        <div>
-                            <h2>{{ applicant_form.photo.label_tag }}</h2>
-                            <div align="center">
-                                <div>
-                                    {{ applicant_form.photo }}
-                                </div>
-                                <div style="margin-top: 3ex;">
-                                    <canvas id="imageCanvas">
-                                    </canvas>
-                                </div>
-                            </div>
-
-                        </div>
+                        {% include 'applicants/includes/photo.html' %}
                     </div>
                 </div>
 

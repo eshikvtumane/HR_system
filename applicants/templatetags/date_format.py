@@ -13,5 +13,27 @@ def date_format(value):
 @register.filter(name='age')
 def age(born):
     today = date.today()
-    print born
-    return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+    age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+    return __getDeclension(age)
+
+year_words = [
+    u'год',
+    u'года',
+    u'лет'
+]
+def __getDeclension(number):
+    string_list = []
+    if number != 0 and isinstance(number, int):
+        number = str(number)
+        number_len = len(number)
+        int_number = int(number[number_len-1])
+        string_list.append(number)
+        if int_number == 1:
+            string_list.append(year_words[0])
+        elif int_number > 1 and int_number < 5:
+            string_list.append(year_words[1])
+        else:
+            string_list.append(year_words[2])
+    return u' '.join(string_list)
+
+

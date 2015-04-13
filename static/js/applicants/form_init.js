@@ -24,14 +24,14 @@ $('#id_study_start').change(function(){
     var start = document.getElementById('id_study_start');
     var study_start = start.options[start.selectedIndex].text;
 
-
     var study_end = document.getElementById('id_study_end');
     study_end.value = parseInt(study_start) + 5;
 });
 
-// заглушка для загружаемой фотографии
-    loadCanvas();
-    setYear();
+// если пользователь загружает фото
+    $('#id_photo').change(function(){
+        readURL();
+    });
 
 // инициализация datepicker
     $('#id_birthday').datetimepicker({
@@ -55,8 +55,6 @@ $('#id_study_start').change(function(){
        if ($(this).attr('class') == 'select'){
            $(this).selectize();
        }
-
-
        else if($(this).attr('class') == 'select-add'){
 
              $(this).selectize({
@@ -69,14 +67,26 @@ $('#id_study_start').change(function(){
     });
 
 
+     $('#applicant_vacancy_status').selectize();
 
     $('.clone-wrapper').cloneya({
         limit: 3
     });
+
+
+    //отображаем значок при смене пола
+    $('#id_sex').change(function(){
+        var val = $(this).val();
+        var img = document.getElementById('gender_img');
+
+        if(val == '1'){
+            img.src = '/media/gender/male.png';
+        }
+        else{
+            img.src = '/media/gender/female.png';
+        }
+    });
 };
-
-
-
 
 //отлавливаем клики по пунктам меню вакансии
 
@@ -93,53 +103,16 @@ $('#assign_event').click(function(e){
     $('#event_modal').modal('show');
 });
 
-
-
-
-
-function loadCanvas() {
-    if ($('#imageCanvas').length > 0) {
-        var canvas = document.getElementById('imageCanvas');
-        var context = canvas.getContext('2d');
-        width = 300;
-
-        // load image from data url
-        var img = new Image();
-        img.onload = function(){
-            img_width = img.width; // длина картинки
-            img_height = img.height; // ширина картинки
-
-            // вычисление ширины для картинки
-            height = (img_height * width) / img_width;
-
-
-            img.width = width;
-            img.height = height;
-
-            canvas.width = width;
-            canvas.height = height;
-            ctx.drawImage(img,0,0,img.width, img.height);
+// отображение выбранного изображения
+function readURL(){
+    var input = document.getElementById('id_photo');
+    if(input.files && input.files[0]){
+        var reader = new FileReader();
+        reader.onload = function(e){
+            $('#imagePreview').attr('src', e.target.result);
         }
-
-        img.src = '/media/no_photo.gif'; //"http://placehold.it/300x150";
-    }
-    else{
-        return;
+        reader.readAsDataURL(input.files[0]);
     }
 }
 
 
-// заполнение select'a годами
-function setYear(div){
-    var start = 1900;
-    var end   = new Date().getFullYear();
-
-
-    var empty = 'Выберите дату';
-    $('.yearpicker').append($('<option value/>').html(empty));
-
-    for (i = end; i > 1900; i--)
-    {
-         $('.yearpicker').append($('<option />').val(i).html(i));
-    }
-}

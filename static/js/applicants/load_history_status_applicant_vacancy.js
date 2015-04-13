@@ -2,10 +2,15 @@ $(document).ready(function(){
     var div_id = 'divHistoryStatusApplicantVacancy';
     var div_result = document.getElementById(div_id);
 
-    $('.status_candidate_vacancy').click(function(){
+
+    $('.status_candidate_vacancy').click(function(e){
 
         ajaxLoader(div_id);
-        console.log($(this).val());
+        //console.log($(this).parent().find('.vacancy-id').val())
+        console.log($(this).parent().parent().parent().children('.vacancy-id').val())
+        //console.log($)
+        var $id=$(this).parent().parent().parent().children('.vacancy-id').val();
+        //var $id=$(this).val();
 
         var table = document.createElement('table');
         var header_tr = document.createElement('tr');
@@ -18,7 +23,6 @@ $(document).ready(function(){
             header_tr.appendChild(th);
         }
 
-
         table.setAttribute('class', 'table');
         table.setAttribute('id', 'tbl_statuses');
         table.appendChild(header_tr);
@@ -28,10 +32,9 @@ $(document).ready(function(){
 
         var button_save_status = document.createElement('button');
         button_save_status.setAttribute('class', "btn btn-success save-status");
-        button_save_status.setAttribute('value', $(this).val());
+        button_save_status.setAttribute('value', $id);
         button_save_status.setAttribute('onclick', 'saveStatus(this);');
         button_save_status.appendChild(document.createTextNode('Добавить статус'));
-        console.log(button_save_status);
 
         document.getElementById('divBtnSaveStatus').innerHTML = '';
         document.getElementById('divBtnSaveStatus').appendChild(button_save_status);
@@ -40,7 +43,7 @@ $(document).ready(function(){
             type: 'GET',
             url: '/applicants/status_add/',
             data: {
-                'applicant_vacancy': $(this).val()
+                'applicant_vacancy': $id
             },
             dataType: 'json',
             success: function(data){
@@ -68,7 +71,6 @@ $(document).ready(function(){
                 }
             }
         });
-
     });
 
 

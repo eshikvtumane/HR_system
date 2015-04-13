@@ -3,6 +3,8 @@ from django import forms
 from models import Applicant, ApplicantEducation, Education, Major, Position, SourceInformation
 from vacancies.models import Vacancy
 
+from datetime import datetime
+
 # Create your forms here.
 class ApplicantForm(forms.ModelForm):
     """
@@ -40,7 +42,9 @@ class ApplicantForm(forms.ModelForm):
                 'data-validation': "date",
                 'data-validation-format': "dd-mm-yyyy"
             }),
-            'photo': forms.FileInput(attrs={'accept':'.jpg, .jpeg, .png, .gif, .bmp'}),
+            'photo': forms.FileInput(attrs={'accept':'.jpg, .jpeg, .png, .gif, .bmp',
+                                            'class': 'upload'
+                                            }),
             'city': forms.TextInput(attrs={
                 'class': "form-control",
                 'data-validation': "custom",
@@ -89,6 +93,13 @@ class ApplicantForm(forms.ModelForm):
             'date_created': forms.HiddenInput()
         }
 
+
+# кортеж годов (для выбора начала обучения)
+YEAR = tuple(
+        (str(i), i)
+        for i in xrange(datetime.now().year, 1901, -1)
+    )
+
 # Форма добавления образования
 class ApplicantEducationForm(forms.ModelForm):
     education = forms.ModelChoiceField(queryset=Education.objects.all(),
@@ -112,8 +123,9 @@ class ApplicantEducationForm(forms.ModelForm):
         model = ApplicantEducation
         fields = ('education', 'major', 'study_start', 'study_end')
         widgets = {
-            'study_start': forms.Select(attrs={
-                                                'class': 'yearpicker select',
+            'study_start': forms.Select(choices=YEAR,
+                                        attrs={
+                                                'class': 'select',
                                                 'placeholder':'Выберите год'
                                             }
             ),

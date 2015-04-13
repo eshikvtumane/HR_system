@@ -1,0 +1,15 @@
+<div>
+    <h2>{{ applicant_form.photo.label_tag }}</h2>
+    <div align="center">
+        <div>
+            <div class="fileUpload btn btn-primary">
+                <span>Выберите фото</span>
+                {{ applicant_form.photo }}
+            </div>
+        </div>
+        <div style="margin-top: 3ex;">
+            <img style="width: 300px;" id="imagePreview" src="{{ applicant_form.instance.photo.url }}">
+        </div>
+    </div>
+
+</div>

@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.views.generic import View
 
-from vacancies.models import ApplicantVacancy, Vacancy, ApplicantVacancyApplicantVacancyStatus, ApplicantVacancyStatus, Position
+from vacancies.models import ApplicantVacancy, Vacancy, ApplicantVacancyApplicantVacancyStatus, VacancyStatusHistory, Position
 from applicants.models import SourceInformation
 
 from forms import SummaryStatementRecruimentForm, PositionStatementForm
@@ -358,7 +358,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
         # Заголовок отчёта
         title_style = 'align: horiz center;' + 'font: bold on;'
         title_text = 'Сводная ведомость по набору персонала за {0} {1} г.'.format(MONTH[period[0]].lower().encode('utf-8'), period[1].encode('utf-8'))
-        gp.writeMerge(sheet, 0, 0, 0, 13, title_text, title_style)
+        gp.writeMerge(sheet, 0, 0, 0, 12, title_text, title_style)
 
         # Сохранение причин отказов от работы
         rejection_list = []
@@ -386,6 +386,18 @@ class SummaryStatementRecruitmentGenerateAjax(View):
             result_vacancy = []
 
 
+            vacancy_statuses = VacancyStatusHistory.objects.filter(vacancy=vacancy_id).values('status__name', 'date_change')
+            vacancy_open = vacancy_statuses[0]
+
+            if vacancy_statuses.count() == 1:
+                vacancy_status_str =u'%s с \n %s' % (vacancy_open['status__name'], vacancy_open['date_change'].date())
+            else:
+                vacancy_change = vacancy_statuses.latest('status')
+                vacancy_status_str =u'%s с \n %s \ \n %s с \n %s' % (vacancy_open['status__name'], vacancy_open['date_change'].date(),
+                                                                    vacancy_change['status__name'], vacancy_change['date_change'].date()
+                                                                    )
+
+
             # форматирование текста
             position = vacancy.position.name.split(' ')
             str_len = 23
@@ -402,7 +414,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
 
             sources_len = len(sources) - 1
             gp.writeMerge(sheet, row_start, row_start+sources_len, column_start, column_start, result_position, style)
-            gp.writeMerge(sheet, row_start, row_start+sources_len, column_start + 1, column_start + 1, str(vacancy.published_at.date()), style)
+            gp.writeMerge(sheet, row_start, row_start+sources_len, column_start + 1, column_start + 1, vacancy_status_str, style)
 
 
             # сбор статистики по источникам
@@ -677,9 +689,7 @@ class PositionStatement(View):
 
     def __getDeclension(self, number, word_list):
         string_list = []
-        print type(number)
         if number != 0 and isinstance(number, int):
-            print True
             number = str(number)
             number_len = len(number)
             int_number = int(number[number_len-1])
@@ -690,8 +700,6 @@ class PositionStatement(View):
                 string_list.append(word_list[1])
             else:
                 string_list.append(word_list[2])
-        else:
-            print False
         return string_list
 
 

@@ -45,7 +45,7 @@
             <!-- Left col -->
             <section class="col-lg-6 connectedSortable">
                 <!--
-                    Форма добавления вакансии
+                    Форма редактирования вакансии
                 -->
 
               <div class="box box-success">
@@ -72,13 +72,15 @@
             <section class="col-lg-6 connectedSortable">
                  <div class="box box-success">
                     <div class="box-header">
-                        <h5>Дата публикации:</h5>
-                        <strong>{{vacancy.published_at}}</strong>
-                        <h5>Руководитель:</h5>
-                        <strong>{{vacancy.head}}</strong>
+
+                        <strong>Должность</strong>
+                        <h5>{{ vacancy.position }}</h5>
+                        <strong>Дата публикации</strong>
+                        <h5>{{vacancy.published_at}}</h5>
+                        <strong>Руководитель</strong>
+                        <h5>{{vacancy.head}}</h5>
 
                 </div>
-
 
               </div>
             </section><!-- right col -->

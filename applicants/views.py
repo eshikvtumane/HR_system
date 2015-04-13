@@ -28,6 +28,8 @@ from django.utils.decorators import method_decorator
 
 
 import datetime
+
+import bleach
 from django.db.models import Q
 import operator
 
@@ -398,11 +400,12 @@ class ApplicantVacancyStatusAjax(View):
         if request.is_ajax:
             request = request.GET
 
-            result_obj = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=request['applicant_vacancy']).values('date', 'applicant_vacancy_status__name')
+            result_obj = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=request['applicant_vacancy']).values('date', 'applicant_vacancy_status__name', 'note')
             result = [
                 {
                     'date': i['date'].strftime('%d-%m-%Y'),
-                    'status': i['applicant_vacancy_status__name']
+                    'status': i['applicant_vacancy_status__name'],
+                    'note': i['note']
                 }
                 for i in result_obj
             ]
@@ -423,7 +426,8 @@ class ApplicantVacancyStatusAjax(View):
             obj = ApplicantVacancyApplicantVacancyStatus(
                 applicant_vacancy=ApplicantVacancy.objects.get(pk=request['applicant_vacancy']),
                 applicant_vacancy_status = ApplicantVacancyStatus.objects.get(pk=request['status']),
-                author = User.objects.get(pk=request['user_id'])
+                author = User.objects.get(pk=request['user_id']),
+                note = bleach.clean(request['note'])
             )
             obj.save()
 

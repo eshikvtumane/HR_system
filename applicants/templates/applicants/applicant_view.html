@@ -62,22 +62,23 @@
         <section class="content-header">
 
           <h1>
-            Страница кандидата
+            Страница кандидата <a href="#"  data-toggle="modal" data-target="#myModal">(История изменений анкеты)</a>
           </h1>
 
-            <div style="margin-top: 2ex;">
+            <!--<div style="margin-top: 2ex;">
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
                     История изменений анкеты
                 </button>
 
-            </div>
-            <div style="margin-top: 2ex;">
+            </div>-->
+            <!--<div style="margin-top: 2ex;">
                 <label>Дата создания:</label> {{ applicant_form.date_created.value }}
-            </div>
+            </div>-->
 
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
             <li class="active">Страница кандидата</li>
+
           </ol>
         </section>
 
@@ -101,7 +102,9 @@
 
 
                       <div class="col-sm-12">
-                          {% include 'applicants/includes/applicant_info.html' %}
+                          <div style="padding-bottom: 2ex;">
+                            {% include 'applicants/includes/applicant_info.html' %}
+                          </div>
 
                           <div class="group-control">
                             <div style="display: inline-block;" class='col-sm-6'>
@@ -165,7 +168,7 @@
                                 </td>
                                 <td>
                                      <div class="btn-group">
-                                         <input id='vacancy_id' class="vacancy-id"  type="hidden"  value="{{ app_vacancy.id }}">
+                                         <input class="app-vacancy-id"  type="hidden"  value="{{ app_vacancy.id }}">
                                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                         Действия по вакансии <span class="caret"></span>
                                       </button>
@@ -196,6 +199,7 @@
                                             историю назначенных действий
                                             </a></li>
                                       </ul>
+                                         <input id='vacancy_id' type="hidden"  value="{{ app_vacancy.id }}">
                                     </div>
                                 </td>
                             </tr>
@@ -511,10 +515,18 @@
 
                                   <div id="divBtnSaveStatus"></div>
                               </div>
+                              <div style="margin-top: 2ex;">
+                                  <label>Примечание</label>
+                                  <div>
+                                    <textarea id="textarea_note" class="form-control"></textarea>
+                                  </div>
+                              </div>
+
+
                           </div>
 
 
-                          <div id="divHistoryStatusApplicantVacancy" align="center">
+                          <div id="divHistoryStatusApplicantVacancy" align="center" style="margin-top: 2ex;">
 
                           </div>
 

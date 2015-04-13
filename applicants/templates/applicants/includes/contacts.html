@@ -7,12 +7,14 @@
         <label class="control-label col-sm-2">Телефон:</label>
 
         <div class="col-sm-10" style="margin-top: 1ex;  font-size: 3ex;">
+            <div style="margin-bottom: 2ex;">
+                {% for p in phones %}
+                    <div>
+                        {{ p.phone|phone_format }}
+                    </div>
+                {% endfor %}
+            </div>
 
-            {% for p in phones %}
-                <div>
-                    {{ p.phone|phone_format }}
-                </div>
-            {% endfor %}
 
             <div class="clone-wrapper">
                 <div class="toclone col-sm-12" style="display: inline-block;">

@@ -55,8 +55,6 @@ $('#id_study_start').change(function(){
        if ($(this).attr('class') == 'select'){
            $(this).selectize();
        }
-
-
        else if($(this).attr('class') == 'select-add'){
 
              $(this).selectize({
@@ -68,6 +66,8 @@ $('#id_study_start').change(function(){
         }
     });
 
+
+     $('#applicant_vacancy_status').selectize();
 
     $('.clone-wrapper').cloneya({
         limit: 3

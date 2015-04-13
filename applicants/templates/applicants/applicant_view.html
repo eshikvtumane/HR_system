@@ -26,14 +26,14 @@
 <script src="{% static 'js/fancy_box/source/jquery.fancybox.js' %}"></script>
 {#<script src="{% static 'js/fancy_box_init.js' %}"></script>#}
 
-<script src="{% static 'js/appliments/update_applicant.js' %}"></script>
+<script src="{% static 'js/applicants/update_applicant.js' %}"></script>
 
 <!-- Ajax loader -->
 <script src="{% static 'js/loader.js' %}"></script>
 
 <!-- Добавление валидации -->
     <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
-    <script src="{% static 'js/appliments/validate_applicant_form.js' %}"></script>
+    <script src="{% static 'js/applicants/validate_applicant_form.js' %}"></script>
 
 
 <!-- Плагин для клонирования формы -->
@@ -42,16 +42,16 @@
 <!-- Скрипт работы для datepicker -->
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <!-- Добавление формы для выбора образования -->
-    <script src="{% static 'js/appliments/add_education_form.js' %}"></script>
+    <script src="{% static 'js/applicants/add_education_form.js' %}"></script>
 <!-- Инициализация элементов при загрузке страницы -->
-    <script src="{% static 'js/appliments/form_init.js' %}"></script>
+    <script src="{% static 'js/applicants/form_init.js' %}"></script>
 
 
 <!-- Вывод статусов кандидатов по вакансиям -->
-    <script src="{% static 'js/appliments/load_history_status_applicant_vacancy.js' %}"></script>
+    <script src="{% static 'js/applicants/load_history_status_applicant_vacancy.js' %}"></script>
 <!-- отправка данных на сервер -->
-    <script src="{% static 'js/appliments/send_candidate_form.js' %}"></script>
-    <script src="{% static 'js/appliments/add_event.js' %}"></script>
+    <script src="{% static 'js/applicants/send_candidate_form.js' %}"></script>
+    <script src="{% static 'js/applicants/add_event.js' %}"></script>
 
 {% endblock %}
 
@@ -149,8 +149,8 @@
                                            href="{% url 'vacancies:vacancy_view' app_vacancy.vacancy.id %}">
                                         {{app_vacancy.vacancy.head.name }}, {{ app_vacancy.vacancy.published_at }}</a></td>
 
-                                    <td>{{ app_vacancy.salary|intcomma }} руб.</td>
-                                    <td>{{ app_vacancy.suggested_salary|intcomma }} руб.</td>
+                                    <td align="center" style="font-size:14pt; align: center;"><i class="fa fa-rub"> {{ app_vacancy.salary|intcomma }}</i></td>
+                                    <td align="center" style="font-size:14pt;"><i class="fa fa-rub"> {{ app_vacancy.suggested_salary|intcomma }}</i></td>
                                 </tr>
                             <tr>
                                 <td>
@@ -165,33 +165,36 @@
                                 </td>
                                 <td>
                                      <div class="btn-group">
+                                         <input id='vacancy_id' class="vacancy-id"  type="hidden"  value="{{ app_vacancy.id }}">
                                       <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                         Действия по вакансии <span class="caret"></span>
                                       </button>
                                       <ul class="dropdown-menu" role="menu">
-                                        <li>{% comment %}<button type="button"
-                                                                 class="btn btn-primary status_candidate_vacancy"
+                                        <li>
+                                            <!--<button type="button"
+                                                                 class="btn status_candidate_vacancy"
                                                                  value="{{ app_vacancy.id }}" data-toggle="modal"
                                                                  data-target="#modalVacancyStatus">
                                             Просмотреть статусы
-                                        </button>{% endcomment %}
+                                        </button>-->
 
-                                        <a href="#" id='show_vacancy_statuses'>Статусы кандидата по вакансии</a>
+                                        <a href="#" class="status_candidate_vacancy" data-toggle="modal" data-target="#modalVacancyStatus">
+                                            Статусы кандидата по вакансии
+                                        </a>
+
+
                                         </li>
 
-
-
                                           <li>
-                                              <a href="#" id='assign_event'>Назначить пользователю действие</a>
+                                              <a href="#" class='assign_event' data-toggle="modal" data-target="#event_modal">
+                                                  Назначить пользователю действие
+                                              </a>
 
                                           </li>
 
                                           <li>  <a  href="{% url 'events:events_view' applicant_id %}">Посмотреть
                                             историю назначенных действий
                                             </a></li>
-
-                                          <input id='vacancy_id'  type="hidden"  value="{{ app_vacancy.vacancy.id }}">
-
                                       </ul>
                                     </div>
                                 </td>

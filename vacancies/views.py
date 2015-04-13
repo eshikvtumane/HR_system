@@ -1,4 +1,10 @@
 #-*- coding: utf8 -*-
+
+import datetime
+import pytz
+import json
+from django.core import serializers
+from pure_pagination import Paginator, PageNotAnInteger
 from django.shortcuts import render,render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
@@ -8,11 +14,7 @@ from events.models import ApplicantVacancyEvent
 from applicants.models import Applicant
 from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory, ApplicantVacancy
 from events.models import ApplicantVacancyEvent
-import json
-from django.core import serializers
-import datetime
-import pytz
-import json
+
 
 
 
@@ -95,11 +97,43 @@ class VacancyEdit(View):
 class VacancySearch(View):
     template = 'vacancies/vacancy_search.html'
     def get(self,request):
+
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+                page = 1
+
+
+        vacancies_list = []
         vacancy_form = SearchVacancyForm()
-        c = RequestContext(request,{'vacancy_form':vacancy_form})
+
+        if request.GET:
+            query_list = {}
+
+
+            if request.GET['position']:
+                query_list['position'] = request.GET['position']
+
+            vacancies = Vacancy.objects.filter(**query_list)
+
+            for vacancy in vacancies:
+                vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
+                vacancies_list.append({'vacancy':vacancy,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})
+
+
+
+        else:
+            vacancies = Vacancy.objects.all()
+            for vacancy in vacancies:
+                vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
+                vacancies_list.append({'vacancy':vacancy,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})
+
+
+
+        p = Paginator(vacancies_list,2,request=request)
+        vacancies_list = p.page(page)
+        c = RequestContext(request,{'vacancy_form':vacancy_form,'vacancies_list':vacancies_list})
         return render_to_response(self.template,c)
-
-
 
 
 

@@ -19,6 +19,7 @@ class VacancyStatus(models.Model):
         verbose_name_plural = 'Статусы вакансии'
 
     name = models.TextField(max_length=50)
+    icon_class = models.CharField(max_length=30, default='')
 
     def __unicode__(self):
         return self.name

@@ -64,7 +64,7 @@ class Vacancy(models.Model):
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
     author = models.ForeignKey(User,verbose_name=u'Автор')
-
+    
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in
                 Vacancy._meta.fields]

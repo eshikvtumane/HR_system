@@ -20,8 +20,17 @@ class VacancyStatusAdmin(admin.ModelAdmin):
 class VacancyStatusHistoryAdmin(admin.ModelAdmin):
     fields = []
 
+
+class VacancyStatusHistoryInline(admin.StackedInline):
+    model = VacancyStatusHistory
+    extra = 0
+
 class VacancyAdmin(admin.ModelAdmin):
+    inlines = (
+        VacancyStatusHistoryInline,
+    )
     fields = []
+    readonly_fields = ('author',)
 
 class ApplicantVacancyAdmin(admin.ModelAdmin):
     fields = []

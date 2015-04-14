@@ -114,8 +114,8 @@ class SavingModels():
         args['edu_form'] = ApplicantEducationForm()
         args['vacancy_form'] = VacancyForm()
         args['event_form'] = ApplicantVacancyEventForm()
-        args['positions'] = Position.objects.all()
-        args['sources'] = SourceInformation.objects.all()
+        #args['positions'] = Position.objects.all()
+        #args['sources'] = SourceInformation.objects.all()
 
         return args
 
@@ -267,16 +267,15 @@ class ApplicantSearchView(PaginatorView):
     @method_decorator(login_required)
     def get(self, request):
         if not request.GET:
-            applicant_vacancy_list = ApplicantVacancy.objects.all()\
-                .order_by('salary')\
-                .values('applicant', 'applicant__last_name', 'applicant__first_name', 'applicant__middle_name', 'applicant__email', 'applicant__photo', 'salary')\
-                .reverse()[:10]
+            applicant_vacancy_list = Applicant.objects.all()\
+                                        .values('id', 'last_name',
+                                                'first_name', 'middle_name',
+                                                'email', 'photo').reverse()[:10]
         else:
             req = request.GET.copy()
 
-            salary_start = int(req['salary_start'].replace(' ', ''))
-            salary_end   = int(req['salary_end'].replace(' ', ''))
-            position     = req['position']
+
+            position = req['position']
 
             applicant_fields = [
                 'first_name',
@@ -286,28 +285,40 @@ class ApplicantSearchView(PaginatorView):
                 'sex'
             ]
 
+
             query_list = {}
+            # ключи для поиска в Applicants
+            query_applicant_list = {}
+            for field in applicant_fields:
+                if req[field]:
+                    query_applicant_list[field + '__contains'] = req[field]
+                    query_list['applicant__' + field + '__contains'] = req[field]
+
             if position:
                 query_list['vacancy__position'] = position
 
-            if salary_start == salary_end:
-                range_salary = float(salary_start * 5) / 100.0
-                salary_start = float(salary_start) - range_salary
-                salary_end = float(salary_end + range_salary)
+                salary_start = int(req['salary_start'].replace(' ', ''))
+                salary_end   = int(req['salary_end'].replace(' ', ''))
+                if salary_start == salary_end:
+                    range_salary = float(salary_start * 5) / 100.0
+                    salary_start = float(salary_start) - range_salary
+                    salary_end = float(salary_end + range_salary)
 
-            query_list['salary__gte'] = salary_start
-            query_list['salary__lte'] = salary_end
+                query_list['salary__gte'] = salary_start
+                query_list['salary__lte'] = salary_end
 
+                applicant_vacancy_list = ApplicantVacancy.objects.filter(**query_list)\
+                    .order_by('salary')\
+                    .values('applicant', 'applicant__last_name',
+                            'applicant__first_name', 'applicant__middle_name',
+                            'applicant__email', 'applicant__photo', 'salary')
 
-            for field in applicant_fields:
-                if req[field]:
-                    query_list['applicant__' + field + '__contains'] = req[field]
-            print(query_list)
-            applicant_vacancy_list = ApplicantVacancy.objects.filter(**query_list)\
-                .order_by('salary')\
-                .values('applicant', 'applicant__last_name',
-                        'applicant__first_name', 'applicant__middle_name',
-                        'applicant__email', 'applicant__photo', 'salary')
+            else:
+                #applicant_list = Applicant.objects.filter(query_applicant_list)
+                applicant_vacancy_list = Applicant.objects.filter(**query_applicant_list)\
+                                        .values('id', 'last_name',
+                                                'first_name', 'middle_name',
+                                                'email', 'photo')
 
 
         return self.render(request, applicant_vacancy_list)

@@ -15,6 +15,51 @@ $('.assign_event').click(function(e){
     $div_modal_footer.append($save_event_btn);
 
 
+$('#calendar').fullCalendar({
+        // put your options and callbacks here
+
+        header: {
+        left: 'prev,next,today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay'
+      },
+        lang:'ru',
+        weekMode: 'liquid',
+        editable: true,
+        droppable: true,
+        url: '#',
+        allDay: false,
+        slotMinutes: 5,
+        timezone:'Asia/Vladivostok',
+        events:'/events/get_events/',
+        eventRender:function(event,element,view){
+                element.attr('profile_link',event.profile_link)
+        },
+
+        dayClick: function(date,jsEvent,view){
+            $('#scheduler').fullCalendar('changeView', 'agendaDay');
+            $('#scheduler').fullCalendar('gotoDate', date.format());
+
+        }
+
+
+    });
+
+   //has to be finsi
+   function clickToday() {
+  $('.fc-button-today').click();
+
+}
+
+
+   window.setTimeout(clickToday, 200);
+
+
+
+
+
+
+
 $("#save_event").click(function(){
    var app_vacancy_id = $(this).val()
    var start = $('#id_start').val();

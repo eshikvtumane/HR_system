@@ -17,6 +17,8 @@
 
     <!-- увеличение картинок -->
     <link rel="stylesheet" type="text/css" href="{% static 'js/fancy_box/source/jquery.fancybox.css' %}" >
+
+    <link href="{% static 'js/fullcalendar/fullcalendar.min.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 
 {% block scripts %}
@@ -27,6 +29,20 @@
 {#<script src="{% static 'js/fancy_box_init.js' %}"></script>#}
 
 <script src="{% static 'js/applicants/update_applicant.js' %}"></script>
+
+
+<script src="{% static 'js/moment/moment-with-locales.js'%}" type="text/javascript"></script>
+<script src="{% static 'js/moment/moment-timezone-with-data-2010-2020.js'%}" type="text/javascript"></script>
+
+
+
+
+<script src="{% static 'js/fullcalendar/fullcalendar.min.js'%}" type="text/javascript"></script>
+
+<script src="{% static 'admin_lte/plugins/fullcalendar/lang-all.js'%}" type="text/javascript"></script>
+
+
+
 
 <!-- Ajax loader -->
 <script src="{% static 'js/loader.js' %}"></script>
@@ -424,6 +440,7 @@
 
                           </form>
 
+                      <div id='calendar' ></div>
                       </div>
                       <div class="modal-footer">
 

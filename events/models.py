@@ -30,7 +30,7 @@ class ApplicantVacancyEvent(models.Model):
     start = models.DateTimeField(verbose_name="Начало")
     end = models.DateTimeField(verbose_name="Окончание")
     applicant_vacancy = models.ForeignKey(ApplicantVacancy)
-    event = models.ForeignKey('Event')
+    event = models.ForeignKey('Event', verbose_name='Действие')
     happened = models.BooleanField(default=False)
     author = models.ForeignKey(User,verbose_name='Автор')
     description = models.TextField(verbose_name='Описание',blank=True)

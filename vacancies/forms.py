@@ -120,7 +120,7 @@ class ApplicantVacancyEventForm(ModelForm):
         fields = { 'event' ,'start','end',}
     widgets={
 
-        'event': forms.Select(attrs={'class':'form-control','id':'event'}),
+        'event': forms.Select(attrs={'class':'select','id':'event'}),
 
         'start': forms.DateTimeInput(attrs={
             'id': 'start',

@@ -374,38 +374,6 @@ class ApplicantView(View, SavingModels):
 
 
 
-
-class ApplicantEventAjax(View):
-    def post(self,request,applicant_id):
-        if request.is_ajax:
-            vacancy_id = request.POST['vacancy_id']
-            applicant = Applicant.objects.get(id=applicant_id )
-            print "dasdad" + vacancy_id
-            vacancy = Vacancy.objects.get(id = vacancy_id)
-            applicant_vacancy = ApplicantVacancy.objects.get(
-                applicant=applicant,vacancy=vacancy)
-
-
-            event = request.POST["event"]
-            start = datetime.datetime.strptime(request.POST['start'],
-                                               "%d/%m/%Y %H:%M")
-
-            end = datetime.datetime.strptime(request.POST['end'], "%d/%m/%Y "
-                                                                  "%H:%M")
-            form = ApplicantVacancyEventForm({
-                'event':event,'start':start,'end':end})
-
-            if form.is_valid():
-                form.instance.applicant_vacancy = applicant_vacancy
-                form.instance.author = request.user
-                form.save()
-                return HttpResponse ("200")
-            print(form.errors)
-            return HttpResponse("400")
-
-
-
-
 class ApplicantVacancyStatusAjax(View):
     def get(self, request):
         if request.is_ajax:

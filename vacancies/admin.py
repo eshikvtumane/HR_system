@@ -1,8 +1,12 @@
+#-*- coding: utf8 -*-
+
+import datetime
 from django.contrib import admin
 from .models import Head, Department, VacancyStatus, Vacancy,VacancyStatusHistory, \
     ApplicantVacancy, \
     ApplicantVacancyStatus,\
     ApplicantVacancyApplicantVacancyStatus
+
 
 # Register your models here.
 class HeadInline(admin.StackedInline):
@@ -31,6 +35,14 @@ class VacancyAdmin(admin.ModelAdmin):
     )
     fields = []
     readonly_fields = ('author',)
+
+    def save_model(self,request,obj, form,change):
+        obj.author = request.user
+        obj.date_created = datetime.datetime.now()
+        obj.save()
+        vacancy_status = VacancyStatus.objects.get(name='Открыта')
+        VacancyStatusHistory.objects.create(vacancy=obj,status=vacancy_status)
+        return obj
 
 class ApplicantVacancyAdmin(admin.ModelAdmin):
     fields = []

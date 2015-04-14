@@ -47,7 +47,7 @@ INSTALLED_APPS = (
     'bootstrapform',
     'sorl.thumbnail',
     'pure_pagination',
-    #'debug_toolbar',
+    'debug_toolbar',
     'main',
     'applicants',
     'vacancies',

@@ -132,6 +132,38 @@ def get_events_ajax(request):
         return HttpResponse(response,content_type='application/json')
 
 
+
+
+
+
+
+def add_event(request):
+    if request.is_ajax:
+        app_vacancy_id = request.POST['app_vacancy_id']
+        applicant_vacancy = ApplicantVacancy.objects.get(
+            id=app_vacancy_id)
+        event = request.POST["event_id"]
+        start = datetime.datetime.strptime(request.POST['start'],
+                                           "%d/%m/%Y %H:%M")
+
+        end = datetime.datetime.strptime(request.POST['end'], "%d/%m/%Y "
+                                                              "%H:%M")
+        form = ApplicantVacancyEventForm({
+            'event':event,'start':start,'end':end})
+
+        if form.is_valid():
+            form.instance.applicant_vacancy = applicant_vacancy
+            form.instance.author = request.user
+            form.save()
+            return HttpResponse ("200")
+        print(form.errors)
+        return HttpResponse("400")
+
+
+
+
+
+
 def update_event_ajax(request):
     if request.is_ajax():
         start = request.POST['start']
@@ -165,4 +197,7 @@ def delete_event_ajax(request):
             return HttpResponse('200')
         except:
             return  HttpResponse('400')
+
+
+
 

@@ -60,7 +60,7 @@ function deleteEvent(event_id)
 
 
             $('#scheduler').fullCalendar('removeEvents',event_id);
-            $.notify("Событие успешно удалено",'success',{
+            $.notify("Действие успешно удалено",'success',{
                     position : 'top center'
                 })
 
@@ -69,7 +69,7 @@ function deleteEvent(event_id)
 
         error:function(){
 
-              $.notify("Произошла ошибка! Попробуйте удалить событие ещё раз",'error',{
+              $.notify("Произошла ошибка! Попробуйте удалить действие ещё раз",'error',{
                     position : 'top center'
                 })
         }

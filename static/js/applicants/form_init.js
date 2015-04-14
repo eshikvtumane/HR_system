@@ -103,6 +103,7 @@ $('#assign_event').click(function(e){
     $('#event_modal').modal('show');
 });
 
+
 // отображение выбранного изображения
 function readURL(){
     var input = document.getElementById('id_photo');

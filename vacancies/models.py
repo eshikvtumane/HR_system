@@ -70,6 +70,7 @@ class Vacancy(models.Model):
         return [(field.name, field.value_to_string(self)) for field in
                 Vacancy._meta.fields]
 
+
     def __unicode__(self):
         return self.position.name + " " + str(self.published_at)
 

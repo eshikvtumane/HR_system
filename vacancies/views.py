@@ -107,16 +107,45 @@ class VacancySearch(View):
         vacancies_list = []
         vacancy_form = SearchVacancyForm()
 
+
         if request.GET:
             query_list = {}
 
+            vacancy_statuses = []
+
+
+
 
             if request.GET['position']:
-                query_list['position'] = request.GET['position']
+                query_list['position_id'] = request.GET['position']
+
+            if request.GET['head']:
+                query_list['head_id'] = request.GET['head']
+
+
+
+
 
             vacancies = Vacancy.objects.filter(**query_list)
 
-            for vacancy in vacancies:
+            result_vacancies = list(vacancies)
+
+
+
+            if request.GET['status']:
+
+                if not vacancies:
+                    vacancies = Vacancy.objects.all()
+                for vacancy in vacancies:
+                    vacancy_status =  VacancyStatusHistory.objects.filter(vacancy = vacancy).order_by('-id')[0]
+                    print("vacancy status " + str(vacancy_status.status.id))
+                    print("request status " + request.GET['status'])
+                    if vacancy_status.status.id == request.GET['status']:
+                        result_vacancies.append(vacancy)
+
+
+
+            for vacancy in result_vacancies:
                 vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
                 vacancies_list.append({'vacancy':vacancy,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})
 

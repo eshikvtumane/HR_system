@@ -3,7 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms import ModelForm
 from events.models import ApplicantVacancyEvent, Event
-from vacancies.models import Vacancy,Department,VacancyStatus
+from vacancies.models import Vacancy,Department,VacancyStatus,Head
 from applicants.models import Position
 
 
@@ -82,6 +82,21 @@ class EditVacancyForm(ModelForm):
 
 
 class SearchVacancyForm(ModelForm):
+
+    status = forms.ModelChoiceField(queryset=VacancyStatus.objects.all(),
+                                   label=_(u'Статус'),
+                                   widget=forms.Select(attrs={
+                                     'class':'form-control' })
+
+                                   )
+
+    head = forms.ModelChoiceField(queryset=Head.objects.all(),
+                                   label=_(u'Руководитель'),
+                                   widget=forms.Select(attrs={
+                                     'class':'form-control' })
+
+                                   )
+
 
     class Meta:
         model = Vacancy

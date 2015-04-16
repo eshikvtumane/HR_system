@@ -36,6 +36,18 @@ def fromLocaltoUTC(time):
 
 
 
+class EventsCalendar(View):
+    template = 'events/calendar.html'
+    def get(self,request):
+        c = RequestContext(request)
+        return render_to_response(self.template,c)
+
+
+
+
+
+
+
 
 class EventsView(View):
     template = 'events/events_view.html'

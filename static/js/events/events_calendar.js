@@ -1,7 +1,7 @@
 
 //сохранение событие после изменения(посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
-      console.dir(event.start);
+
     updateEvent(event.id,event.start.format(),event.end.format())
 
 }
@@ -98,7 +98,7 @@ function editEventData(calEvent, jsEvent, view){
 
 
 function stringToMomentDate(str){
-    console.log(str);
+
     d = parseInt(str.substr(0,2));
     m = parseInt(str.substr(3,5));
     y = parseInt(str.substr(6,10));
@@ -189,7 +189,10 @@ $('#delete_event').button().on('click',function(){
 			// store data so the calendar knows to render an event upon drop
 			$(this).data('event', {
 				title: $.trim($(this).text()), // use the element's text as the event title
-				stick: true // maintain when user navigates (see docs on the renderEvent method)
+				stick: true, // maintain when user navigates (see docs on the renderEvent method)
+				start: "00:00",
+				duration: "03:00"
+
 			});
 
 			// make the event draggable using jQuery UI

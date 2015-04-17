@@ -9,7 +9,7 @@ from django.views.generic import View
 from applicants.models import Applicant
 from vacancies.forms import ApplicantVacancyEventForm
 from vacancies.models import ApplicantVacancy, Vacancy
-from .models import ApplicantVacancyEvent
+from .models import ApplicantVacancyEvent,Event
 from django.template import RequestContext
 
 
@@ -40,6 +40,10 @@ class EventsCalendar(View):
     template = 'events/calendar.html'
     def get(self,request):
         c = RequestContext(request)
+        print c
+        if request.COOKIES['app_vacancy_id']:
+            events = Event.objects.all()
+
         return render_to_response(self.template,c)
 
 
@@ -142,10 +146,6 @@ def get_events_ajax(request):
 
         response = json.dumps(result)
         return HttpResponse(response,content_type='application/json')
-
-
-
-
 
 
 

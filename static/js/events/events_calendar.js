@@ -1,3 +1,6 @@
+var event_type = '';
+
+
 
 //сохранение событие после изменения(посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
@@ -40,6 +43,25 @@ function updateEvent(event_id,event_start,event_end){
 
 
 }
+
+
+function addEvent(event_type,event_start,event_end,app_vacancy_id)
+{
+    $.ajax({
+        url: "/events/add_event/",
+        type: "POST",
+        dataType: "json",
+        data:{
+            "event_type" : event_type,
+            "event_start" : event_start,
+            "event_end" : event_end,
+            "app_vacancy_id" : app_vacancy_id
+        }
+
+    })
+
+}
+
 
 
 //удаление действия через диалогвоое окно
@@ -162,6 +184,18 @@ $(function(){
             $('#scheduler').fullCalendar('changeView', 'agendaDay');
             $('#scheduler').fullCalendar('gotoDate', date.format());
 
+        },
+
+        drop: function(date){
+
+
+
+            },
+
+        eventReceive:function(event){
+
+                addEvent()
+
         }
 
 
@@ -205,6 +239,13 @@ $('#delete_event').button().on('click',function(){
 		});
 
 
+    $('<input>').attr({
+         id:'app_vacancy_id',
+         type:'hidden',
+         value: $.cookie('app_vacancy_id')
+
+
+    }).appendTo('#external-events')
 
 
 });

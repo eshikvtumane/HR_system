@@ -94,12 +94,19 @@
 
 
 		<div id='external-events'>
-			<h4>События</h4>
-			<div class='fc-event'>Собеседование</div>
-			<div class='fc-event'>Телефонное интервью</div>
-			<div class='fc-event'>Собеседование с руководителем</div>
-			<div class='fc-event'>Телефонный звонок</div>
-			<div class='fc-event'>Тестирование</div>
+			{% if events %}
+
+                 <h4>События</h4>
+
+                {% for event in events %}
+                    <div class='fc-event' id = '{{event.id}}'>{{event.name}}</div>
+                {% endfor %}
+
+            {% else %}
+                <p>Для того, чтобы назначить кандидату действие, воспользуйтесь соответствующим меню  на странице
+                    кандидата
+                    .</p>
+            {% endif %}
 
 		</div>
 

@@ -5,6 +5,7 @@ var event_type = '';
 //сохранение событие после изменения(посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
 
+
     updateEvent(event.id,event.start.format(),event.end.format())
 
 }
@@ -47,20 +48,42 @@ function updateEvent(event_id,event_start,event_end){
 
 function addEvent(event_type,event_start,event_end,app_vacancy_id)
 {
+
     $.ajax({
-        url: "/events/add_event/",
+        url: "/events/add_event",
         type: "POST",
         dataType: "json",
         data:{
             "event_type" : event_type,
-            "event_start" : event_start,
-            "event_end" : event_end,
+            "start" : event_start,
+            "end" : event_end,
             "app_vacancy_id" : app_vacancy_id
-        }
+        },
 
-    })
+
+        success:function(data){
+            $.notify("Действие успешно добавлено!",'success',{
+                    position : 'top center'
+                });
+            $('#scheduler').fullCalendar('removeEvents',event_type);
+            $('#scheduler').fullCalendar('refetchEvents');
+
+        },
+
+        error:function(data){
+             $.notify("Произошла ошибка во время добавления действия!",'success',{
+                    position : 'top center'
+                })
+    }
+
+
+    } )
+
+
 
 }
+
+
 
 
 
@@ -194,7 +217,11 @@ $(function(){
 
         eventReceive:function(event){
 
-                addEvent()
+                var event_type = event.id;
+                var app_vacancy_id = $('#app_vacancy_id').val();
+                var start = event.start.format();
+                var end = event.end.format();
+                addEvent(event_type, start, end, app_vacancy_id);
 
         }
 
@@ -223,6 +250,7 @@ $('#delete_event').button().on('click',function(){
 			// store data so the calendar knows to render an event upon drop
 			$(this).data('event', {
 				title: $.trim($(this).text()), // use the element's text as the event title
+				id: $(this).attr('id'),
 				stick: true, // maintain when user navigates (see docs on the renderEvent method)
 				start: "00:00",
 				duration: "03:00"
@@ -245,7 +273,12 @@ $('#delete_event').button().on('click',function(){
          value: $.cookie('app_vacancy_id')
 
 
-    }).appendTo('#external-events')
+    }).appendTo('#external-events');
+
+    $.cookie('app_vacancy_id',"nothing",{ path: '/',expires:-10000 });
+
+
+
 
 
 });

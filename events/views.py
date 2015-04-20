@@ -40,10 +40,12 @@ class EventsCalendar(View):
     template = 'events/calendar.html'
     def get(self,request):
         c = RequestContext(request)
-        print c
-        if request.COOKIES['app_vacancy_id']:
-            events = Event.objects.all()
-
+        try:
+            if request.COOKIES['app_vacancy_id']:
+                events = Event.objects.all()
+                c = RequestContext(request, {'events':events})
+        except:
+            pass
         return render_to_response(self.template,c)
 
 
@@ -136,8 +138,7 @@ def get_events_ajax(request):
         result = []
         events = ApplicantVacancyEvent.objects.all()
         for event in events:
-            profile_link = 'applicants/view/' + str(event.applicant_vacancy.applicant.id) + '/'
-            print "Applicant id is " + profile_link
+            profile_link = '/applicants/view/' + str(event.applicant_vacancy.applicant.id) + '/'
             result.append({'title':event.event.name,
                            'start':fromUTCtoLocal(event.start).isoformat(),
                            'end':fromUTCtoLocal(event.end).isoformat(),
@@ -154,12 +155,13 @@ def add_event(request):
         app_vacancy_id = request.POST['app_vacancy_id']
         applicant_vacancy = ApplicantVacancy.objects.get(
             id=app_vacancy_id)
-        event = request.POST["event_id"]
+        event = request.POST["event_type"]
+        print("1")
         start = datetime.datetime.strptime(request.POST['start'],
-                                           "%d/%m/%Y %H:%M")
+                                           "%Y-%m-%dT%H:%M:%S")
+        print("2")
+        end = datetime.datetime.strptime(request.POST['end'],"%Y-%m-%dT%H:%M:%S")
 
-        end = datetime.datetime.strptime(request.POST['end'], "%d/%m/%Y "
-                                                              "%H:%M")
         form = ApplicantVacancyEventForm({
             'event':event,'start':start,'end':end})
 

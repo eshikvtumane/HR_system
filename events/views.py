@@ -6,7 +6,7 @@ from collections import OrderedDict
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
 from django.views.generic import View
-from applicants.models import Applicant
+from applicants.models import Applicant, Phone
 from vacancies.forms import ApplicantVacancyEventForm
 from vacancies.models import ApplicantVacancy, Vacancy
 from .models import ApplicantVacancyEvent,Event
@@ -138,12 +138,23 @@ def get_events_ajax(request):
         result = []
         events = ApplicantVacancyEvent.objects.all()
         for event in events:
+            #создаём массив с телефонами в виде строк для передачи в full-calendar
+            phones = []
+            phones_queryset = list(Phone.objects.filter(applicant = event.applicant_vacancy.applicant))
+            for phone in phones_queryset:
+                phones.append(str(phone))
+
+            #ссылка на страницу кандидата
             profile_link = '/applicants/view/' + str(event.applicant_vacancy.applicant.id) + '/'
             result.append({'title':event.event.name,
                            'start':fromUTCtoLocal(event.start).isoformat(),
                            'end':fromUTCtoLocal(event.end).isoformat(),
                            'id': event.id,
-                           'profile_link':profile_link} )
+                           'profile_link':profile_link,
+                           'name':event.applicant_vacancy.applicant.getFullName(),
+                           'phones':phones
+                           })
+
 
         response = json.dumps(result)
         return HttpResponse(response,content_type='application/json')

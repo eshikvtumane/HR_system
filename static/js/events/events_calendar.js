@@ -1,11 +1,6 @@
-var event_type = '';
-
-
 
 //сохранение событие после изменения(посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
-
-
     updateEvent(event.id,event.start.format(),event.end.format())
 
 }
@@ -84,9 +79,6 @@ function addEvent(event_type,event_start,event_end,app_vacancy_id)
 }
 
 
-
-
-
 //удаление действия через диалогвоое окно
 function deleteEvent(event_id)
 {
@@ -123,24 +115,28 @@ function deleteEvent(event_id)
 }
 
 
-
-
-
-
-
-
 //открытие диалоговой формы редактирования события
 function editEventData(calEvent, jsEvent, view){
+    $('#candidate_info').hide();
     $("#event_id").val(calEvent.id);
     $("#title").val(calEvent.title);
     $("#start").val(calEvent.start.format('DD/MM/YYYY HH:mm'));
     $("#end").val(calEvent.end.format('DD/MM/YYYY HH:mm'));
-    $('#profile_link').attr('href',calEvent.profile_link)
+    $('#profile_link').attr('href',calEvent.profile_link);
+    $('#candidate_name').html(calEvent.name);
+    var $phones =  $('#candidate_phones ul');
+    //очищаем список от телефонов, оставшихся с предыдущих вызовов моадльного окна
+    $phones.html('');
+    calEvent.phones.forEach(function(phone){
+
+        $('<li>'+phone+'</li>').appendTo($phones);
+
+      })
+
+
     dialog.dialog( "open" );
 
 }
-
-
 
 function stringToMomentDate(str){
 
@@ -154,7 +150,6 @@ function stringToMomentDate(str){
 
 
 
-
 //при загрузке страницы...
 $(function(){
 
@@ -162,7 +157,7 @@ $(function(){
   //Инициализируем диалоговое окно с редактированием события
     dialog = $( "#edit_event" ).dialog({
     autoOpen: false,
-    height: 350,
+    height: 400,
     width: 400,
     modal: true
 
@@ -181,8 +176,6 @@ $(function(){
 
    //активируем fullCalendar плагин
     $('#scheduler').fullCalendar({
-        // put your options and callbacks here
-
         header: {
         left: 'prev,next,today',
         center: 'title',
@@ -198,7 +191,12 @@ $(function(){
         timezone:'Asia/Vladivostok',
         events:'/events/get_events/',
         eventRender:function(event,element,view){
-                element.attr('profile_link',event.profile_link)
+                element.attr(
+                {
+                    'profile_link':event.profile_link,
+                    'name': event.name,
+                    'phones':event.phones
+                })
         },
         eventResize: changeEvent,
         eventDrop: changeEvent,
@@ -210,8 +208,6 @@ $(function(){
         },
 
         drop: function(date){
-
-
 
             },
 
@@ -228,6 +224,11 @@ $(function(){
 
     });
 
+//показать информацию по кандидату
+$('#show_candidate_info').click(function(){
+    $('#candidate_info').toggle();
+})
+
 //сохранение события при его изменение через диалоговоую форму
 $('#save_event').button().on('click',function(){
     var event_id = $("#event_id").val();
@@ -236,6 +237,7 @@ $('#save_event').button().on('click',function(){
     updateEvent(event_id,new_start_time.format(),new_end_time.format());
 });
 
+//удаление события
 $('#delete_event').button().on('click',function(){
     var event_id = $("#event_id").val();
     deleteEvent(event_id);
@@ -267,6 +269,7 @@ $('#delete_event').button().on('click',function(){
 		});
 
 
+    //сохраняем id вакансии по которой перешли в календарь в скрытом поле
     $('<input>').attr({
          id:'app_vacancy_id',
          type:'hidden',
@@ -275,10 +278,10 @@ $('#delete_event').button().on('click',function(){
 
     }).appendTo('#external-events');
 
+
+    //удаляем куку с id вакансии, чтобы исключить возможность назначения действия без перехода
+    //со страницы кандидата
     $.cookie('app_vacancy_id',"nothing",{ path: '/',expires:-10000 });
-
-
-
 
 
 });

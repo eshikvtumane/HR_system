@@ -11,29 +11,7 @@ from vacancies.forms import ApplicantVacancyEventForm
 from vacancies.models import ApplicantVacancy, Vacancy
 from .models import ApplicantVacancyEvent,Event
 from django.template import RequestContext
-
-
-
-####HELPER FUNCTIONS######################
-def fromUTCtoLocal(time):
-
-    now_utc = time
-    local_tz = pytz.timezone("Asia/Vladivostok")
-    local_time = now_utc.astimezone(local_tz)
-    return local_time
-
-
-def fromLocaltoUTC(time):
-    now_local = time
-    local_tz = pytz.timezone("Asia/Vladivostok")
-    now_local = now_local.replace(tzinfo=local_tz)
-    utc_tz= pytz.timezone("UTC")
-    utc_time = now_local.astimezone(utc_tz)
-    return utc_time
-##########################################
-
-
-
+from utils.functions import fromLocaltoUTC,fromUTCtoLocal
 
 
 class EventsCalendar(View):
@@ -47,10 +25,6 @@ class EventsCalendar(View):
         except:
             pass
         return render_to_response(self.template,c)
-
-
-
-
 
 
 

@@ -6,7 +6,7 @@ from collections import OrderedDict
 from django.http import HttpResponse
 from django.shortcuts import render, render_to_response
 from django.views.generic import View
-from applicants.models import Applicant
+from applicants.models import Applicant, Phone
 from vacancies.forms import ApplicantVacancyEventForm
 from vacancies.models import ApplicantVacancy, Vacancy
 from .models import ApplicantVacancyEvent,Event
@@ -40,10 +40,12 @@ class EventsCalendar(View):
     template = 'events/calendar.html'
     def get(self,request):
         c = RequestContext(request)
-        print c
-        if request.COOKIES['app_vacancy_id']:
-            events = Event.objects.all()
-
+        try:
+            if request.COOKIES['app_vacancy_id']:
+                events = Event.objects.all()
+                c = RequestContext(request, {'events':events})
+        except:
+            pass
         return render_to_response(self.template,c)
 
 
@@ -136,13 +138,23 @@ def get_events_ajax(request):
         result = []
         events = ApplicantVacancyEvent.objects.all()
         for event in events:
-            profile_link = 'applicants/view/' + str(event.applicant_vacancy.applicant.id) + '/'
-            print "Applicant id is " + profile_link
+            #создаём массив с телефонами в виде строк для передачи в full-calendar
+            phones = []
+            phones_queryset = list(Phone.objects.filter(applicant = event.applicant_vacancy.applicant))
+            for phone in phones_queryset:
+                phones.append(str(phone))
+
+            #ссылка на страницу кандидата
+            profile_link = '/applicants/view/' + str(event.applicant_vacancy.applicant.id) + '/'
             result.append({'title':event.event.name,
                            'start':fromUTCtoLocal(event.start).isoformat(),
                            'end':fromUTCtoLocal(event.end).isoformat(),
                            'id': event.id,
-                           'profile_link':profile_link} )
+                           'profile_link':profile_link,
+                           'name':event.applicant_vacancy.applicant.getFullName(),
+                           'phones':phones
+                           })
+
 
         response = json.dumps(result)
         return HttpResponse(response,content_type='application/json')
@@ -154,12 +166,13 @@ def add_event(request):
         app_vacancy_id = request.POST['app_vacancy_id']
         applicant_vacancy = ApplicantVacancy.objects.get(
             id=app_vacancy_id)
-        event = request.POST["event_id"]
+        event = request.POST["event_type"]
+        print("1")
         start = datetime.datetime.strptime(request.POST['start'],
-                                           "%d/%m/%Y %H:%M")
+                                           "%Y-%m-%dT%H:%M:%S")
+        print("2")
+        end = datetime.datetime.strptime(request.POST['end'],"%Y-%m-%dT%H:%M:%S")
 
-        end = datetime.datetime.strptime(request.POST['end'], "%d/%m/%Y "
-                                                              "%H:%M")
         form = ApplicantVacancyEventForm({
             'event':event,'start':start,'end':end})
 

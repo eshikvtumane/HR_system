@@ -88,8 +88,8 @@
 
                             <ul id='applicant_list'>
                             {% for applicant in applicants  %}
-                                <li> {{applicant.first_name}} {{applicant.last_name}} {{applicant.middle_name}}</br>
-                                    <a href="/applicants/view/{{applicant.id}}">Ссылка на страницу кандидата </a></li>
+                               <a href="/applicants/view/{{applicant.id}}"> <li> {{applicant.first_name}} {{applicant.last_name}} {{applicant.middle_name}}
+                                   </a></li>
                             {% endfor %}
 
                             </ul>

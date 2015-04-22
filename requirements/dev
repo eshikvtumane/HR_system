@@ -9,3 +9,5 @@ django-grappelli
 xlwt
 xlrd
 bleach
+celery
+rabbitmq-server

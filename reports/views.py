@@ -4,7 +4,7 @@ from django.template import RequestContext
 from django.http import HttpResponse
 from django.views.generic import View
 
-from vacancies.models import ApplicantVacancy, Vacancy, ApplicantVacancyApplicantVacancyStatus, VacancyStatusHistory, Position
+from vacancies.models import ApplicantVacancy, Vacancy, ApplicantVacancyApplicantVacancyStatus, VacancyStatusHistory, Position, Department
 from applicants.models import SourceInformation
 
 from forms import SummaryStatementRecruimentForm, PositionStatementForm
@@ -317,6 +317,13 @@ class SummaryStatementRecruitmentGenerateAjax(View):
                 }, header_style_horiz
             ],
             [
+                {u'Дополнительное\nсобеседование':[
+                        [u'Приглашены', header_style_horiz],
+                        [u'Пришли', header_style_horiz]
+                    ]
+                }, header_style_horiz
+            ],
+            [
                 {u'Первая неделя / ИС':[
                         [u'Приглашены', header_style_vert],
                         [u'Отказались/ \nне вышли', header_style_vert],
@@ -358,7 +365,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
         # Заголовок отчёта
         title_style = 'align: horiz center;' + 'font: bold on;'
         title_text = 'Сводная ведомость по набору персонала за {0} {1} г.'.format(MONTH[period[0]].lower().encode('utf-8'), period[1].encode('utf-8'))
-        gp.writeMerge(sheet, 0, 0, 0, 12, title_text, title_style)
+        gp.writeMerge(sheet, 0, 0, 0, 14, title_text, title_style)
 
         # Сохранение причин отказов от работы
         rejection_list = []
@@ -368,7 +375,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
         # список людей, вышедших на работу с резерва
         reserve_info_list = []
 
-        total_sums = [[0, total_style] for i in xrange(10)]
+        total_sums = [[0, total_style] for i in xrange(12)]
 
         count = 0
         # выбераем вакансии (присланные с клиента) из массива
@@ -451,15 +458,29 @@ class SummaryStatementRecruitmentGenerateAjax(View):
 
                     # 1-е собеседование
                     # Приглашены
-                    result_counter.append([0, style])
+                    first_interview = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование запланировано').count()
+                    result_counter.append([first_interview, style])
                     # Пришли
-                    result_counter.append([0, style])
+                    first_went = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование состоялось').count()
+                    result_counter.append([first_went, style])
 
                     # 2-е собеседование
                     # Приглашены
-                    result_counter.append([0, style])
+                    second_interview = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование запланировано').count()
+                    result_counter.append([second_interview, style])
                     # Пришли
-                    result_counter.append([0, style])
+                    second_went = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование состоялось').count()
+                    result_counter.append([second_went, style])
+
+                    # Дополнительное собеседование
+                    # Приглашены
+                    ext_interview = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование запланировано').count()
+                    result_counter.append([ext_interview, style])
+                    # Пришли
+                    ext_went = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование состоялось').count()
+                    result_counter.append([ext_went, style])
+
+
 
                     # Приглашены
                     buf = result_status.filter(applicant_vacancy_status__name__contains='Предложение кандидату').count()
@@ -538,7 +559,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
                     )
 
                 else:
-                    result_counter = [[source_name, style]] + [[0, style]] * 10
+                    result_counter = [[source_name, style]] + [[0, style]] * 12
 
                 for count, rs in enumerate(result_counter[1:]):
                     total_sums[count][0] += rs[0]
@@ -678,7 +699,7 @@ class PositionStatement(View):
         day_words = [
             u'день',
             u'дня',
-            u'день'
+            u'дней'
         ]
 
         result = self.__getDeclension(years, year_words) + \
@@ -703,6 +724,93 @@ class PositionStatement(View):
         return string_list
 
 
+class VacancyReport(View):
+    template = 'reports/vacancy_reports.html'
+    def get(self, request):
+        args = {}
+        args['form'] = SummaryStatementRecruimentForm()
+        rc = RequestContext(request, args)
+        return render_to_response(self.template, rc)
+
+class VacancyReportGenerateAjax(View):
+    def get(self, request):
+        '''
+            Стили для значений в ячейках
+        '''
+        align_vert = 'align: vert center;'
+        align_horiz = ' align: horiz center;'
+        align = align_vert + align_horiz
+        border = 'borders: bottom thin, top thin, left thin, right thin;'
+
+        header_style_horiz = align + 'font: bold on;' + border
+        header_style_vert = 'align: rotation 90;' + 'font: bold on;' + align + border
+        header_style = align + 'font: bold on;'
+        style_horiz = align + border
+
+        gp = GenerateReport()
+        sheet = gp.createWorksheet(u'Ведомость')
+
+        header = [
+            [u'№', header_style_horiz],
+            [u'Вакансия', header_style_horiz],
+            [u'Количество', header_style_horiz],
+            [u'Дата открытия\nвакансии', header_style_horiz],
+            [u'Дата\nприостановления/\nснятия вакансии', header_style_horiz],
+            [u'Руководитель отдела', header_style_horiz]
+
+        ]
+
+        header2 = [
+            [u'№', header_style_horiz],
+            [u'Вакансия', header_style_horiz],
+            [u'Количество', header_style_horiz],
+            [u'Дата открытия\nвакансии', header_style_horiz],
+            [u'Дата\nзакрытия вакансии', header_style_horiz],
+            [u'Заявка на подбор', header_style_horiz],
+            [u'Период\nподбора', header_style_horiz],
+            [u'Ф.И.О. принятого\nсотрудника', header_style_horiz]
+        ]
+
+        header_len = len(header2)
+        print request.GET
+        print request.GET['period']
+        report_date = request.GET.get('period' or None)
+
+        column_start = 0
+        gp.writeMerge(sheet, 0, 0, 0, 1, 'на %s' % report_date.encode('utf-8'), '')
+        gp.writeMerge(sheet, 1, 1, 0, header_len - 1, 'ОТКРЫТЫЕ ВАКАНСИИ', header_style)
+        row_start = gp.writeHeader(sheet, header, 4, 0)
+
+        row_start2 = row_start + 2
+        gp.writeMerge(sheet, row_start2, row_start2, 0, header_len - 1, 'ЗАКРЫТЫЕ ВАКАНСИИ', header_style)
+        row_start = gp.writeHeader(sheet, header2, row_start2 + 3, 0)
+        gp.autoResizeRowHeight(sheet, row_start2 + 3, 3)
+
+        count_vacancy = 0
+        positions = Position.objects.all()
+        departments = Department.objects.all()
+
+        for department in departments:
+            print department
+            gp.writeMerge(sheet, row_start, row_start, 0, header_len - 1, department.name, header_style_horiz)
+            row_start += 1
+            for position in positions:
+                count_vacancy =+ 1
+                vacancies = Vacancy.objects.filter(position=position, head__department=department)
 
 
+
+        '''for position in positions:
+            VacancyStatusHistory.objects.filter(vacancy__position = position, status__name = 'Закрыта')
+        '''
+
+        #gp.autoResizeColumnWidth(sheet, 0, 23)
+        #gp.autoResizeRowHeight(sheet, 3, 2)
+        gp.autoResizeRowHeight(sheet, 4, 4)
+
+        #sheet.portrait = False
+        sheet.set_fit_num_pages(1)
+        sheet.header_str = ''
+        sheet.footer_str = ''
+        return gp.saveWorkbookInResponse()
 

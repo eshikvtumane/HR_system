@@ -15,6 +15,7 @@
     <script src="{% static 'js/selectize_init.js' %}"></script>
 
     <script src="{% static 'js/applicants/add_education_form.js' %}"></script>
+    <script src="{% static 'js/reports/monthpicker_init.js' %}"></script>
     <script src="{% static 'js/reports/summary_statement_recruiter.js' %}"></script>
 
     <!-- Month picker -->
@@ -59,7 +60,7 @@
                           </div>
                       </div>
 
-                      <div class="col-sm-12">
+                      <div class="col-sm-12" style="margin-top: 3ex;">
                           <div class="col-sm-3">
                              Должность
                               <div>
@@ -101,12 +102,12 @@
 
                       </div>
                         <div class="col-sm-12">
-                            <div class="progress">
+                            <!--<div class="progress">
                                   <div class="progress-bar progress-bar-striped active" role="progressbar"
                                   aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width:100%">
                                     100%
                                   </div>
-                            </div>
+                            </div>-->
 
                             <div style="padding-top: 4ex;" align="center">
                                 <form action="{% url 'reports:statement_recruitment_report_generate' %}" id="FileDownload">

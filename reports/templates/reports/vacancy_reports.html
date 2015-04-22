@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block styles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
+    <!-- Стили для datepicker -->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
+{% endblock styles %}
+
+{% block scripts %}
+    <!-- кастомизация select
+    <script src="{% static 'js/chosen/chosen.jquery.min.js' %}"></script>
+    <script src="{% static 'js/chosen_init.js' %}"></script>
+     -->
+<!-- Скрипт работы для datepicker -->
+    <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
+    <script src="{% static 'js/selectize/selectize.js' %}"></script>
+    <script src="{% static 'js/selectize_init.js' %}"></script>
+
+    <script src="{% static 'js/reports/vacancy_reports.js' %}"></script>
+
+    <script src="{% static 'js/datetimepicker_init.js' %}"></script>
+    <script src="{% static 'js/jquery.fileDownload/src/Scripts/jquery.fileDownload.js' %}"></script>
+<!-- Ajax loader -->
+<script src="{% static 'js/loader.js' %}"></script>
+{% endblock scripts %}
+
+
+
+{% block content %}
+    <!-- Right side column. Contains the navbar and content of the page -->
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+          <h1>
+            Сводная ведомость по открытым и закрытим вакансиям
+          </h1>
+          <ol class="breadcrumb">
+            <li><a href="/"><i class="fa fa-dashboard"></i> Главная</a></li>
+            <li><a href="{% url 'reports:main_reports' %}"><i class="fa fa-pie-chart"></i> Статистика и аналитика</a></li>
+            <li class="active"> Информация по вакансиям</li>
+          </ol>
+        </section>
+
+            <!-- Main content -->
+        <section class="content">
+          <!-- Main row -->
+
+            <section class="col-lg-12 connectedSortable">
+              <div class="box box-success">
+                  <div class="box-header" class='col-sm-12'>
+
+                      <div class="col-sm-12" style="margin-top: 3ex;">
+                          <div class="col-sm-3">
+                              на
+                             <div class="input-group">
+                                 <span class="input-group-addon fa-calendar-o"></span>
+                                 <input type="text" id="period" class="datetime form-control">
+                              </div>
+                          </div>
+
+                      </div>
+
+                      <div class="col-sm-12">
+                          <div style="padding-top: 2ex;" align="center">
+                              <div id="loader"></div>
+                              <div id="message"></div>
+                          </div>
+
+                          <div style="padding-top: 2ex;" align="center">
+                              <table class="table table-striped" id="tblAddingVacancyReport">
+
+                          </table>
+                          </div>
+
+
+                      </div>
+                        <div class="col-sm-12">
+
+                            <div style="padding-top: 4ex;" align="center">
+                                <form action="{% url 'reports:vacancy_report_ajax' %}" id="FileDownload">
+                                  <button type="submit" id="btnGenerateReport" class="btn btn-success">Генерировать ведомость</button>
+                              </form>
+                            </div>
+
+                        </div>
+
+
+                  </div>
+              </div>
+            </section>
+        </section>
+
+      </div>
+{% endblock content %}

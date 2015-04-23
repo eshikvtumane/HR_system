@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^events/', include('events.urls',namespace='events')),
     url(r'^administration/', include('administration.urls', namespace='administration')),
     url(r'^email_constructor/', include('email_constructor.urls', namespace='email_constructor')),
-
+    url(r'^notifications/', include('notifications.urls', namespace='notifications'))
 )
 
 

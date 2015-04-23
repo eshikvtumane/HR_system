@@ -90,8 +90,9 @@ window.onload = function(){
                 })
             },
             error: function(data) {
-               alert("Произошла ошибка!");
-               console.log("ERROR")
+               $.notify("Произошла ошибка при обновлении данных!Попробуйте ещё раз!",'error',{
+                    position : 'top center'
+                })
             }
         });
         return false;

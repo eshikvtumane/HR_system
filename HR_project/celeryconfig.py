@@ -8,9 +8,9 @@ CELERY_ACCEPT_CONTENT=['json']
 CELERY_TIMEZONE = 'Asia/Vladivostok'
 
 CELERYBEAT_SCHEDULE = {
-    'add-every-10-seconds': {
-        'task': 'tasks.add',
-        'schedule': timedelta(seconds=10),
-        'args': (10, 10)
+    'check-events-every-30-minutes': {
+        'task': 'events.tasks.check_events',
+        'schedule': timedelta(seconds=10)
+
     },
 }

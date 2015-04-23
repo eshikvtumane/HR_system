@@ -170,11 +170,11 @@
                                     <tr>
                                         <td align="center">
                                             {% if a.applicant__photo %}
-                                                {% thumbnail a.applicant__photo "200x200" crop="center" as im %}
+                                                {% thumbnail a.applicant__photo "100x100" crop="center" as im %}
                                                     <img class="lazy" data-original="{{ im.url }}">
                                                 {% endthumbnail %}
                                             {% else %}
-                                                {% thumbnail a.photo "200x200" crop="center" as im %}
+                                                {% thumbnail a.photo "100x100" crop="center" as im %}
                                                     <img class="lazy" data-original="{{ im.url }}">
                                                 {% endthumbnail %}
                                             {% endif %}

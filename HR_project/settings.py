@@ -58,7 +58,9 @@ INSTALLED_APPS = (
     'users',
     'reports',
     'events',
-    'email_constructor'
+    'email_constructor',
+    'swampdragon',
+    'notifications'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -80,6 +82,12 @@ TEMPLATE_CONTEXT_PROCESSORS=(
 ROOT_URLCONF = 'HR_project.urls'
 
 WSGI_APPLICATION = 'HR_project.wsgi.application'
+
+
+# SwampDragon settings
+SWAMP_DRAGON_CONNECTION = ('swampdragon.connections.sockjs_connection.DjangoSubscriberConnection', '/data')
+DRAGON_URL='http://localhost:9999/'
+
 
 PAGINATION_SETTINGS = {
     'PAGE_RANGE_DISPLAYED': 10,

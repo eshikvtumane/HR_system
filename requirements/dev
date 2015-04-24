@@ -10,6 +10,4 @@ xlwt
 xlrd
 bleach
 celery
-rabbitmq-server
-redis-server
 swampdragon

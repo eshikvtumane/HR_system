@@ -17,13 +17,13 @@ http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt.
 */
 
 .month-picker {
-    width: 200px;
+    width: 300px;
     display: none;
     position: absolute;
     z-index: 9999;
 }
 .month-year-input {
-    width: 60px;
+    width: 70px;
 }
 .month-picker .year-container-all {
     cursor: pointer;
@@ -70,8 +70,8 @@ http://www.gnu.org/licenses/old-licenses/lgpl-2.1.txt.
     font-size: 12px;
 }
 .month-picker-open-button {
-    height: 20px;
-    width: 20px;
+    height: 25px;
+    width: 25px;
     vertical-align: bottom;
 }
 .month-picker-invalid-message {

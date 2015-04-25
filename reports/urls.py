@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 from django.conf.urls import patterns, include, url
-from views import SummaryStatementRecruitment, MainReports, SummaryStatementRecruitmentGenerateAjax, PositionStatement
+from views import SummaryStatementRecruitment, MainReports, SummaryStatementRecruitmentGenerateAjax, PositionStatement, VacancyReport, VacancyReportGenerateAjax
 
 urlpatterns = patterns('',
 
@@ -12,4 +12,8 @@ urlpatterns = patterns('',
 
     # генерирование ведомости с информацией о персонале за определённый год
     url(r'^employers_info/$', PositionStatement.as_view(), name='employers_info_report'),
+
+    # генерирование ведомости с информацией о вакансиях
+    url(r'^vacancy_report_generate/$', VacancyReport.as_view(), name='vacancy_report'),
+    url(r'^vacancy_report_generate_ajax/$', VacancyReportGenerateAjax.as_view(), name='vacancy_report_ajax'),
 )

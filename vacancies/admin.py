@@ -49,6 +49,13 @@ class ApplicantVacancyAdmin(admin.ModelAdmin):
 
 class  ApplicantVacancyStatusAdmin(admin.ModelAdmin):
     fields = []
+    readonly_fields = ('author',)
+
+    def save_model(self,request,obj, form,change):
+        obj.author = request.user
+        obj.date_created = datetime.datetime.now()
+        obj.save()
+        return obj
 
 class ApplicantVacancyApplicantVacancyStatusAdmin(admin.ModelAdmin):
     fields = []

@@ -1,5 +1,4 @@
 $(document).ready(function(){
-    $('.date-picker').MonthPicker();
     var $select = $('#source').selectize();
 
     $('#btnAddVacancyReport').click(function(){
@@ -8,7 +7,7 @@ $(document).ready(function(){
 
     $('#clearSource').click(function(){
         var control = $select[0].selectize;
-        control.clearOptions();
+        control.clear();
     });
 });
 // формирование и скачивание отчёта

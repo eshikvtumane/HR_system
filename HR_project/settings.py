@@ -28,6 +28,9 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 THUMBNAIL_DEBUG = True
+DEBUG_TOOLBAR_CONFIG = {
+    'JQUERY_URL': os.path.join(BASE_DIR, '/static/js/jquery/jquery-2.1.3.min.js')
+}
 
 ALLOWED_HOSTS = []
 

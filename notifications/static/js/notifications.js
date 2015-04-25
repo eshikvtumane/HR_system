@@ -15,6 +15,7 @@ swampdragon.subscribe('notifications', 'notifications');
 swampdragon.onChannelMessage(function(channels, message) {
     // Добавляем оповещение
     console.log(message)
+    playSound('notification');
     addNotification((message.data));
 })
 
@@ -38,4 +39,9 @@ function addNotification(notification) {
     while (notificationsList.getElementsByTagName("li").length > 5) {
         notificationsList.getElementsByTagName("li")[5].remove();
     }
+}
+
+
+function playSound(filename){
+    document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="/static/' + filename + '.mp3" type="audio/mpeg" />';
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load staticfiles %}
+{% load swampdragon_tags %}
 <html>
   <head>
     <meta charset="UTF-8">
@@ -160,13 +161,13 @@
                   <li class="header">You have 10 notifications</li>
                   <li>
                     <!-- inner menu: contains the actual data -->
-                    <ul class="menu">
+                    <ul class="menu" id="notifications_menu">
                       <li>
                         <a href="#">
                           <i class="fa fa-users text-aqua"></i> 5 new members joined today
                         </a>
                       </li>
-                      <li>
+                    {% comment %}  <li>
                         <a href="#">
                           <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the page and may cause design problems
                         </a>
@@ -186,10 +187,10 @@
                         <a href="#">
                           <i class="fa fa-user text-red"></i> You changed your username
                         </a>
-                      </li>
+                      </li>{% endcomment %}
                     </ul>
                   </li>
-                  <li class="footer"><a href="#">View all</a></li>
+                  <li class="footer"><a href="#">Посмотреть все</a></li>
                 </ul>
               </li>
               <!-- Tasks: style can be found in dropdown.less -->
@@ -464,6 +465,19 @@
 
     <script src="{% static 'js/notify.min.js' %}"></script>
     <script src="{% static 'js/csrf_ajax.js' %}"></script>
+
+
+    <!-- Swampdragon scripts -->
+    {% swampdragon_settings %}
+
+    <script src="{% static 'swampdragon/js/vendor/sockjs-0.3.4.min.js'%}" type="text/javascript"></script>
+    <script src="{% static 'swampdragon/js/dist/swampdragon.js' %}" type="text/javascript"></script>
+    <script src="{% static 'swampdragon/js/dist/datamapper.js' %}" type="text/javascript"></script>
+    <script src="http://localhost:9999/settings.js" type="text/javascript"></script>
+    <script src="{% static 'js/event_notifications.js' %}" type="text/javascript"></script>
+
+
+
 
 
 

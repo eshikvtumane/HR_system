@@ -2,8 +2,6 @@
 
 {% load staticfiles %}
 
-{% load swampdragon_tags %}
-
 
 {% block title %}
    Оповещения
@@ -15,7 +13,7 @@
 
 {% block scripts %}
 
-{% swampdragon_settings %}
+
 <script src="{% static 'swampdragon/js/vendor/sockjs-0.3.4.min.js'%}" type="text/javascript"></script>
 <script src="{% static 'swampdragon/js/dist/swampdragon.js' %}" type="text/javascript"></script>
 <script src="{% static 'swampdragon/js/dist/datamapper.js' %}" type="text/javascript"></script>

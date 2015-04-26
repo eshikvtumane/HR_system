@@ -6,16 +6,18 @@ from celery import shared_task
 from .models import ApplicantVacancyEvent
 from notifications.models import Notification
 from utils.functions import fromUTCtoLocal,fromLocaltoUTC
+import pytz
 
 @shared_task
 def check_events():
-    current_time = timezone.now()
+    current_time = datetime.datetime.now()
     events = ApplicantVacancyEvent.objects.all()
     #выбираем только те события, которые назначены на сегодня
     today_events = [e for e in events if fromUTCtoLocal(e.start).date() == current_time.date()]
+    current_time = timezone.make_aware(current_time,timezone.get_default_timezone())
     for event in today_events:
-        print (fromUTCtoLocal(event.start))
-        print(current_time)
+        if fromUTCtoLocal(event.start) - current_time <= datetime.timedelta(minutes=30):
+             message = "На " + str(fromUTCtoLocal(event.start).time()) + " назначено " + str(event.event)
+             Notification.objects.create(message=message)
 
-        # if fromUTCtoLocal(event.start) <= current_time + datetime.timedelta(minutes=30):
-        #     Notification.objects.create(message='У вас скоро состоится событие')
+

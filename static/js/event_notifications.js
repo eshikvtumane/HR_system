@@ -19,7 +19,6 @@ swampdragon.ready(function(){
 
     swampdragon.getList('test_notifications',{},function(context,data){
         data.forEach(function(notification){
-            console.log(notification)
             var li = $("<li>");
             var $messageContainer = $('<a>').attr('href','#');
             $messageContainer.html(notification.message);
@@ -32,7 +31,6 @@ swampdragon.ready(function(){
 //Получаем новое сообщение по каналу
 swampdragon.onChannelMessage(function(channels, message) {
     // Добавляем оповещение
-    console.log(message);
     addNotification((message.data));
 })
 
@@ -53,6 +51,7 @@ function addNotification(notification) {
     $messageContainer.html(notification.message);
     $messageContainer.appendTo(li);
     notificationsMenu.prepend(li);
+    playSound('notification');
 
     // Удаляем лишние оповещения
     while (notificationsMenu.find("li").length > 5) {

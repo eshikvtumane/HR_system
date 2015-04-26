@@ -163,32 +163,12 @@
                   <li>
                     <!-- inner menu: contains the actual data -->
                     <ul class="menu" id="notifications_menu">
-                      <li>
+                     {% comment %} <li>
                         <a href="#">
                           <i class="fa fa-users text-aqua"></i> 5 new members joined today
                         </a>
-                      </li>
-                    {% comment %}  <li>
-                        <a href="#">
-                          <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the page and may cause design problems
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-users text-red"></i> 5 new members joined
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <i class="fa fa-user text-red"></i> You changed your username
-                        </a>
                       </li>{% endcomment %}
+
                     </ul>
                   </li>
                   <li class="footer"><a href="#">Посмотреть все</a></li>
@@ -433,6 +413,15 @@
     </div><!-- ./wrapper -->
 
 
+    <div id="sound" style="visibility: hidden"></div>
+
+    <script type="text/javascript">
+            // @param filename The name of the file WITHOUT ending
+            function playSound(filename){
+                document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="/static/' + filename + '.mp3" type="audio/mpeg" /><source src="' + filename + '.ogg" type="audio/ogg" /><embed hidden="true" autostart="true" loop="false" src="' + filename +'.mp3" /></audio>';
+            }
+
+        </script>
 
      <!-- jQuery 2.1.3 -->
     <script src="{% static 'js/jquery/jquery-2.1.3.min.js' %}"></script>

@@ -121,7 +121,11 @@ class VacancySearch(View):
             if request.GET['head']:
                 query_list['head_id'] = request.GET['head']
 
+            if request.GET['search_start']:
+                query_list['published_at__gte'] = datetime.datetime.strptime(request.GET['search_start'],'%d-%m-%Y')
 
+            if request.GET['search_end']:
+                query_list['published_at__lte'] =  datetime.datetime.strptime(request.GET['search_end'],'%d-%m-%Y')
 
 
             if query_list:

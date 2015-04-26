@@ -298,8 +298,8 @@ class DateRange():
         ]
 
         result = self.__getDeclension(years, year_words) + \
-                self.__getMonthDeclension(months, month_words) + \
-                self.__getDeclension(days, day_words)
+                self.__getDeclension(months, month_words) + \
+                self.__getDayDeclension(days, day_words)
 
         return u' '.join(result)
 
@@ -318,23 +318,25 @@ class DateRange():
                 string_list.append(word_list[2])
         return string_list
 
-    def __getMonthDeclension(self, number, word_list):
+    def __getDayDeclension(self, number, word_list):
         string_list = []
         if number != 0 and isinstance(number, int):
-            number = str(number)
-            number_len = len(number)
-            int_number = int(number[number_len-1])
-            int_number_two = int(number[number_len-2:])
-            string_list.append(number)
+            string_list.append(str(number))
 
-            if int_number_two >= 10 and int_number_two <= 20:
+            if number > 10 and number < 20:
                 string_list.append(word_list[2])
-            elif int_number == 1:
-                string_list.append(word_list[0])
-            elif int_number > 1 and int_number < 5:
-                string_list.append(word_list[1])
+                print string_list
             else:
-                string_list.append(word_list[2])
+                number = str(number)
+                number_len = len(number)
+                int_number = int(number[number_len-1])
+
+                if int_number == 1:
+                    string_list.append(word_list[0])
+                elif int_number > 1 and int_number < 5:
+                    string_list.append(word_list[1])
+                else:
+                    string_list.append(word_list[2])
         return string_list
 
 # Сводная ведомость по набору персонала
@@ -811,17 +813,61 @@ class VacancyReportGenerateAjax(View, DateRange):
         gp.writeMerge(sheet, 1, 1, 0, header_len - 1, 'ОТКРЫТЫЕ ВАКАНСИИ', header_style)
         row_start = gp.writeHeader(sheet, header, 4, 0)
 
+        count_vacancy = 0
+        count_opened_vacancues = 0
+        positions = Position.objects.all()
+
+        # выборка открытых вакансий
+        for position in positions:
+            vacancies = Vacancy.objects.filter(position=position)
+            count_vacancies = 0
+
+            buf_row_start = row_start
+            for vacancy in vacancies:
+                vacancy_statuses = VacancyStatusHistory.objects.filter(vacancy=vacancy)
+                closed_vacancy = vacancy_statuses.filter(status__name__contains='Закрыта')
+                if closed_vacancy.count() == 0:
+                    opened = vacancy_statuses.filter(Q(status__name__contains='Открыта') | Q(status__name__contains='Возобновлена')).latest('status')
+                    stay = vacancy_statuses.filter(status__name__contains='Приостановлена')
+                    if stay.count():
+                        stay_obj = stay.latest('vacancy')
+                        stay = '%s c\n%s' % (stay_obj.status.name, stay_obj.date_change.strftime('%d-%m-%Y'))
+                    else:
+                        stay = '-'
+
+                    result = [
+                        '1',
+                        '%s c\n%s' % (opened.status.name, opened.date_change.strftime('%d-%m-%Y')),
+                        stay,
+                        vacancy.head.name
+                    ]
+                    count_opened_vacancues += 1
+
+                    for count, r in enumerate(result):
+                        gp.writeMerge(sheet, row_start, row_start, count+2, count+2, r, style_horiz)
+
+                    row_start += 1
+
+                    gp.autoResizeRowHeight(sheet, row_start, 2)
+
+            count_vacancy += 1
+            position_name = position.name
+
+
+            gp.writeMerge(sheet, buf_row_start, row_start-1, 0, 0, count_vacancy, style_horiz)
+            gp.writeMerge(sheet, buf_row_start, row_start-1, 1, 1, position_name, style_horiz)
+
+        gp.writeMerge(sheet, row_start, row_start, 0, 1, 'Итого открыто', style_bold)
+        gp.writeMerge(sheet, row_start, row_start, 2, 2, count_opened_vacancues, style_bold)
+        gp.autoResizeColumnWidth(sheet, 1, 30)
+
+        count_vacancy = 0
+        departments = Department.objects.all()
+
         row_start2 = row_start + 2
         gp.writeMerge(sheet, row_start2, row_start2, 0, header_len - 1, 'ЗАКРЫТЫЕ ВАКАНСИИ', header_style)
         row_start = gp.writeHeader(sheet, header2, row_start2 + 3, 0)
         gp.autoResizeRowHeight(sheet, row_start2 + 3, 3)
-
-        count_vacancy = 0
-        positions = Position.objects.all()
-        departments = Department.objects.all()
-
-        # выборка открытых вакансий
-
 
         # выборка закрытых вакансий
         total_vacancies = 0
@@ -846,8 +892,7 @@ class VacancyReportGenerateAjax(View, DateRange):
                         for close_vac in closed:
                             open = VacancyStatusHistory.objects.filter(Q(vacancy=close_vac.vacancy) & \
                                                                        Q(date_change__lte=report_date) & \
-                                                                       (Q(status__name='Открыта') | \
-                                                                        Q(status__name='Возоблена'))).latest('status')
+                                                                       Q(status__name='Открыта')).latest('status')
 
                             # период подбора
                             period = self.dateRange(close_vac.date_change, open.date_change)
@@ -901,12 +946,12 @@ class VacancyReportGenerateAjax(View, DateRange):
 
         # итого
         gp.writeMerge(sheet, row_start, row_start, 0, 1, 'Закрыто', style_bold)
-        gp.writeMerge(sheet, row_start, row_start, 2, 2, total_vacancies, style_horiz)
+        gp.writeMerge(sheet, row_start, row_start, 2, 2, total_vacancies, style_bold)
         # примечание
         gp.writeMerge(sheet, row_start+2, row_start+2, 1, 1, "ФИО", style_horiz + color_cell)
         gp.writeMerge(sheet, row_start+2, row_start+2, 2, 2, "- уволен", '')
 
-        #gp.autoResizeColumnWidth(sheet, 0, 23)
+        gp.autoResizeColumnWidth(sheet, 1, 23)
         #gp.autoResizeRowHeight(sheet, 3, 2)
         gp.autoResizeRowHeight(sheet, 4, 4)
 

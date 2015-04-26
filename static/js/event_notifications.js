@@ -14,10 +14,11 @@ var notificationsMenu = $("#notifications_menu");
 //после того, как соединение установлено
 swampdragon.ready(function(){
 
-
+    //подписываемся на канал с оповещениями
     swampdragon.subscribe('notifications', 'notifications');
 
-    swampdragon.getList('test_notifications',{},function(context,data){
+    //добавление оповещения к меню
+    swampdragon.getList('notifications',{},function(context,data){
         data.forEach(function(notification){
             var li = $("<li>");
             var $messageContainer = $('<a>').attr('href','#');
@@ -45,7 +46,7 @@ function addNotification(notification) {
         new Notification(notification.message);
     }
 
-    // Добавление оповещения
+    // Добавление оповещения к меню
     var li = $("<li>");
     var $messageContainer = $('<a>').attr('href','#');
     $messageContainer.html(notification.message);

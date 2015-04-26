@@ -1,4 +1,15 @@
 
+function stringToMomentDate(str){
+
+    d = parseInt(str.substr(0,2));
+    m = parseInt(str.substr(3,5));
+    y = parseInt(str.substr(6,10));
+    h = parseInt(str.substr(11,13));
+    min = parseInt(str.substr(14,15));
+    return moment({years:y,months:m-1,days:d,hours:h,minuntes:min});
+}
+
+
 //сохранение событие после изменения(посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
     updateEvent(event.id,event.start.format(),event.end.format())
@@ -28,6 +39,7 @@ function updateEvent(event_id,event_start,event_end){
         $.notify("Событие успешно обновлено",'success',{
                     position : 'top center'
                 })
+        $('#scheduler').fullCalendar('refetchEvents');
     },
     error: function() {
 
@@ -131,22 +143,13 @@ function editEventData(calEvent, jsEvent, view){
 
         $('<li>'+phone+'</li>').appendTo($phones);
 
-      })
+      });
 
 
     dialog.dialog( "open" );
 
 }
 
-function stringToMomentDate(str){
-
-    d = parseInt(str.substr(0,2));
-    m = parseInt(str.substr(3,5));
-    y = parseInt(str.substr(6,10));
-    h = parseInt(str.substr(11,13));
-    min = parseInt(str.substr(14,15));
-    return moment({years:y,months:m-1,days:d,hours:h,minuntes:min});
-}
 
 
 
@@ -165,7 +168,7 @@ $(function(){
 
 });
     //инициализируем jqueryui datepicker плагин на форме редактирования события
-    $("#start,#end").datetimepicker();
+    $("#start,#end").datetimepicker({ dateFormat: 'dd-mm-yy' });
 
 
     form = dialog.find( "form" ).on( "submit", function( event ) {
@@ -227,7 +230,7 @@ $(function(){
 //показать информацию по кандидату
 $('#show_candidate_info').click(function(){
     $('#candidate_info').toggle();
-})
+});
 
 //сохранение события при его изменение через диалоговоую форму
 $('#save_event').button().on('click',function(){

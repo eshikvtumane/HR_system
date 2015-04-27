@@ -21,21 +21,30 @@ class AddVacancyForm(ModelForm):
         widgets = {
             'salary': forms.NumberInput(attrs={
                 'class': "form-control",
-                'name':'salary'
+                'name':'salary',
+                'data-validation': 'number',
+                'data-validation-allowing': 'float',
+                'data-validation-error-msg':"В поле зарплаты должно быть указано число!"
             }),
             'end_date': forms.DateInput(attrs={
                 'id':'end_date',
                 'class': "form-control",
                 'name':'end_date',
                 'data-validation': "date",
-                'data-validation-format': "dd-mm-yyyy"
+                'data-validation-format': "dd-mm-yyyy",
+                'data-validation-error-msg':"Вы ввели некорректную дату!"
 
             }),
             'description':forms.Textarea(attrs={
                 'class':'form-control'
 
             }),
-            'position':forms.Select(attrs={'class':'form-control','id':'position'})
+            'position':forms.Select(attrs={
+                'class':'form-control',
+                'id':'position',
+                'data-validation':'required',
+                'data-validation-error-msg':"Это поле обязательно для заполнения!"
+            })
         }
 
 
@@ -59,7 +68,10 @@ class EditVacancyForm(ModelForm):
         widgets = {
             'salary': forms.NumberInput(attrs={
                 'class': "form-control",
-                'name':'salary'
+                'name':'salary',
+                'data-validation': 'number',
+                'data-validation-allowing': 'float',
+                'data-validation-error-msg':"В поле зарплаты должно быть указано число!"
 
             }),
             'end_date': forms.DateInput(format=('%d-%m-%Y'),attrs={
@@ -67,7 +79,8 @@ class EditVacancyForm(ModelForm):
                 'class': "form-control",
                 'name':'end_date',
                 'data-validation': "date",
-                'data-validation-format': "dd-mm-yyyy"
+                'data-validation-format': "dd-mm-yyyy",
+                'data-validation-error-msg':"Вы ввели некорректную дату!"
 
             }),
             'description':forms.Textarea(attrs={

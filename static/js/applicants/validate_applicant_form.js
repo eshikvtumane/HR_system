@@ -10,7 +10,7 @@ function validateForm(send_fn, url, success_fn){
           badSecurityAnswer : 'You have not given a correct answer to the security question',
           badDate : 'Неверный формат даты',
           badDomain : 'Incorrect domain value',
-          badUrl : 'The answer you gave was not a correct URL',
+          badUrl : 'The answer you gave was not a correct URL'
         };
 
         $.formUtils.addValidator({

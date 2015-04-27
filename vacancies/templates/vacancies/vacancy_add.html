@@ -19,7 +19,8 @@
 {% block scripts %}
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
 <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
-<script src="{% static 'vacancies/js/form_init.js' %}"></script>
+<script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
+<script src="{% static 'vacancies/js/vacancy_add.js' %}"></script>
 {% endblock %}
 
 
@@ -64,7 +65,7 @@
                     <div class="form-group">
                     <label for='department'>Отдел</label>
                     <select id="department" name="department"
-                            class="form-control">
+                            class="form-control"  data-validation='required' data-validation-error-msg="Это поле обязательно для заполнения!">
                         <option selected="'selected" value=""></option>
                         {% for department in departments %}
                             <option value="{{department.id}}">

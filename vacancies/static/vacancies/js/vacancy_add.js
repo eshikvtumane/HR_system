@@ -1,4 +1,21 @@
 window.onload = function(){
+    //валидация формы
+
+    $.validate({
+        decimalSeparator : ',',
+
+
+        onError : function() {
+
+    },
+        onSuccess:function(){
+
+        addVacancy();
+        return false
+
+        }
+
+    });
 
 
 // инициализация datepicker
@@ -7,10 +24,12 @@ window.onload = function(){
         timepicker: false,
         format: 'd-m-Y'
     });
+
+
+
     //Добавление вакансии
-    $('#save_vacancy').click(function () {
+    function addVacancy () {
         var datastring = $('#frm_add_vacancy').serialize();
-        console.log(datastring);
         $.ajax({
             type: 'Post',
             url: '/vacancies/add/',
@@ -25,8 +44,9 @@ window.onload = function(){
                     console.log("ERROR")
             }
         });
-        return false;
-    });
+
+    }
+
 
 
     //Выборка руководителей отделов
@@ -65,38 +85,6 @@ window.onload = function(){
         return false;
     });
 
-
-     //Обновление вакансии
-     $('#update_vacancy').click(function () {
-        var datastring = $('#frm_update_vacancy').serialize();
-        var $vacancy_id = $("#vacancy_id").val();
-        $.ajax({
-            type: 'Post',
-            url: '/vacancies/'+ $vacancy_id + '/' + 'edit/',
-            dataType: 'json',
-            data: datastring,
-            success: function (data) {
-               /* var errors = data[0]['errors'];
-                for (var key in errors){
-                    if(errors.hasOwnProperty(key)){
-                        $("<span/>",{
-                            text:key+":"+errors[key]
-                        }).appendTo("#error_list");
-                        console.log(key + "- >" + errors[key]);
-                    }
-                }*/
-                $.notify("Данные вакансии успешно обновлены",'success',{
-                    position : 'top center'
-                })
-            },
-            error: function(data) {
-               $.notify("Произошла ошибка при обновлении данных!Попробуйте ещё раз!",'error',{
-                    position : 'top center'
-                })
-            }
-        });
-        return false;
-    });
 
 
    };

@@ -1,3 +1,13 @@
+function sleep(milliseconds) {
+  var start = new Date().getTime();
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds){
+      break;
+    }
+  }
+}
+
+
 
 function stringToMomentDate(str){
 
@@ -12,7 +22,9 @@ function stringToMomentDate(str){
 
 //сохранение событие после изменения(посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
-    updateEvent(event.id,event.start.format(),event.end.format())
+    updateEvent(event.id,event.start.format(),event.end.format());
+    $('#email_modal').modal('show');
+
 
 }
 
@@ -38,8 +50,13 @@ function updateEvent(event_id,event_start,event_end){
         }
         $.notify("Событие успешно обновлено",'success',{
                     position : 'top center'
-                })
-        $('#scheduler').fullCalendar('refetchEvents');
+                });
+
+        $('#email_modal').modal('show');
+        var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id));
+        $('#email_modal').modal('show');
+        console.log(event);
+
     },
     error: function() {
 

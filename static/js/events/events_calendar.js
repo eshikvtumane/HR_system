@@ -23,7 +23,7 @@ function stringToMomentDate(str){
 //сохранение событие после изменения(посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
     updateEvent(event.id,event.start.format(),event.end.format());
-    $('#email_modal').modal('show');
+
 
 
 }
@@ -52,10 +52,8 @@ function updateEvent(event_id,event_start,event_end){
                     position : 'top center'
                 });
 
-        $('#email_modal').modal('show');
-        var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id));
-        $('#email_modal').modal('show');
-        console.log(event);
+         $('#scheduler').fullCalendar('refetchEvents');
+
 
     },
     error: function() {
@@ -188,8 +186,8 @@ $(function(){
     $("#start,#end").datetimepicker({ dateFormat: 'dd-mm-yy' });
 
 
-    form = dialog.find( "form" ).on( "submit", function( event ) {
-      event.preventDefault();
+    form = dialog.find( "form" ).on( "submit", function( e ) {
+      e.preventDefault();
     });
 
 
@@ -215,7 +213,8 @@ $(function(){
                 {
                     'profile_link':event.profile_link,
                     'name': event.name,
-                    'phones':event.phones
+                    'phones':event.phones,
+                    'email':event.email
                 })
         },
         eventResize: changeEvent,
@@ -248,6 +247,23 @@ $(function(){
 $('#show_candidate_info').click(function(){
     $('#candidate_info').toggle();
 });
+
+
+$('').on('click',function(){
+    var event_id = $("#event_id").val();
+    console.log(event_id);
+    var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id))[0];
+    console.log(event)
+    $('#emailto').val(event.email);
+    $('#subject').val(event.title);
+    $('#message').val("Уважаемый " + event.name + "! Вам назначено " + event.title + " на " + event.start.format
+    ('DD/MM/YYYY HH:mm'));
+    $('#email_modal').modal('show');
+
+
+
+});
+
 
 //сохранение события при его изменение через диалоговоую форму
 $('#save_event').button().on('click',function(){

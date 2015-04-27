@@ -43,5 +43,6 @@ function addNotification(notification) {
 
 
 function playSound(filename){
-    document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="/static/' + filename + '.mp3" type="audio/mpeg" />';
+    //document.getElementById("sound").innerHTML='<audio autoplay="autoplay"><source src="/static/' + filename + '.mp3" type="audio/mpeg" /></audio>';
+    document.getElementById('notification_sound').play();
 }

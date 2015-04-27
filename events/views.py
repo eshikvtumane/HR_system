@@ -167,6 +167,7 @@ def update_event_ajax(request):
     if request.is_ajax():
         start = request.POST['start']
         end = request.POST['end']
+        print '1', request.POST
         #обрезаем часть строки с time zone данными
         if len(start)>19:
             start = start[:19]
@@ -176,6 +177,7 @@ def update_event_ajax(request):
         new_start =datetime.datetime.strptime(start,
                                            "%Y-%m-%dT%H:%M:%S")
 
+        print '3', end
         new_end = datetime.datetime.strptime(end,
                                            "%Y-%m-%dT%H:%M:%S")
         try:

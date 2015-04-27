@@ -36,7 +36,6 @@ body {
 .sim-row-header1-nav{
 	width: 100%;
 	float: left;
-	background-color: rgba(255,255,255,1.00);
 	height: 80px;
 }
 .sim-row-header1-nav-logo{
@@ -46,7 +45,6 @@ body {
 	overflow: hidden;
 }
 .sim-row-header1-nav-logo img {
-	height: 80px;
 	width: auto;
 }
 .sim-row-header1-nav-links{
@@ -358,12 +356,10 @@ body {
 .sim-row-content2-left {
 	float: left;
 	width: 400px;
-	height: 400px;
 	text-align: right;
 	overflow: hidden;
 }
 .sim-row-content2-left img {
-	height: 400px;
 	width: auto;
 }
 

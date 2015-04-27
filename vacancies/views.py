@@ -108,7 +108,7 @@ class VacancySearch(View):
         vacancy_form = SearchVacancyForm()
 
 
-        if request.GET:
+        if request.GET and len(request.GET) != 1:
 
             vacancy_form = SearchVacancyForm(request.GET)
             query_list = {}
@@ -121,7 +121,11 @@ class VacancySearch(View):
             if request.GET['head']:
                 query_list['head_id'] = request.GET['head']
 
+            if request.GET['search_start']:
+                query_list['published_at__gte'] = datetime.datetime.strptime(request.GET['search_start'],'%d-%m-%Y')
 
+            if request.GET['search_end']:
+                query_list['published_at__lte'] =  datetime.datetime.strptime(request.GET['search_end'],'%d-%m-%Y')
 
 
             if query_list:
@@ -132,7 +136,7 @@ class VacancySearch(View):
 
 
 
-            print vacancies
+
             if request.GET['status']:
                 result_vacancies = []
                 if not query_list:
@@ -144,7 +148,7 @@ class VacancySearch(View):
 
 
 
-            print result_vacancies
+
             for vacancy in result_vacancies:
                 vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
                 vacancies_list.append({'vacancy':vacancy,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})

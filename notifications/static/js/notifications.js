@@ -1,19 +1,12 @@
-// Просим у браузера разрешение показывать оповещения
-// https://developer.mozilla.org/en-US/docs/Web/API/Notification/Using_Web_Notifications
-window.addEventListener('load', function () {
-    Notification.requestPermission(function (status) {
-        // Это позволяет использовать Notification.permission для Chrome/Safari
-        if (Notification.permission !== status) {
-            Notification.permission = status;
-        }
-    });
-});
 
 var notificationsList = document.getElementById("notifications");
 swampdragon.ready(function(){
 
     // Список оповещений
 
+   swampdragon.callRouter('hello', 'notifications', {value: 10}, function (context, data) {
+    console.log(data);
+});
 
 swampdragon.subscribe('notifications', 'notifications');
 

@@ -98,6 +98,14 @@ class SearchVacancyForm(ModelForm):
                                    )
 
 
+    search_start = forms.DateField(label=_(u'Начальная дата поиска'),widget=forms.DateInput(attrs={
+        'class':'form-control'
+    }))
+
+    search_end = forms.DateField(label=_(u'Конечная дата поиска'),widget=forms.DateInput(attrs={
+        'class':'form-control'
+    }))
+
     class Meta:
         model = Vacancy
         fields = ("salary","end_date","description",'head','position')

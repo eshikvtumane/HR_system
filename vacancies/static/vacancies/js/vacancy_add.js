@@ -2,7 +2,7 @@ window.onload = function(){
     //валидация формы
 
     $.validate({
-        decimalSeparator : ',',
+       
 
 
         onError : function() {

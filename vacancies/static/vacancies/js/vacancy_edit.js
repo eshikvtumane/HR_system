@@ -3,7 +3,7 @@ window.onload = function(){
 
 
     $.validate({
-        decimalSeparator : ',',
+
 
 
         onError : function() {

@@ -33,6 +33,7 @@ swampdragon.ready(function(){
 swampdragon.onChannelMessage(function(channels, message) {
     // Добавляем оповещение
     addNotification((message.data));
+
 })
 
 
@@ -44,6 +45,8 @@ function addNotification(notification) {
     // Если у нас есть разрешение на вывод оповещения в браузере, то мы можем его вывести
     if (window.Notification && Notification.permission === "granted") {
         new Notification(notification.message);
+
+
     }
 
     // Добавление оповещения к меню

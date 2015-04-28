@@ -1,14 +1,4 @@
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-}
-
-
-
+//конвертация даты в виде текста в объект Moment
 function stringToMomentDate(str){
 
     d = parseInt(str.substr(0,2));
@@ -45,10 +35,14 @@ function updateEvent(event_id,event_start,event_end){
       //  revertFunc();
       //  return;
       //calendar.fullCalendar('updateEvent', event);
+
+        //если форма с редактированием события была открыта,то закрываем её
         if ($("#edit_event").attr('display') !== 'none'){
                 dialog.dialog('close');
         }
-        $.notify("Событие успешно обновлено",'success',{
+
+        $.notify("Событие успешно обновлено! Возможно, вам стоит отправить кандидату оповещение об изменённом событии.",
+        'success',{
                     position : 'top center'
                 });
 
@@ -67,7 +61,7 @@ function updateEvent(event_id,event_start,event_end){
 
 }
 
-
+//добавление нового события через календарь
 function addEvent(event_type,event_start,event_end,app_vacancy_id)
 {
 
@@ -144,7 +138,7 @@ function deleteEvent(event_id)
 
 //открытие диалоговой формы редактирования события
 function editEventData(calEvent, jsEvent, view){
-    $('#candidate_info').hide();
+
     $("#event_id").val(calEvent.id);
     $("#title").val(calEvent.title);
     $("#start").val(calEvent.start.format('DD/MM/YYYY HH:mm'));
@@ -175,8 +169,8 @@ $(function(){
   //Инициализируем диалоговое окно с редактированием события
     dialog = $( "#edit_event" ).dialog({
     autoOpen: false,
-    height: 400,
-    width: 400,
+    height: 350,
+    width: 600,
     modal: true
 
 
@@ -243,13 +237,12 @@ $(function(){
 
     });
 
-//показать информацию по кандидату
-$('#show_candidate_info').click(function(){
-    $('#candidate_info').toggle();
-});
 
-
-$('').on('click',function(){
+//открытие окна с отправлением оповещения
+$('#open_notification').on('click',function(){
+    //закрываем окно с редактированием события(иначе при открытии формы с отправлением оповещения и при последующем
+    //клике по инпутам получим ошибку с рекурсией)
+    dialog.dialog('close');
     var event_id = $("#event_id").val();
     console.log(event_id);
     var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id))[0];
@@ -262,7 +255,9 @@ $('').on('click',function(){
 
 
 
+
 });
+
 
 
 //сохранение события при его изменение через диалоговоую форму

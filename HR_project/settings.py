@@ -137,6 +137,7 @@ TEMPLATE_DIRS = (
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR,'static'),
     os.path.join(BASE_DIR,'vacancies/static'),
+    os.path.join(BASE_DIR,'main/static'),
 )
 
 MEDIA_URL = '/media/'

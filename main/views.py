@@ -9,7 +9,6 @@ from django.utils.decorators import method_decorator
 import re
 from applicants.models import Applicant, Phone
 from applicants.views import PaginatorView
-from applicants.forms import HotApplicantAddForm, ApplicantForm
 
 # Create your views here.
 class MainPageView(View):
@@ -18,7 +17,6 @@ class MainPageView(View):
     @method_decorator(login_required)
     def get(self, request):
         args = {}
-        args['hot_applicant_add_form'] = HotApplicantAddForm()
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
 

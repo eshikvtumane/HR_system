@@ -43,9 +43,12 @@ swampdragon.onChannelMessage(function(channels, message) {
 function addNotification(notification) {
     // Если у нас есть разрешение на вывод оповещения в браузере, то мы можем его вывести
     if (window.Notification && Notification.permission === "granted") {
-        new Notification(notification.message);
+        new Notification('Новое оповещение!', {
+            icon: '/media/icons/meeting.png',
+            body: notification.message
+        });
     }
-
+    $('#notification_label').css("display", "block");
     // Добавление оповещения к меню
     var li = $("<li>");
     var $messageContainer = $('<a>').attr('href','#');
@@ -59,3 +62,7 @@ function addNotification(notification) {
         notificationsMenu.find("li")[5].remove();
     }
 }
+
+$('.notifications-menu').click(function(){
+    $('#notification_label').css("display", "none");
+});

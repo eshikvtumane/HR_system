@@ -1,14 +1,4 @@
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds){
-      break;
-    }
-  }
-}
-
-
-
+//конвертация даты в виде текста в объект Moment
 function stringToMomentDate(str){
 
     d = parseInt(str.substr(0,2));
@@ -23,7 +13,7 @@ function stringToMomentDate(str){
 //сохранение событие после изменения(посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
     updateEvent(event.id,event.start.format(),event.end.format());
-    $('#email_modal').modal('show');
+
 
 
 }
@@ -45,17 +35,19 @@ function updateEvent(event_id,event_start,event_end){
       //  revertFunc();
       //  return;
       //calendar.fullCalendar('updateEvent', event);
+
+        //если форма с редактированием события была открыта,то закрываем её
         if ($("#edit_event").attr('display') !== 'none'){
                 dialog.dialog('close');
         }
-        $.notify("Событие успешно обновлено",'success',{
+
+        $.notify("Событие успешно обновлено! Возможно, вам стоит отправить кандидату оповещение об изменённом событии.",
+        'success',{
                     position : 'top center'
                 });
 
-        $('#email_modal').modal('show');
-        var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id));
-        $('#email_modal').modal('show');
-        console.log(event);
+         $('#scheduler').fullCalendar('refetchEvents');
+
 
     },
     error: function() {
@@ -69,7 +61,7 @@ function updateEvent(event_id,event_start,event_end){
 
 }
 
-
+//добавление нового события через календарь
 function addEvent(event_type,event_start,event_end,app_vacancy_id)
 {
 
@@ -146,7 +138,7 @@ function deleteEvent(event_id)
 
 //открытие диалоговой формы редактирования события
 function editEventData(calEvent, jsEvent, view){
-    $('#candidate_info').hide();
+
     $("#event_id").val(calEvent.id);
     $("#title").val(calEvent.title);
     $("#start").val(calEvent.start.format('DD/MM/YYYY HH:mm'));
@@ -177,8 +169,8 @@ $(function(){
   //Инициализируем диалоговое окно с редактированием события
     dialog = $( "#edit_event" ).dialog({
     autoOpen: false,
-    height: 400,
-    width: 400,
+    height: 350,
+    width: 600,
     modal: true
 
 
@@ -188,8 +180,8 @@ $(function(){
     $("#start,#end").datetimepicker({ dateFormat: 'dd-mm-yy' });
 
 
-    form = dialog.find( "form" ).on( "submit", function( event ) {
-      event.preventDefault();
+    form = dialog.find( "form" ).on( "submit", function( e ) {
+      e.preventDefault();
     });
 
 
@@ -217,7 +209,8 @@ $(function(){
                 {
                     'profile_link':event.profile_link,
                     'name': event.name,
-                    'phones':event.phones
+                    'phones':event.phones,
+                    'email':event.email
                 })
         },
         eventResize: changeEvent,
@@ -246,10 +239,28 @@ $(function(){
 
     });
 
-//показать информацию по кандидату
-$('#show_candidate_info').click(function(){
-    $('#candidate_info').toggle();
+
+//открытие окна с отправлением оповещения
+$('#open_notification').on('click',function(){
+    //закрываем окно с редактированием события(иначе при открытии формы с отправлением оповещения и при последующем
+    //клике по инпутам получим ошибку с рекурсией)
+    dialog.dialog('close');
+    var event_id = $("#event_id").val();
+    console.log(event_id);
+    var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id))[0];
+    console.log(event)
+    $('#emailto').val(event.email);
+    $('#subject').val(event.title);
+    $('#message').val("Уважаемый " + event.name + "! Вам назначено " + event.title + " на " + event.start.format
+    ('DD/MM/YYYY HH:mm'));
+    $('#email_modal').modal('show');
+
+
+
+
 });
+
+
 
 //сохранение события при его изменение через диалоговоую форму
 $('#save_event').button().on('click',function(){

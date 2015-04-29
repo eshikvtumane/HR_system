@@ -207,7 +207,9 @@ $(function(){
         droppable: true,
         url: '#',
         allDay: false,
-        slotMinutes: 5,
+        slotDuration: moment.duration('00:15:00'),
+        minTime: moment.duration('09:00:00'),
+        maxTime: moment.duration('18:00:00'),
         timezone:'Asia/Vladivostok',
         events:'/events/get_events/',
         eventRender:function(event,element,view){
@@ -274,8 +276,8 @@ $('#delete_event').button().on('click',function(){
 				title: $.trim($(this).text()), // use the element's text as the event title
 				id: $(this).attr('id'),
 				stick: true, // maintain when user navigates (see docs on the renderEvent method)
-				start: "00:00",
-				duration: "03:00"
+				start: "09:00",
+				duration: "01:00"
 
 			});
 

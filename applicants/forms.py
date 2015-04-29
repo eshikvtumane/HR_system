@@ -93,6 +93,44 @@ class ApplicantForm(forms.ModelForm):
             'date_created': forms.HiddenInput()
         }
 
+class HotApplicantAddForm(forms.ModelForm):
+    """
+        Форма для добавления кандидата в базу
+    """
+
+    class Meta:
+        model = Applicant
+        fields = ['first_name', 'last_name', 'middle_name', 'birthday', 'date_created']
+        widgets = {
+            'first_name': forms.TextInput(attrs={
+                'class': "form-control",
+                'data-validation': "custom", 'data-validation-regexp': "^([А-Яа-яЁё -]+)$",
+                'data-validation-error-msg': "Фамилия должна состоять из кириллических символов",
+                'autocomplete': 'off'
+            }),
+            'last_name': forms.TextInput(attrs={
+                'class': "form-control",
+                'data-validation': "custom",
+                'data-validation-regexp': "^([А-Яа-яЁё]+)$",
+                'data-validation-error-msg': "Имя должно состоять из кириллических символов",
+                'autocomplete': 'off'
+            }),
+            'middle_name': forms.TextInput(attrs={
+                 'class': "form-control",
+                 'data-validation': "middle_name",
+                'autocomplete': 'off'
+            }),
+            'sex': forms.Select(attrs={
+                'class':'select',
+                'placeholder': 'Выберите пол'
+            }),
+            'birthday': forms.DateInput(attrs={
+                'class': "form-control",
+                'data-validation': "date",
+                'data-validation-format': "dd-mm-yyyy"
+            }),
+            'date_created': forms.HiddenInput()
+        }
 
 # кортеж годов (для выбора начала обучения)
 YEAR = tuple(
@@ -183,14 +221,12 @@ class CandidateSearchForm(forms.Form):
     # пол
     sex = forms.ChoiceField(choices=GENDER_LIST,
                                  widget=forms.Select(attrs={
-                                     'class': 'select',
                                      'data-placeholder': 'Выберите пол'
                                  })
                                  )
     # Место жительства
     city = forms.ChoiceField(
                                  widget=forms.Select(attrs={
-                                     'class': 'select',
                                      'placeholder': 'Выберите город'
                                  })
                                  )
@@ -198,7 +234,6 @@ class CandidateSearchForm(forms.Form):
     position =forms.ModelChoiceField(queryset=Position.objects.all(),
                                      label='Должность',
                                      widget=forms.Select(attrs={
-                                         'class': 'select',
                                          'placeholder': 'Выберите должность'
                                      }
                                 )
@@ -206,6 +241,12 @@ class CandidateSearchForm(forms.Form):
 
     salary_start = forms.Field(widget=forms.HiddenInput())
     salary_end = forms.Field(widget=forms.HiddenInput())
+
+    education = forms.BooleanField(label='Резерв',
+                                       widget=forms.CheckboxInput(attrs={
+                                           'class':'select'
+                                       })
+            )
 
 class VacancyForm(forms.Form):
 

@@ -10,7 +10,7 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
 from vacancies.models import Vacancy, ApplicantVacancy, \
-    ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus
+    ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus, VacancyStatusHistory
 
 from events.models import ApplicantVacancyEvent
 from vacancies.forms import ApplicantVacancyEventForm
@@ -65,20 +65,41 @@ class SavingModels():
         except:
             return
 
-    def savingVacancies(self, json_vacancies, user):
+    def savingVacancies(self, json_vacancies, user, req_user):
         try:
             vacancies = json.loads(json_vacancies)
             vacancy_obj = []
+
 
             for k, v in enumerate(vacancies):
                 vacancies[v]['vacancy'] = Vacancy(vacancies[v]['vacancy'])
                 vacancies[v]['applicant'] = user
                 vacancies[v]['source'] = self.sourceCreate(vacancies[v]['source'])
+
+                #ApplicantVacancyApplicantVacancyStatus(applicant_vacancy=)
                 vacancy_obj.append(ApplicantVacancy(**vacancies[v]))
 
             ApplicantVacancy.objects.bulk_create(vacancy_obj)
+            new_applicant_vacancies = ApplicantVacancy.objects.all().order_by('-id')[:len(vacancies)]
+            new_applicant_vacancy_statuses = []
+
+            # добавление статуса по умолчанию
+            for a in new_applicant_vacancies:
+                new_applicant_vacancy_statuses.append(ApplicantVacancyApplicantVacancyStatus(
+                                                    applicant_vacancy=a,\
+                                                    applicant_vacancy_status=ApplicantVacancyStatus.objects.get(name__contains='Новый кандидат'),\
+                                                    date = datetime.datetime.now(),
+                                                    author=req_user))
+
+                ApplicantVacancyApplicantVacancyStatus(
+                                                    applicant_vacancy=a,\
+                                                    applicant_vacancy_status=ApplicantVacancyStatus.objects.get(name__contains='Новый кандидат'),\
+                                                    author=req_user,\
+                                                    note='').save()
+
             return
         except Exception, e:
+            print 'Error'
             print e.message
             return
 
@@ -151,7 +172,7 @@ class SavingModels():
                 return False
 
             self.savingPhone(req.getlist('phone'), new_applicant)
-            self.savingVacancies(req['vacancies'], new_applicant)
+            self.savingVacancies(req['vacancies'], new_applicant, request.user)
             self.savingEducations(req['educations'], new_applicant)
 
             full_name = new_applicant.getFullName()
@@ -231,11 +252,16 @@ class VacancySearchAjax(View):
     def get(self, request):
         if request.is_ajax:
             position = request.GET.get('position')
-            vacancies = Vacancy.objects.filter(position=position).values('head__name', 'id', 'published_at')
+            vacancies = Vacancy.objects.filter(Q(position=position) &\
+                                                           (Q(last_status__name__contains='Открыта') |\
+                                                            Q(last_status__name__contains='Возобновлена')))\
+                                                            .values('head__name', 'id', 'published_at')
+            #vacancies = Vacancy.objects.filter(position=position).values('head__name', 'id', 'published_at')
             result = [
-                {'head': v['head__name'],
-                 'date': v['published_at'].date().strftime("%d-%m-%Y"),
-                 'value':v['id']
+                {
+                    'head': v['head__name'],
+                     'date': v['published_at'].date().strftime("%d-%m-%Y"),
+                     'value':v['id']
                 }
                 for v in vacancies
             ]
@@ -336,8 +362,6 @@ class ApplicantView(View, SavingModels):
     def get(self, request, applicant_id):
 
         applicant = get_object_or_404(Applicant, id=applicant_id)
-        print '=' * 40
-        print [a for a in dir(applicant) if 'Age' in a]
 
         applicant_instance = {'instance': applicant}
         args = self.addForms(applicant_instance)
@@ -417,3 +441,14 @@ class ApplicantVacancyStatusAjax(View):
 
         return HttpResponse(json_res, content_type='application/text')
 
+class PositionSourceGetAjax(View):
+    def get(self, request):
+        try:
+            positions = Position.objects.all().values('id', 'name')
+            sources = SourceInformation.objects.all().values('id', 'source')
+
+            result = json.dumps(['200', {'positions':positions, 'sources':[{'id': s['id'], 'name':s['source']} for s in sources]}])
+            return HttpResponse(result, 'application/json')
+        except Exception, e:
+            result = json.dumps(['500', e.message])
+            return HttpResponse(result, 'application/text')

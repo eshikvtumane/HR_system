@@ -13,10 +13,8 @@ $(document).ready(function(){
 // формирование и скачивание отчёта
 $(document).on('submit', 'form#FileDownload', function(e){
     var period = document.getElementById('period').value;
-    var vacancies_len = vacancies.length;
-    console.log(vacancies.length)
     if(period != ''){
-        if(vacancies){
+        if(document.getElementById(vacancies).value){
             $.fileDownload($(this).prop('action'), {
             //preparingMessageHtml: "Подождите, отчёт формируется ...",
             //failMessageHtml: "Ошибка! Попробуйте произвести формировние отчёта позднее.",

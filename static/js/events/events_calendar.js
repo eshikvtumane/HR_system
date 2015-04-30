@@ -10,7 +10,7 @@ function stringToMomentDate(str){
 }
 
 
-//сохранение событие после изменения(посредством resize или drop)
+//изменение события (посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
     updateEvent(event.id,event.start.format(),event.end.format());
 
@@ -46,6 +46,7 @@ function updateEvent(event_id,event_start,event_end){
                     position : 'top center'
                 });
 
+        //перезагружаем события
          $('#scheduler').fullCalendar('refetchEvents');
 
 
@@ -203,6 +204,7 @@ $(function(){
         timezone:'Asia/Vladivostok',
         events:'/events/get_events/',
         eventRender:function(event,element,view){
+                //добавляем кастомные атрибуты к загружаемым в календарь событиям
                 element.attr(
                 {
                     'profile_link':event.profile_link,
@@ -224,6 +226,7 @@ $(function(){
 
             },
 
+        //обработка добавления внешнего события
         eventReceive:function(event){
 
                 var event_type = event.id;
@@ -275,26 +278,26 @@ $('#delete_event').button().on('click',function(){
 });
 
 
-		/* initialize the external events
+		/* инициализируем внешние события
 		-----------------------------------------------------------------*/
 
 		$('#external-events .fc-event').each(function() {
 
-			// store data so the calendar knows to render an event upon drop
+			// добавляем данные к внешним событиям
 			$(this).data('event', {
-				title: $.trim($(this).text()), // use the element's text as the event title
+				title: $.trim($(this).text()), //используем текст элемента в качестве заголовкка события
 				id: $(this).attr('id'),
-				stick: true, // maintain when user navigates (see docs on the renderEvent method)
+				stick: true,
 				start: "00:00",
 				duration: "03:00"
 
 			});
 
-			// make the event draggable using jQuery UI
+			// делаем событие draggable
 			$(this).draggable({
 				zIndex: 999,
-				revert: true,      // will cause the event to go back to its
-				revertDuration: 0  //  original position after the drag
+				revert: true,
+				revertDuration: 0
 			});
 
 		});

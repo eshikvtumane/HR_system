@@ -18,6 +18,7 @@ from events.models import ApplicantVacancyEvent
 
 
 
+
 class AddVacancy(View):
     template = 'vacancies/vacancy_add.html'
     def get(self,request):
@@ -35,6 +36,7 @@ class AddVacancy(View):
             post_data['end_date'] = datetime.datetime.strptime(post_data['end_date'],
                                                      '%d-%m-%Y').date()
             post_data['author'] = request.user
+            post_data['last_status'] = VacancyStatus.objects.get(name='Открыта')
             vacancy_form = AddVacancyForm(post_data)
             if vacancy_form.is_valid():
                     vacancy_form.instance.author = request.user
@@ -80,6 +82,7 @@ class VacancyEdit(View):
                                                        '%d-%m-%Y').date()
 
             vacancy = Vacancy.objects.get(pk=id)
+            vacancy.last_status = request.POST['status']
             vacancy_form = EditVacancyForm(post_data,instance=vacancy)
             if vacancy_form.is_valid():
                 vacancy_form.save()

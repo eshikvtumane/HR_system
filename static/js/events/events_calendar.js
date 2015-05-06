@@ -10,7 +10,7 @@ function stringToMomentDate(str){
 }
 
 
-//сохранение событие после изменения(посредством resize или drop)
+//изменение события (посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
     updateEvent(event.id,event.start.format(),event.end.format());
 
@@ -46,6 +46,7 @@ function updateEvent(event_id,event_start,event_end){
                     position : 'top center'
                 });
 
+        //перезагружаем события
          $('#scheduler').fullCalendar('refetchEvents');
 
 
@@ -145,6 +146,8 @@ function editEventData(calEvent, jsEvent, view){
     $("#end").val(calEvent.end.format('DD/MM/YYYY HH:mm'));
     $('#profile_link').attr('href',calEvent.profile_link);
     $('#candidate_name').html(calEvent.name);
+    $('#event_author').html(calEvent.author);
+    $('#candidate_email').html(calEvent.email);
     var $phones =  $('#candidate_phones ul');
     //очищаем список от телефонов, оставшихся с предыдущих вызовов моадльного окна
     $phones.html('');
@@ -176,6 +179,23 @@ $(function(){
 
 
 });
+
+      var event_remove_dialog =$( "#event_remove_confirm" ).dialog({
+      autoOpen: false,
+      resizable: false,
+      height:200,
+      modal: true,
+      buttons: {
+        "Удалить действие": function() {
+          $( this ).dialog( "close" );
+        },
+        "Отмена": function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+
+
     //инициализируем jqueryui datepicker плагин на форме редактирования события
     $("#start,#end").datetimepicker({ dateFormat: 'dd-mm-yy' });
 
@@ -199,16 +219,20 @@ $(function(){
         droppable: true,
         url: '#',
         allDay: false,
-        slotMinutes: 5,
+        slotDuration: moment.duration('00:15:00'),
+        minTime: moment.duration('09:00:00'),
+        maxTime: moment.duration('18:00:00'),
         timezone:'Asia/Vladivostok',
         events:'/events/get_events/',
         eventRender:function(event,element,view){
+                //добавляем кастомные атрибуты к загружаемым в календарь событиям
                 element.attr(
                 {
                     'profile_link':event.profile_link,
                     'name': event.name,
                     'phones':event.phones,
-                    'email':event.email
+                    'email':event.email,
+                    'author':event.author
                 })
         },
         eventResize: changeEvent,
@@ -224,6 +248,7 @@ $(function(){
 
             },
 
+        //обработка добавления внешнего события
         eventReceive:function(event){
 
                 var event_type = event.id;
@@ -244,9 +269,7 @@ $('#open_notification').on('click',function(){
     //клике по инпутам получим ошибку с рекурсией)
     dialog.dialog('close');
     var event_id = $("#event_id").val();
-    console.log(event_id);
     var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id))[0];
-    console.log(event)
     $('#emailto').val(event.email);
     $('#subject').val(event.title);
     $('#message').val("Уважаемый " + event.name + "! Вам назначено " + event.title + " на " + event.start.format
@@ -271,30 +294,31 @@ $('#save_event').button().on('click',function(){
 //удаление события
 $('#delete_event').button().on('click',function(){
     var event_id = $("#event_id").val();
-    deleteEvent(event_id);
+     event_remove_dialog.dialog( "open" );
+    //deleteEvent(event_id);
 });
 
 
-		/* initialize the external events
+		/* инициализируем внешние события
 		-----------------------------------------------------------------*/
 
 		$('#external-events .fc-event').each(function() {
 
-			// store data so the calendar knows to render an event upon drop
+			// добавляем данные к внешним событиям
 			$(this).data('event', {
-				title: $.trim($(this).text()), // use the element's text as the event title
+				title: $.trim($(this).text()), //используем текст элемента в качестве заголовкка события
 				id: $(this).attr('id'),
-				stick: true, // maintain when user navigates (see docs on the renderEvent method)
-				start: "00:00",
-				duration: "03:00"
+				stick: true, 
+				start: "09:00",
+				duration: "01:00"
 
 			});
 
-			// make the event draggable using jQuery UI
+			// делаем событие draggable
 			$(this).draggable({
 				zIndex: 999,
-				revert: true,      // will cause the event to go back to its
-				revertDuration: 0  //  original position after the drag
+				revert: true,
+				revertDuration: 0
 			});
 
 		});

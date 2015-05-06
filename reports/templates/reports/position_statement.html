@@ -30,12 +30,12 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Сводная ведомость по набору персонала
+            Сводная ведомость о сотрудниках предприятия
           </h1>
           <ol class="breadcrumb">
             <li><a href="/"><i class="fa fa-dashboard"></i> Главная</a></li>
             <li><a href="{% url 'reports:main_reports' %}"><i class="fa fa-pie-chart"></i> Статистика и аналитика</a></li>
-            <li class="active"> Сводная ведомость по набору персонала</li>
+            <li class="active"> Сводная ведомость о сотрудниках предприятия</li>
           </ol>
         </section>
 
@@ -49,7 +49,7 @@
                   <div class="box-header" class='col-sm-12'>
 
                       <div class="col-sm-12">
-                          <div class="col-sm-3">
+                          <div class="col-sm-3 col-sm-offset-3">
                              Должность
                               <div>
                                   {{ form.position }}

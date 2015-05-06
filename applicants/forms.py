@@ -34,7 +34,7 @@ class ApplicantForm(forms.ModelForm):
                 'autocomplete': 'off'
             }),
             'sex': forms.Select(attrs={
-                'class':'select',
+                'class': 'select',
                 'placeholder': 'Выберите пол'
             }),
             'birthday': forms.DateInput(attrs={
@@ -92,7 +92,6 @@ class ApplicantForm(forms.ModelForm):
             }),
             'date_created': forms.HiddenInput()
         }
-
 
 # кортеж годов (для выбора начала обучения)
 YEAR = tuple(
@@ -206,6 +205,11 @@ class CandidateSearchForm(forms.Form):
 
     salary_start = forms.Field(widget=forms.HiddenInput())
     salary_end = forms.Field(widget=forms.HiddenInput())
+
+    reserve = forms.BooleanField(label='Резерв',
+                                       widget=forms.CheckboxInput(attrs={
+                                       })
+            )
 
 class VacancyForm(forms.Form):
 

@@ -5,7 +5,7 @@ window.onload = function(){
     $.validate({
 
 
-
+        form:'#frm_update_vacancy',
         onError : function() {
 
     },

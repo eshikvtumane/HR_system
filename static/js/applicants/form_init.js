@@ -50,20 +50,15 @@ $('#id_study_start').change(function(){
 
 
 
-    //инициализируем selectize.js на необходимых select элементах
-    $('select').each(function(){
-       if ($(this).attr('class') == 'select'){
-           $(this).selectize();
-       }
-       else if($(this).attr('class') == 'select-add'){
-
-             $(this).selectize({
+       //инициализируем selectize.js на необходимых select элементах
+    $('.select-add').each(function(){
+       $(this).selectize({
 
                  create: true,
                  createOnBlur: true
 
              });
-        }
+
     });
 
 

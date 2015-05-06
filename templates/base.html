@@ -155,7 +155,7 @@
               <li class="dropdown notifications-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <i class="fa fa-bell-o"></i>
-                  <span class="label label-warning">10</span>
+                  <span id="notification_label" style="display: none;" class="label label-warning">New</span>
                 </a>
                   <div id="sound">
                       <audio id="notification_sound"><source src="/static/notification.mp3" type="audio/mpeg" /></audio>
@@ -246,6 +246,8 @@
                   </li>
                 </ul>
               </li>
+
+
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -384,16 +386,23 @@
             </li>
 
 
-              <li>
+            <li>
               <a href="{% url 'administration:add' %}">
                 <i class="fa fa-wrench"></i> <span>Администрирование</span>
               </a>
-            </li>
 
-            <li class="header">LABELS</li>
-            <li><a href="#"><i class="fa fa-circle-o text-danger"></i> Important</a></li>
+
+
+            <li class="header">Доп. функции</li>
+            <li>
+              <a href="#" id="hot_applicant_add">
+                <i class="fa fa-fire"></i> <span>HOT добавление кандидата</span>
+              </a>
+            </li>
+            <!--<li><a href="#"><i class="fa fa-circle-o text-danger"></i> Important</a></li>
             <li><a href="#"><i class="fa fa-circle-o text-warning"></i> Warning</a></li>
             <li><a href="#"><i class="fa fa-circle-o text-info"></i> Information</a></li>
+            -->
           </ul>
         </section>
         <!-- /.sidebar -->
@@ -414,8 +423,96 @@
 
     </div><!-- ./wrapper -->
 
-    <!--audio container  -->
-    <div id="sound" style="visibility: hidden"></div>
+    <div class="easy_modal" id="modal1">
+  <div class="easy-modal-inner" style="width: 900px; background-color: #FFFFFF; padding: 30px 30px 30px 30px;" align="center">
+    <h2>Быстрое добавление кандидата</h2>
+      <div style="width: 100%;">
+
+      <div style="width: 35%;float:left;">
+          <table class="table">
+              <tr>
+                  <td>
+                      <b>Фамилия:</b>
+                  </td>
+                  <td>
+                      <input type="text" class="form-control">
+                  </td>
+              </tr>
+
+              <tr>
+                  <td>
+                        <b>Имя:</b>
+                  </td>
+                  <td>
+                      <input type="text" class="form-control">
+                  </td>
+              </tr>
+
+              <tr>
+                  <td>
+                        <b>Отчество:</b>
+                  </td>
+                  <td>
+                      <input type="text" class="form-control">
+                  </td>
+              </tr>
+
+                <tr>
+                  <td>
+                       <b>Дата рождения:</b>
+                  </td>
+                  <td>
+                      <input type="text" class="datetime form-control">
+                  </td>
+              </tr>
+              <tr>
+                  <td>
+                       <b>Телефон:</b>
+                  </td>
+                  <td>
+                      <input type="text" class="form-control">
+                  </td>
+              </tr>
+              <tr>
+                  <td>
+                        <b>Пол:</b>
+                  </td>
+                  <td>
+                      <select>
+                          <option></option>
+                          <option>Мужской</option>
+                          <option>Женский</option>
+                      </select>
+                  </td>
+              </tr>
+              <tr>
+                  <td>
+                       <b>Примечание:</b>
+                  </td>
+                  <td>
+                      <textarea type="text" name="note" class="form-control"></textarea>
+                  </td>
+              </tr>
+          </table>
+
+          </div>
+
+            <div style="width: 55%; float:left; margin-left: 3ex;">
+            {% comment %}
+                {% include 'applicants/includes/vacancy.html' %}
+                {% endcomment %}
+
+                {{ formVacancy }}
+          </div>
+
+        </div>
+      <button class="easy-modal-close btn btn-success">Сохранить</button>
+    <button class="easy-modal-close btn btn-danger">Закрыть</button>
+  </div>
+</div>
+
+    <!--audio container
+    <div id="sound" style="visibility: hidden"></div>-->
 
     <!--sound notification script  -->
     <script type="text/javascript">
@@ -435,7 +532,8 @@
     <script src="{% static 'js/jquery.countdown/jquery.countdown.js' %}"></script>
     <script src="{% static 'js/digital_clock.js' %}"></script>
 
-
+    <!-- Переопределение события кнопки enter -->
+     <script src="{% static 'js/enter_override.js' %}"></script>
 
     <!-- Bootstrap 3.3.2 JS -->
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}" type="text/javascript"></script>
@@ -452,7 +550,13 @@
       $.widget.bridge('uibutton', $.ui.button);
     </script>
 
+<!-- кастомизация select -->
+<script src="{% static 'js/selectize/selectize.js' %}"></script>
+    <script src="{% static 'js/selectize_init.js' %}"></script>
 
+    <!-- easy_modal -->
+    <script src="{% static 'js/easyModal/jquery.easyModal.js' %}"></script>
+    <script src="{% static 'js/easy_modal_init.js' %}"></script>
 
     <script src="{% static 'admin_lte/dist/js/app.min.js' %}" type="text/javascript"></script>
 

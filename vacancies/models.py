@@ -79,6 +79,7 @@ class Vacancy(models.Model):
     advancement = models.TextField(verbose_name=u'Карьерный рост',null=True,blank=True)
     further_education = models.TextField(verbose_name=u'Возможность обучения/стажировок',null=True,blank=True)
     paid_vacation = models.CharField(verbose_name=u'Оплачиваемый отпуск(кол-во дней)',max_length=3,null=True,blank=True)
+    last_status = models.ForeignKey('VacancyStatus', default=DEFAULT_VACANCY_STATUS)
     
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in
@@ -128,6 +129,7 @@ class ApplicantVacancy(models.Model):
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=timezone.now, verbose_name='Дата добавления')
+
     def __unicode__(self):
         return "%s %s %s %s %s"%(self.vacancy.position.name,str(
             self.vacancy.published_at),self.applicant.first_name,

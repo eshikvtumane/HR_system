@@ -523,35 +523,35 @@ class SummaryStatementRecruitmentGenerateAjax(View):
                 total_count = result_status.count()
 
                 # если нет заявок, то дальнейшую выборку не производим
-                if total_count != 0:
-                    # Добавляем общее количество заявок с данного источника
-                    result_counter.append([total_count, style])
+                #if total_count != 0:
+                # Добавляем общее количество заявок с данного источника
+                result_counter.append([total_count, style])
 
-                    # 1-е собеседование
-                    # Приглашены
-                    first_interview = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование запланировано').count()
-                    result_counter.append([first_interview, style])
-                    # Пришли
-                    first_went = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование состоялось').count()
-                    result_counter.append([first_went, style])
+                # 1-е собеседование
+                # Приглашены
+                first_interview = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование запланировано').count()
+                result_counter.append([first_interview, style])
+                # Пришли
+                first_went = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование состоялось').count()
+                result_counter.append([first_went, style])
 
-                    # 2-е собеседование
-                    # Приглашены
-                    second_interview = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование запланировано').count()
-                    result_counter.append([second_interview, style])
-                    # Пришли
-                    second_went = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование состоялось').count()
-                    result_counter.append([second_went, style])
+                # 2-е собеседование
+                # Приглашены
+                second_interview = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование запланировано').count()
+                result_counter.append([second_interview, style])
+                # Пришли
+                second_went = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование состоялось').count()
+                result_counter.append([second_went, style])
 
-                    # Дополнительное собеседование
-                    # Приглашены
-                    ext_interview = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование запланировано').count()
-                    result_counter.append([ext_interview, style])
-                    # Пришли
-                    ext_went = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование состоялось').count()
-                    result_counter.append([ext_went, style])
-                else:
-                    result_counter = [[source_name, style]] + [[0, style]] * 7
+                # Дополнительное собеседование
+                # Приглашены
+                ext_interview = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование запланировано').count()
+                result_counter.append([ext_interview, style])
+                # Пришли
+                ext_went = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование состоялось').count()
+                result_counter.append([ext_went, style])
+                '''else:
+                    result_counter = [[source_name, style]] + [[0, style]] * 7'''
 
 
                 # Приглашены

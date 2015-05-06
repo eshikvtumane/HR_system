@@ -4,7 +4,7 @@ window.onload = function(){
     $.validate({
 
 
-
+        form:'#frm_add_vacancy',
         onError : function() {
 
     },
@@ -38,6 +38,7 @@ window.onload = function(){
             success: function (data) {
                var vacancy_id = data[0]["vacancy_id"];
                window.location.href = '/vacancies/' + vacancy_id;
+
 
             },
             error: function(data) {

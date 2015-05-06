@@ -146,6 +146,8 @@ function editEventData(calEvent, jsEvent, view){
     $("#end").val(calEvent.end.format('DD/MM/YYYY HH:mm'));
     $('#profile_link').attr('href',calEvent.profile_link);
     $('#candidate_name').html(calEvent.name);
+    $('#event_author').html(calEvent.author);
+    $('#candidate_email').html(calEvent.email);
     var $phones =  $('#candidate_phones ul');
     //очищаем список от телефонов, оставшихся с предыдущих вызовов моадльного окна
     $phones.html('');
@@ -177,6 +179,23 @@ $(function(){
 
 
 });
+
+      var event_remove_dialog =$( "#event_remove_confirm" ).dialog({
+      autoOpen: false,
+      resizable: false,
+      height:200,
+      modal: true,
+      buttons: {
+        "Удалить действие": function() {
+          $( this ).dialog( "close" );
+        },
+        "Отмена": function() {
+          $( this ).dialog( "close" );
+        }
+      }
+    });
+
+
     //инициализируем jqueryui datepicker плагин на форме редактирования события
     $("#start,#end").datetimepicker({ dateFormat: 'dd-mm-yy' });
 
@@ -212,7 +231,8 @@ $(function(){
                     'profile_link':event.profile_link,
                     'name': event.name,
                     'phones':event.phones,
-                    'email':event.email
+                    'email':event.email,
+                    'author':event.author
                 })
         },
         eventResize: changeEvent,
@@ -249,9 +269,7 @@ $('#open_notification').on('click',function(){
     //клике по инпутам получим ошибку с рекурсией)
     dialog.dialog('close');
     var event_id = $("#event_id").val();
-    console.log(event_id);
     var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id))[0];
-    console.log(event)
     $('#emailto').val(event.email);
     $('#subject').val(event.title);
     $('#message').val("Уважаемый " + event.name + "! Вам назначено " + event.title + " на " + event.start.format
@@ -276,7 +294,8 @@ $('#save_event').button().on('click',function(){
 //удаление события
 $('#delete_event').button().on('click',function(){
     var event_id = $("#event_id").val();
-    deleteEvent(event_id);
+     event_remove_dialog.dialog( "open" );
+    //deleteEvent(event_id);
 });
 
 

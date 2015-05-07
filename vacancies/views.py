@@ -18,6 +18,7 @@ from events.models import ApplicantVacancyEvent
 
 
 
+
 class AddVacancy(View):
     template = 'vacancies/vacancy_add.html'
     def get(self,request):

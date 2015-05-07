@@ -115,6 +115,7 @@ class ApplicantVacancy(models.Model):
     salary = models.FloatField(verbose_name='Запрашиваемая сумма')
     suggested_salary = models.FloatField(verbose_name='Предлагаемая сумма')
     create_date = models.DateField(default=timezone.now, verbose_name='Дата добавления')
+
     def __unicode__(self):
         return "%s %s %s %s %s"%(self.vacancy.position.name,str(
             self.vacancy.published_at),self.applicant.first_name,

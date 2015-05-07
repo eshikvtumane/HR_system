@@ -127,7 +127,8 @@ def get_events_ajax(request):
                            'profile_link':profile_link,
                            'name':event.applicant_vacancy.applicant.getFullName(),
                            'phones':phones,
-                           'email': event.applicant_vacancy.applicant.email
+                           'email': event.applicant_vacancy.applicant.email,
+                           'author': event.author.username
                            })
 
 

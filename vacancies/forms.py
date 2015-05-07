@@ -11,11 +11,11 @@ class AddVacancyForm(ModelForm):
 
     class Meta:
         model = Vacancy
-        fields = ("salary","end_date","description",'head','position')
+        exclude = ['published_at']
         labels = {
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),
-            'description': _(u'Описание'),
+            'additional_info': _(u'Дополнительная информация'),
 
         }
         widgets = {
@@ -35,16 +35,54 @@ class AddVacancyForm(ModelForm):
                 'data-validation-error-msg':"Вы ввели некорректную дату!"
 
             }),
-            'description':forms.Textarea(attrs={
-                'class':'form-control'
 
-            }),
             'position':forms.Select(attrs={
                 'class':'form-control',
                 'id':'position',
                 'data-validation':'required',
                 'data-validation-error-msg':"Это поле обязательно для заполнения!"
-            })
+            }),
+
+            'sex':forms.Select(attrs={
+                'class':'form-control',
+                'id':'sex',
+
+            }),
+
+            'marriage_status':forms.Select(attrs={
+                'class':'form-control',
+                'id':'marriage_status',
+
+            }),
+
+             'paid_vacation':forms.NumberInput(attrs={
+                'class':'form-control',
+                'id':'paid_vacation',
+
+            }),
+            'duties':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'duties',
+
+            }),
+
+             'creation_reason':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'creation_reason',
+
+            }),
+
+            'further_education':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'further_education',
+
+            }),
+
+            'skills':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'skills',
+
+            }),
         }
 
 
@@ -58,11 +96,11 @@ class EditVacancyForm(ModelForm):
          )
    class Meta:
         model = Vacancy
-        fields = ("salary","end_date","description")
+        fields = ("salary","end_date","additional_info")
         labels = {
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),
-            'description': _(u'Описание'),
+            'additional_info': _(u'Описание'),
 
         }
         widgets = {
@@ -83,7 +121,7 @@ class EditVacancyForm(ModelForm):
                 'data-validation-error-msg':"Вы ввели некорректную дату!"
 
             }),
-            'description':forms.Textarea(attrs={
+            'additional_info':forms.Textarea(attrs={
                 'class':'form-control'
 
 
@@ -121,11 +159,11 @@ class SearchVacancyForm(ModelForm):
 
     class Meta:
         model = Vacancy
-        fields = ("salary","end_date","description",'head','position')
+        fields = ("salary","end_date","additional_info",'head','position')
         labels = {
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),
-            'description': _(u'Описание'),
+            'additional_info': _(u'Описание'),
 
         }
         widgets = {
@@ -141,7 +179,7 @@ class SearchVacancyForm(ModelForm):
                 'data-validation-format': "dd-mm-yyyy"
 
             }),
-            'description':forms.Textarea(attrs={
+            'additional_info':forms.Textarea(attrs={
                 'class':'form-control'
 
             }),

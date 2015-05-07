@@ -64,8 +64,6 @@
                     <strong>{{vacancy.published_at}}</strong>
                      <h5>{% get_verbose_field_name vacancy 'head'  %}:</h5>
                     <strong>{{vacancy.head}}</strong>
-                    <h5>{% get_verbose_field_name vacancy 'description'  %}:</h5>
-                    <strong>{{vacancy.description}}</strong>
 
                     <br>
                     <br>
@@ -99,6 +97,28 @@
 
 
               </div>
+
+
+                 <div class="box box-success">
+                    <div class="box-header">
+                        <h4>Кандидаты(резерв) на данную должность</h4>
+                        <div class="well">
+
+                            <ul id='reserved_applicant_list'>
+                            {% for applicant in reserved_applicants  %}
+                               <a href="/applicants/view/{{applicant.id}}"> <li> {{applicant.first_name}} {{applicant.last_name}} {{applicant.middle_name}}
+                                   </a></li>
+                            {% endfor %}
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+
+              </div>
+
             </section><!-- right col -->
 
         </div><!-- /.row (main row) -->

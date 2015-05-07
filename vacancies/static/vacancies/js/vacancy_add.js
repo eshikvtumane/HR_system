@@ -27,6 +27,11 @@ window.onload = function(){
 
 
 
+$('#benefits').selectize({
+    maxItems: null
+});
+
+
     //Добавление вакансии
     function addVacancy () {
         var datastring = $('#frm_add_vacancy').serialize();

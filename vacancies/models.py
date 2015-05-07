@@ -1,5 +1,6 @@
 #-*- coding: utf8 -*-
-from applicants.models import Position, Applicant, SourceInformation
+from applicants.models import Position, Applicant, SourceInformation, Education
+
 from django.contrib.auth.models import User
 from django.db import models
 import datetime
@@ -57,15 +58,33 @@ class Vacancy(models.Model):
         verbose_name_plural = 'Вакансии'
 
 
+    GENDER_LIST = (
+        ('1', 'Мужской'),
+        ('2', 'Женский'),
+    )
+
+    MARRIAGE_STATUS_LIST = (
+        ('1', 'В браке'),
+        ('2', 'Холост'),
+    )
     salary = models.FloatField(verbose_name=u"Заработная плана")
+    sex =  models.CharField(max_length=1, choices=GENDER_LIST, verbose_name='Пол', null=True, blank=True)
     published_at = models.DateTimeField(verbose_name=u'Дата размещения',
                                     default=timezone.now)
+    marriage_status = models.CharField(max_length=100, verbose_name=u'Семейный статус',choices=MARRIAGE_STATUS_LIST, null=True,blank=True)
+    duties = models.TextField(verbose_name=u'Обязанности',null=True,blank=True)
     end_date = models.DateField(verbose_name=u'Крайний срок',null=True,blank=True)
-    description = models.TextField(verbose_name=u"Описание",null=True,blank=True)
+    additional_info = models.TextField(verbose_name=u"Описание",null=True,blank=True)
+    skills = models.TextField(verbose_name=u"Необходимые навыки",null=True,blank=True)
+    creation_reason = models.TextField(verbose_name=u'Причина появления вакансии',null=True,blank=True)
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
     author = models.ForeignKey(User,verbose_name=u'Автор')
+    advancement = models.TextField(verbose_name=u'Карьерный рост',null=True,blank=True)
+    further_education = models.TextField(verbose_name=u'Возможность обучения/стажировок',null=True,blank=True)
+    paid_vacation = models.IntegerField(verbose_name=u'Оплачиваемый отпуск(кол-во дней)',null=True,blank=True)
     last_status = models.ForeignKey('VacancyStatus', default=DEFAULT_VACANCY_STATUS)
+
     
     def get_fields(self):
         return [(field.name, field.value_to_string(self)) for field in
@@ -139,3 +158,33 @@ class ApplicantVacancyApplicantVacancyStatus(models.Model):
 
 
 
+
+class Benefit(models.Model):
+    class Meta:
+        db_table = "Benefit"
+        verbose_name = "Льгота"
+        verbose_name_plural = "Льготы"
+
+    name = models.CharField(max_length=100)
+
+
+class VacancyBenefit(models.Model):
+    class Meta:
+        db_table = "VacancyBenefit"
+        verbose_name = "Льгота по вакансии"
+        verbose_name_plural = "Льготы по вакансии"
+
+
+    vacancy = models.ForeignKey(Vacancy)
+    benefit = models.ForeignKey(Benefit)
+
+
+
+class VacancyEducation(models.Model):
+    class Meta:
+        db_table = "VacancyEducation"
+        verbose_name = "Образование по вакансии"
+        verbose_name_plural = "Образования по вакансии"
+
+    vacancy = models.ForeignKey(Vacancy)
+    education = models.ForeignKey(Education)

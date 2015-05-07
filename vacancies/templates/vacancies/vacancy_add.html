@@ -20,6 +20,7 @@
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
 <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
+<script src="{% static 'js/cloneya/jquery-cloneya.min.js' %}"></script>
 <script src="{% static 'vacancies/js/vacancy_add.js' %}"></script>
 {% endblock %}
 
@@ -44,14 +45,16 @@
           <!-- Main row -->
           <div class="row">
             <!-- Left col -->
-            <section class="col-lg-7 connectedSortable">
+             <form id='frm_add_vacancy'>{% csrf_token %}
+
+              <section class="col-lg-6 connectedSortable">
                 <!--
                     Форма добавления вакансии
                 -->
 
               <div class="box box-success">
                 <div class="box-header">
-                    <form id='frm_add_vacancy'>{% csrf_token %}
+
 
                         {{ vacancy_form.position.label_tag}}
                         {{ vacancy_form.position}}
@@ -59,9 +62,38 @@
                         {{ vacancy_form.salary}}
                         {{ vacancy_form.end_date.label_tag}}
                         {{ vacancy_form.end_date}}
-                        {{ vacancy_form.description.label_tag}}
-                        {{ vacancy_form.description}}
+                        {{ vacancy_form.sex.label_tag}}
+                        {{ vacancy_form.sex}}
+                        {{ vacancy_form.marriage_status.label_tag}}
+                        {{ vacancy_form.marriage_status}}
+                        {{ vacancy_form.advancement.label_tag}}
+                        {{ vacancy_form.advencement}}
+                        {{ vacancy_form.paid_vacation.label_tag}}
+                        {{ vacancy_form.paid_vacation}}
+                        {{ vacancy_form.skills.label_tag}}
+                        {{ vacancy_form.skills}}
 
+                 <div class="form-group">
+                        <label for='benefits'>Льготы</label>
+                        <div class="clone-wrapper" id="benefits_container">
+                           <div class="toclone">
+
+                            <div >
+                                <select id="benefits" class="form-control" name="benefits[]">
+                                     {% for benefit in benefits %}
+                                        <option value="{{  benefit.id}}">{{ benefit.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div>
+                                <button class="clone btn btn-success"><i class="fa fa-plus"></i></button>
+                                <button class="delete btn btn-danger"><i class="fa fa-minus"></i></button>
+                            </div>
+                    </div>
+                </div>
+
+                </div>
                     <div class="form-group">
                     <label for='department'>Отдел</label>
                     <select id="department" name="department"
@@ -80,7 +112,7 @@
                     <button class="btn btn-success add-new-data"
                             id="save_vacancy">Добавить
                     </button>
-                    </form>
+
                 </div>
 
               </div><!-- /.форма добавления вакансии -->
@@ -88,9 +120,22 @@
 
             </section><!-- /.Left col -->
             <!-- right col (We are only adding the ID to make the widgets sortable)-->
-            <section class="col-lg-5 connectedSortable">
+            <section class="col-lg-6 connectedSortable">
 
+              <div class="box box-success">
+                <div class="box-header">
+
+                 {{ vacancy_form.duties.label_tag}}
+                        {{ vacancy_form.duties}}
+                        {{ vacancy_form.creation_reason.label_tag}}
+                        {{ vacancy_form.creation_reason}}
+                        {{ vacancy_form.further_education.label_tag}}
+                        {{ vacancy_form.further_education}}
+
+                </div>
+              </div>
             </section><!-- right col -->
+             </form>
           </div><!-- /.row (main row) -->
 
         </section><!-- /.content -->

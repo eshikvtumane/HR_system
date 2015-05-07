@@ -27,6 +27,9 @@ window.onload = function(){
 
 
 
+$('#benefits_container').cloneya();
+
+
     //Добавление вакансии
     function addVacancy () {
         var datastring = $('#frm_add_vacancy').serialize();

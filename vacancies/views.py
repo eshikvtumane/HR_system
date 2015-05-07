@@ -5,14 +5,14 @@ import pytz
 import json
 from django.core import serializers
 from pure_pagination import Paginator, PageNotAnInteger
-from django.shortcuts import render,render_to_response
-from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render_to_response
+from django.http import HttpResponse,JsonResponse
 from django.views.generic import View
 from django.template import RequestContext
 from forms import AddVacancyForm, EditVacancyForm, SearchVacancyForm
 from events.models import ApplicantVacancyEvent
 from applicants.models import Applicant
-from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory, ApplicantVacancy
+from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory, ApplicantVacancy, Benefit
 from events.models import ApplicantVacancyEvent
 
 
@@ -24,8 +24,10 @@ class AddVacancy(View):
     def get(self,request):
         vacancy_form = AddVacancyForm()
         departments  = Department.objects.all()
+        benefits = Benefit.objects.all()
         c = RequestContext(request,{'vacancy_form':vacancy_form,
-                                    'departments':departments}
+                                    'departments':departments,
+                                    'benefits':benefits}
                                     )
         return render_to_response(self.template,c)
 
@@ -35,11 +37,12 @@ class AddVacancy(View):
             post_data = request.POST.copy()
             post_data['end_date'] = datetime.datetime.strptime(post_data['end_date'],
                                                      '%d-%m-%Y').date()
-            post_data['author'] = request.user
-            post_data['last_status'] = VacancyStatus.objects.get(name='Открыта')
+            post_data['author'] = request.user.id
+            last_status = VacancyStatus.objects.get(name='Открыта')
+            post_data['last_status'] = last_status.id
             vacancy_form = AddVacancyForm(post_data)
             if vacancy_form.is_valid():
-                    vacancy_form.instance.author = request.user
+                    #vacancy_form.instance.author = request.user
                     vacancy_form.save()
                     VacancyStatusHistory.objects.create(vacancy=vacancy_form.instance)
                     vacancy_id = vacancy_form.instance.id
@@ -47,7 +50,7 @@ class AddVacancy(View):
                     return HttpResponse(response,content_type='application/json')
             else:
 
-                    return HttpResponse("400")
+                    return JsonResponse(vacancy_form.errors,status=400)
 
 
 class VacancyView(View):

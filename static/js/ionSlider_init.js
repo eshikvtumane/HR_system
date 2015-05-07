@@ -5,31 +5,38 @@ $(document).ready(function(){
     var start = start_input.value;
     var end = end_input.value;
 
-    if(start == '' && end == ''){
-        start = 10000;
-        end = 50000;
+    sliderInit($range, start_input, end_input, 10000, 50000, 0, 200000)
 
-        start_input.value = start;
-        end_input.value = end;
+    var $age = $('#age');
+    start_input = document.getElementById('id_age_start');
+    end_input = document.getElementById('id_age_end');
+    var start = start_input.value;
+    var end = end_input.value;
+
+    sliderInit($age, start_input, end_input, 10, 60, 10, 100)
+});
+
+function sliderInit($slider, start_input, end_input, default_start, default_end, min, max){
+    if(start_input.value == '' && end_input.value == ''){
+        start_input.value = default_start;
+        end_input.value = default_end;
     }
 
-    $range.ionRangeSlider({
+    $slider.ionRangeSlider({
         type: 'double',
-        min: 0,
-        max: 200000,
-        from: parseInt(start),
-        to: parseInt(end),
+        min: min,
+        max: max,
+        from: parseInt(start_input.value),
+        to: parseInt(end_input.value),
         grid: true
     });
 
-    $range.on('change', function(){
+    $slider.on('change', function(){
         $this = $(this);
         from = $this.data("from");
         to = $this.data("to");
 
-        console.log(from)
-
-        document.getElementById('id_salary_start').value = from;
-        document.getElementById('id_salary_end').value = to;
+        start_input.value = from;
+        end_input.value = to;
     });
-});
+}

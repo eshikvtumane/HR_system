@@ -63,7 +63,8 @@ INSTALLED_APPS = (
     'events',
     'email_constructor',
     'swampdragon',
-    'notifications'
+    'notifications',
+    'employees'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -93,7 +94,7 @@ DRAGON_URL='http://localhost:9999/'
 
 
 PAGINATION_SETTINGS = {
-    'PAGE_RANGE_DISPLAYED': 10,
+    'PAGE_RANGE_DISPLAYED': 20,
     'MARGIN_PAGES_DISPLAYED': 2,
 }
 
@@ -137,6 +138,7 @@ TEMPLATE_DIRS = (
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR,'static'),
     os.path.join(BASE_DIR,'vacancies/static'),
+    os.path.join(BASE_DIR,'applicants/static'),
     os.path.join(BASE_DIR,'main/static'),
 )
 

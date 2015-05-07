@@ -1,0 +1,12 @@
+
+.fixed-button-update{
+    z-index:9999;
+    display: block;
+    position: fixed;
+    top: 0%;
+    right: 20%;
+    width: 400px;
+    padding: 10px;
+    border: 2px solid blue;
+    background: #93ceef;
+}

@@ -145,7 +145,7 @@ class ApplicantAdmin(admin.ModelAdmin):
     fields = []
 
     list_display = ('id', 'get_fullname', 'get_status', 'date_created', 'get_link')
-    list_filter = (YesterdayListFilter,)
+    list_filter = (YesterdayListFilter, 'sex')
     search_fields = ('last_name', 'first_name')
 
     '''

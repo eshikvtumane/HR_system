@@ -6,6 +6,8 @@ from django.template import RequestContext
 from django.core.context_processors import csrf
 from django.conf import settings
 
+from forms import EmailPositionForm
+from vacancies.models import ApplicantVacancy, ApplicantVacancyApplicantVacancyStatus, ApplicantVacancyStatus
 
 from datetime import datetime
 import json
@@ -28,6 +30,11 @@ import urllib, cStringIO
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
+# email send
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 # Create your views here.
 class EmailConstructorView(View):
     template = 'email_constructor/builder.html'
@@ -38,6 +45,7 @@ class EmailConstructorView(View):
         args.update(csrf(request))
         args['domain'] = get_current_site(request).domain
         args['templates'] = Template.objects.all().values('id', 'template_name')
+        args['positions'] = EmailPositionForm
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
 
@@ -172,5 +180,91 @@ class GenerateThumbnail(View, VideoThumbmail):
         else:
             return HttpResponse('AJAX на!', "text/plain")
 
+class EmailSender(View):
+    def get(self, request):
+        html = request.GET['html']
+        position = request.GET['position']
+        title = request.GET['title']
 
+        # получаем объект статуса
+        reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Резерв')
+        # получаем объекты вакансий кандидатов
+        applicant_vacancy = ApplicantVacancy.objects.filter(vacancy__position__id=position)
+
+        # перебираем
+        emails = []
+        for av in applicant_vacancy:
+            try:
+                s = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
+                # получаем последний статус
+                last_status = s[s.count()-1]
+                status = last_status.applicant_vacancy_status
+                if status == reserve_object:
+                    emails.append(last_status.applicant_vacancy.applicant.email)
+            except:
+                pass
+
+        try:
+            self.send(html, emails, title)
+            result = json.dumps(['200'])
+            return HttpResponse(result, content_type='application/json')
+        except Exception, e:
+            error = json.dumps(['500', e.message])
+            return HttpResponse(error, content_type='application/json')
+
+    def create_message(self, title, sender, recipients, html, plain):
+        """ Create the email message container from the input args."""
+        # Create message container - the correct MIME type is multipart/alternative.
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = title
+        msg['From'] = sender
+        #msg['To'] = ','.join(recipients)
+
+        # Record the MIME types of both parts - text/plain and text/html.
+        part1 = MIMEText(plain, 'plain')
+        part2 = MIMEText(html, 'html')
+
+        # Attach parts into message container.
+        # According to RFC 2046, the last part of a multipart message, in this case
+        # the HTML message, is best and preferred.
+        msg.attach(part1)
+        msg.attach(part2)
+        return msg
+
+    def send(self, html, recipients, title):
+        sender = 'rest@test.com'
+        if not title:
+            title = u'Новая вакансия!'
+
+        msg = self.create_message(
+                title,
+                sender,
+                self.delete_duplicate(recipients),
+                html,
+                "This email uses HTML!"
+            )
+
+        try:
+            smtpserver = smtplib.SMTP("smtp.gmail.com", 587)
+            #smtpserver.set_debuglevel(args.debug)
+            smtpserver.ehlo()
+            smtpserver.starttls()
+            smtpserver.ehlo
+            # getpass() prompts the user for their password (so it never appears in plain text)
+            '''
+                Enter login and password here
+            '''
+            smtpserver.login()
+            # sendmail function takes 3 arguments: sender's address, recipient's address
+            # and message to send - here it is sent as one string.
+            smtpserver.sendmail(sender, recipients, msg.as_string())
+            print "Message sent to '%s'." % recipients
+            smtpserver.quit()
+        except smtplib.SMTPAuthenticationError as e:
+            print "Unable to send message: %s" % e
+
+    def delete_duplicate(self, seq):
+        seen = set()
+        seen_add = seen.add
+        return [x for x in seq if not (x in seen or seen_add(x))]
 

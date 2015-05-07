@@ -143,10 +143,10 @@ def add_event(request):
         applicant_vacancy = ApplicantVacancy.objects.get(
             id=app_vacancy_id)
         event = request.POST["event_type"]
-        print("1")
+
         start = datetime.datetime.strptime(request.POST['start'],
                                            "%Y-%m-%dT%H:%M:%S")
-        print("2")
+
         end = datetime.datetime.strptime(request.POST['end'],"%Y-%m-%dT%H:%M:%S")
 
         form = ApplicantVacancyEventForm({
@@ -157,7 +157,7 @@ def add_event(request):
             form.instance.author = request.user
             form.save()
             return HttpResponse ("200")
-        print(form.errors)
+
         return HttpResponse("400")
 
 
@@ -169,7 +169,7 @@ def update_event_ajax(request):
     if request.is_ajax():
         start = request.POST['start']
         end = request.POST['end']
-        print '1', request.POST
+
         #обрезаем часть строки с time zone данными
         if len(start)>19:
             start = start[:19]
@@ -179,7 +179,7 @@ def update_event_ajax(request):
         new_start =datetime.datetime.strptime(start,
                                            "%Y-%m-%dT%H:%M:%S")
 
-        print '3', end
+
         new_end = datetime.datetime.strptime(end,
                                            "%Y-%m-%dT%H:%M:%S")
         try:

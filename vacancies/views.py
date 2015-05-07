@@ -12,7 +12,8 @@ from django.template import RequestContext
 from forms import AddVacancyForm, EditVacancyForm, SearchVacancyForm
 from events.models import ApplicantVacancyEvent
 from applicants.models import Applicant
-from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory, ApplicantVacancy, Benefit
+from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory, ApplicantVacancy, \
+    Benefit,VacancyBenefit,ApplicantVacancyApplicantVacancyStatus
 from events.models import ApplicantVacancyEvent
 
 
@@ -41,11 +42,22 @@ class AddVacancy(View):
             last_status = VacancyStatus.objects.get(name='Открыта')
             post_data['last_status'] = last_status.id
             vacancy_form = AddVacancyForm(post_data)
+
             if vacancy_form.is_valid():
                     #vacancy_form.instance.author = request.user
+
                     vacancy_form.save()
                     VacancyStatusHistory.objects.create(vacancy=vacancy_form.instance)
                     vacancy_id = vacancy_form.instance.id
+                    #сохраняем льготы
+                    if post_data['benefits']:
+                        for benefit in post_data.getlist('benefits'):
+                            VacancyBenefit.objects.create(vacancy=Vacancy.objects.get(id=vacancy_id) ,
+                                                          benefit=Benefit.objects.get(id=int( benefit)))
+
+
+
+
                     response = json.dumps([{'vacancy_id':vacancy_id}])
                     return HttpResponse(response,content_type='application/json')
             else:
@@ -59,10 +71,21 @@ class VacancyView(View):
         vacancy = Vacancy.objects.get(pk=id)
         app_vacancies = ApplicantVacancy.objects.filter(vacancy_id = vacancy.id)
         applicants = []
+        reserved_applicants = []
+
         for app_vacancy in app_vacancies:
             applicants.append(app_vacancy.applicant)
+            last_status = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
+                '-id')[0]
+
+            if last_status.applicant_vacancy_status.name == u'Резерв':
+                print("fjvdfjv")
+                reserved_applicants.append(app_vacancy.applicant)
+
+
         head = vacancy.head
-        c = RequestContext(request,{ 'vacancy':vacancy,'head':head,'applicants':applicants})
+
+        c = RequestContext(request,{ 'vacancy':vacancy,'head':head,'applicants':applicants,'reserved_applicants':reserved_applicants})
         return render_to_response(self.template, c)
 
 

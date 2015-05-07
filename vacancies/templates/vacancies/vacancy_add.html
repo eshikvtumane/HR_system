@@ -12,6 +12,7 @@
 {% block styles %}
     <!-- Стили для datepicker -->
     <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
 {% endblock %}
 
 
@@ -20,7 +21,7 @@
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
 <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
-<script src="{% static 'js/cloneya/jquery-cloneya.min.js' %}"></script>
+<script src="{% static 'js/selectize/selectize.js' %}"></script>
 <script src="{% static 'vacancies/js/vacancy_add.js' %}"></script>
 {% endblock %}
 
@@ -66,34 +67,25 @@
                         {{ vacancy_form.sex}}
                         {{ vacancy_form.marriage_status.label_tag}}
                         {{ vacancy_form.marriage_status}}
-                        {{ vacancy_form.advancement.label_tag}}
-                        {{ vacancy_form.advencement}}
                         {{ vacancy_form.paid_vacation.label_tag}}
                         {{ vacancy_form.paid_vacation}}
                         {{ vacancy_form.skills.label_tag}}
                         {{ vacancy_form.skills}}
 
                  <div class="form-group">
-                        <label for='benefits'>Льготы</label>
-                        <div class="clone-wrapper" id="benefits_container">
-                           <div class="toclone">
 
-                            <div >
-                                <select id="benefits" class="form-control" name="benefits[]">
-                                     {% for benefit in benefits %}
+                     <label for='benefits'>Льготы</label>
+
+                                <select id="benefits" class="form-control" name="benefits" multiple="multiple">
+                                    <option value=""></option>
+                                    {% for benefit in benefits %}
                                         <option value="{{  benefit.id}}">{{ benefit.name }}</option>
                                     {% endfor %}
                                 </select>
-                            </div>
-
-                            <div>
-                                <button class="clone btn btn-success"><i class="fa fa-plus"></i></button>
-                                <button class="delete btn btn-danger"><i class="fa fa-minus"></i></button>
-                            </div>
-                    </div>
-                </div>
 
                 </div>
+
+
                     <div class="form-group">
                     <label for='department'>Отдел</label>
                     <select id="department" name="department"
@@ -112,10 +104,9 @@
                     <button class="btn btn-success add-new-data"
                             id="save_vacancy">Добавить
                     </button>
-
                 </div>
+            </div>
 
-              </div><!-- /.форма добавления вакансии -->
 
 
             </section><!-- /.Left col -->
@@ -135,7 +126,7 @@
                 </div>
               </div>
             </section><!-- right col -->
-             </form>
+             </form><!-- /.форма добавления вакансии -->
           </div><!-- /.row (main row) -->
 
         </section><!-- /.content -->

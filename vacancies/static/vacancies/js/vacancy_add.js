@@ -27,7 +27,9 @@ window.onload = function(){
 
 
 
-$('#benefits_container').cloneya();
+$('#benefits').selectize({
+    maxItems: null
+});
 
 
     //Добавление вакансии

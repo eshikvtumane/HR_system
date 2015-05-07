@@ -1,6 +1,27 @@
 
-$(function () {
+$(document).ready(function () {
+    $('#saveTodo').click(function(){
+        var $record = $('textarea_note').val();
+        if($record){
+            $.ajax({
+                type: 'GET',
+                url: '',
+                data: {
+                    'record': $record
+                },
+                dataType: 'json',
+                success: function(data){
+                    var code = data[0]
+                    if(code == '200'){
 
+                    }
+                    else{
+                        alert('Произошла ошибка при сохранении');
+                    }
+                }
+            });
+        }
+    });
 
 /*
   //Activate the iCheck Plugin

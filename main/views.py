@@ -10,6 +10,10 @@ import re
 from applicants.models import Applicant, Phone
 from applicants.views import PaginatorView
 
+from main.models import Todo
+import json
+from django.http import HttpResponse
+
 # Create your views here.
 class MainPageView(View):
     template = 'main/main.html'
@@ -17,11 +21,23 @@ class MainPageView(View):
     @method_decorator(login_required)
     def get(self, request):
         args = {}
+        args['todo'] = Todo.objects.filter(user=request.user)
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
 
+class TodoAddAjax(View):
+    def get(self, request):
+        record = request.GET['record']
+        try:
+            Todo(todo=record).save()
+            result = json.dumps(['200'])
+        except Exception, e:
+            result = json.dumps(['500', e.message])
+        return HttpResponse(result, content_type='application/json')
+
 class GlobalSearchView(PaginatorView):
     template = 'applicants/applicant_search.html'#'applicants/applicant_global_search.html'
+    @method_decorator(login_required)
     def get(self, request):
         query = request.GET['q']
 

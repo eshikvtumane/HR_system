@@ -15,6 +15,9 @@ import xlwt
 
 from django.db.models import Q
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 import pprint
 
 # Create your views here.
@@ -342,12 +345,14 @@ class DateRange():
 # Сводная ведомость по набору персонала
 class SummaryStatementRecruitment(View):
     template = 'reports/summary_statement_recruiter.html'
+    @method_decorator(login_required)
     def get(self, request):
         args = {}
         args['form'] = SummaryStatementRecruimentForm()
         return render_to_response(self.template, RequestContext(request, args))
 
 class SummaryStatementRecruitmentGenerateAjax(View):
+    @method_decorator(login_required)
     def get(self, request):
         '''
             Стили для значений в ячейках
@@ -653,6 +658,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
 
 class PositionStatement(View, DateRange):
     template = 'reports/position_statement.html'
+    @method_decorator(login_required)
     def get(self, request):
         args = {}
         args['form'] = PositionStatementForm()
@@ -756,6 +762,7 @@ class PositionStatement(View, DateRange):
 
 class VacancyReport(View):
     template = 'reports/vacancy_reports.html'
+    @method_decorator(login_required)
     def get(self, request):
         args = {}
         args['form'] = SummaryStatementRecruimentForm()
@@ -763,6 +770,7 @@ class VacancyReport(View):
         return render_to_response(self.template, rc)
 
 class VacancyReportGenerateAjax(View, DateRange):
+    @method_decorator(login_required)
     def get(self, request):
         '''
             Стили для значений в ячейках

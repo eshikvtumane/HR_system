@@ -25,14 +25,14 @@
 <!-- кастомизация select -->
 <script src="{% static 'js/selectize/selectize.js' %}"></script>
 
-<script src="{% static 'js/applicants/update_applicant.js' %}"></script>
+<script src="{% static 'applicants/js/update_applicant.js' %}"></script>
 
 <!-- Ajax loader -->
 <script src="{% static 'js/loader.js' %}"></script>
 
 <!-- Добавление валидации -->
     <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
-    <script src="{% static 'js/applicants/validate_applicant_form.js' %}"></script>
+    <script src="{% static 'applicants/js/validate_applicant_form.js' %}"></script>
 
 
 <!-- Плагин для клонирования формы -->
@@ -41,16 +41,16 @@
 <!-- Скрипт работы для datepicker -->
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <!-- Добавление формы для выбора образования -->
-    <script src="{% static 'js/applicants/add_education_form.js' %}"></script>
+    <script src="{% static 'applicants/js/add_education_form.js' %}"></script>
 <!-- Инициализация элементов при загрузке страницы -->
-    <script src="{% static 'js/applicants/form_init.js' %}"></script>
+    <script src="{% static 'applicants/js/form_init.js' %}"></script>
 
 
 <!-- Вывод статусов кандидатов по вакансиям -->
-    <script src="{% static 'js/applicants/load_history_status_applicant_vacancy.js' %}"></script>
+    <script src="{% static 'applicants/js/load_history_status_applicant_vacancy.js' %}"></script>
 <!-- отправка данных на сервер -->
-    <script src="{% static 'js/applicants/send_candidate_form.js' %}"></script>
-    <script src="{% static 'js/applicants/add_event.js' %}"></script>
+    <script src="{% static 'applicants/js/send_candidate_form.js' %}"></script>
+    <script src="{% static 'applicants/js/add_event.js' %}"></script>
 
 {% endblock %}
 
@@ -327,11 +327,12 @@
 
 
             </section><!-- right col -->
+
           </div><!-- /.row (main row) -->
 
         </section><!-- /.content -->
 
-    </form>
+
 
 
 
@@ -413,14 +414,22 @@
 
                       </div>
                       <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                          <form>
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                          </form>
+
                       </div>
                   </div>
               </div>
           </div>
 
 
-          <!--
+
+
+      </div><!-- /.content-wrapper -->
+</form>
+
+<!--
             Модальное окно с историей изменения статуса кандидата по вакансии
           -->
 
@@ -437,25 +446,23 @@
 
                           <div>
                               <h4>Добавить статус</h4>
+                                  <div id="divStatus">
 
-                              <div id="divStatus">
+                                      <select id="applicant_vacancy_status" class="select col-sm-7" placeholder="Выбор статуса">
+                                          <option value>-----</option>
+                                          {% for acs in applicant_vacancy_status %}
+                                            <option value="{{ acs.id }}">{{ acs.name }}</option>
+                                          {% endfor %}
+                                      </select>
 
-                                  <select id="applicant_vacancy_status" class="select col-sm-7" placeholder="Выбор статуса">
-                                      <option value>-----</option>
-                                      {% for acs in applicant_vacancy_status %}
-                                        <option value="{{ acs.id }}">{{ acs.name }}</option>
-                                      {% endfor %}
-                                  </select>
-
-                                  <div id="divBtnSaveStatus"></div>
-                              </div>
-                              <div style="margin-top: 2ex;">
-                                  <label>Примечание</label>
-                                  <div>
-                                    <textarea id="textarea_note" class="form-control"></textarea>
+                                      <div id="divBtnSaveStatus"></div>
                                   </div>
-                              </div>
-
+                                  <div style="margin-top: 2ex;">
+                                      <label>Примечание</label>
+                                      <div>
+                                        <textarea id="textarea_note" class="form-control"></textarea>
+                                      </div>
+                                  </div>
 
                           </div>
 
@@ -471,8 +478,5 @@
                   </div>
               </div>
           </div>
-
-      </div><!-- /.content-wrapper -->
-
 
 {% endblock %}

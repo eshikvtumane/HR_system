@@ -12,3 +12,5 @@ bleach
 celery
 swampdragon
 Pillow
+gunicorn
+dj-static

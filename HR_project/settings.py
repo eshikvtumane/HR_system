@@ -25,6 +25,7 @@ SECRET_KEY = '_ed%n*nd*r17zmx(76ii5a1%xda4z7l5%)j$4-h%b)h@szek@&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG404 = False
 
 TEMPLATE_DEBUG = True
 THUMBNAIL_DEBUG = True
@@ -32,7 +33,7 @@ DEBUG_TOOLBAR_CONFIG = {
     'JQUERY_URL': os.path.join(BASE_DIR, '/static/js/jquery/jquery-2.1.3.min.js')
 }
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 LOGIN_URL = 'users:login'
 LOGOUT_URL = 'users:logout'
@@ -128,6 +129,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
+STATIC_ROOT = ''
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (
@@ -140,6 +142,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR,'vacancies/static'),
     os.path.join(BASE_DIR,'applicants/static'),
     os.path.join(BASE_DIR,'main/static'),
+    os.path.join(BASE_DIR,'reports/static'),
+    os.path.join(BASE_DIR,'administration/static'),
 )
 
 MEDIA_URL = '/media/'

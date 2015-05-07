@@ -27,9 +27,9 @@
 
 <!-- Добавление валидации -->
     <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
-    <script src="{% static 'js/applicants/validate_applicant_form.js' %}"></script>
+    <script src="{% static 'applicants/js/validate_applicant_form.js' %}"></script>
 
-<script src="{% static 'js/applicants/create_applicant.js' %}"></script>
+<script src="{% static 'applicants/js/create_applicant.js' %}"></script>
 
 
 <!-- Плагин для клонирования формы -->
@@ -38,14 +38,12 @@
 <!-- Скрипт работы для datepicker -->
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <!-- Добавление формы для выбора образования -->
-    <script src="{% static 'js/applicants/add_education_form.js' %}"></script>
+    <script src="{% static 'applicants/js/add_education_form.js' %}"></script>
 <!-- Инициализация элементов при загрузке страницы -->
-    <script src="{% static 'js/applicants/form_init.js' %}"></script>
+    <script src="{% static 'applicants/js/form_init.js' %}"></script>
 <!-- отправка данных на сервер -->
-    <script src="{% static 'js/applicants/send_candidate_form.js' %}"></script>
+    <script src="{% static 'applicants/js/send_candidate_form.js' %}"></script>
 
-<!-- смена знака пола -->
-    <script src="{% static 'js/applicants/change_gender.js' %}"></script>
 {% endblock %}
 
 {% block content %}

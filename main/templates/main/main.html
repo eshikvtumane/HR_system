@@ -1,6 +1,7 @@
-
 {% extends 'base.html' %}
 {% load staticfiles  %}
+{% load humanize %}
+
 {% block title %}
  ИС АПП - главная
 {% endblock %}
@@ -8,7 +9,7 @@
 {% block scripts %}
 
 
-<script src="{% static 'js/main/main_page.js' %}" type="text/javascript"></script>
+<script src="{% static 'main/js/main_page.js' %}" type="text/javascript"></script>
 
 <!-- Morris.js charts -->
 <!--<script src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>-->
@@ -131,7 +132,7 @@
                 <div class="box-header">
                   <i class="ion ion-clipboard"></i>
                   <h3 class="box-title">To-Do Список</h3>
-                  <div class="box-tools pull-right">
+                  <!--<div class="box-tools pull-right">
                     <ul class="pagination pagination-sm inline">
                       <li><a href="#">&laquo;</a></li>
                       <li><a href="#">1</a></li>
@@ -139,97 +140,32 @@
                       <li><a href="#">3</a></li>
                       <li><a href="#">&raquo;</a></li>
                     </ul>
-                  </div>
+                  </div>-->
                 </div><!-- /.box-header -->
                 <div class="box-body">
                   <ul class="todo-list">
-                    <li>
-                      <!-- drag handle -->
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-                      <!-- checkbox -->
-                      <input type="checkbox" value="" name=""/>
-                      <!-- todo text -->
-                      <span class="text">Design a nice theme</span>
-                      <!-- Emphasis label -->
-                      <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
-                      <!-- General tools such as edit or delete-->
-                      <div class="tools">
-                        <i class="fa fa-edit"></i>
-                        <i class="fa fa-trash-o"></i>
-                      </div>
-                    </li>
-                    <li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-                      <input type="checkbox" value="" name=""/>
-                      <span class="text">Make the theme responsive</span>
-                      <small class="label label-info"><i class="fa fa-clock-o"></i> 4 hours</small>
-                      <div class="tools">
-                        <i class="fa fa-edit"></i>
-                        <i class="fa fa-trash-o"></i>
-                      </div>
-                    </li>
-                    <li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-                      <input type="checkbox" value="" name=""/>
-                      <span class="text">Let theme shine like a star</span>
-                      <small class="label label-warning"><i class="fa fa-clock-o"></i> 1 day</small>
-                      <div class="tools">
-                        <i class="fa fa-edit"></i>
-                        <i class="fa fa-trash-o"></i>
-                      </div>
-                    </li>
-                    <li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-                      <input type="checkbox" value="" name=""/>
-                      <span class="text">Let theme shine like a star</span>
-                      <small class="label label-success"><i class="fa fa-clock-o"></i> 3 days</small>
-                      <div class="tools">
-                        <i class="fa fa-edit"></i>
-                        <i class="fa fa-trash-o"></i>
-                      </div>
-                    </li>
-                    <li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-                      <input type="checkbox" value="" name=""/>
-                      <span class="text">Check your messages and notifications</span>
-                      <small class="label label-primary"><i class="fa fa-clock-o"></i> 1 week</small>
-                      <div class="tools">
-                        <i class="fa fa-edit"></i>
-                        <i class="fa fa-trash-o"></i>
-                      </div>
-                    </li>
-                    <li>
-                      <span class="handle">
-                        <i class="fa fa-ellipsis-v"></i>
-                        <i class="fa fa-ellipsis-v"></i>
-                      </span>
-                      <input type="checkbox" value="" name=""/>
-                      <span class="text">Let theme shine like a star</span>
-                      <small class="label label-default"><i class="fa fa-clock-o"></i> 1 month</small>
-                      <div class="tools">
-                        <i class="fa fa-edit"></i>
-                        <i class="fa fa-trash-o"></i>
-                      </div>
-                    </li>
+
+                      {% for record in todo %}
+                        <li>
+                          <!-- todo text -->
+                          <span class="text">{{ record.todo }}</span>
+                          <!-- Emphasis label -->
+                          <small class="label label-danger"><i class="fa fa-clock-o"></i> {{ record.date_create|naturalday }}</small>
+                          <!-- General tools such as edit or delete-->
+                          <div class="tools">
+                            <!--<i class="fa fa-edit"></i>-->
+                            <i class="fa fa-trash-o"></i>
+                          </div>
+                        </li>
+                      {% empty %}
+                        <h2>Нет записей</h2>
+                      {% endfor %}
+
                   </ul>
+                    <!-- info warning success primary default -->
                 </div><!-- /.box-body -->
                 <div class="box-footer clearfix no-border">
-                  <button class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>
+                  <button class="btn btn-default pull-right"  data-toggle="modal" data-target="#modalTodo"><i class="fa fa-plus"></i> Добавить запись</button>
                 </div>
               </div><!-- /.box -->
 
@@ -255,5 +191,34 @@
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->
 
+        <div class="modal fade" id="modalTodo" tabindex="-1" role="dialog" aria-labelledby="modalTodo" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                          </button>
+                          <h4>Добавление записи</h4>
+                      </div>
+                      <div class="modal-body">
 
+                          <div>
+                              <div style="margin-top: 2ex;">
+                                  <label>Примечание</label>
+                                  <div>
+                                    <textarea id="textarea_note" class="form-control"></textarea>
+                                  </div>
+                              </div>
+
+
+                          </div>
+
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal" id="saveTodo">Сохранить</button>
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                      </div>
+                  </div>
+              </div>
+          </div>
 {% endblock %}

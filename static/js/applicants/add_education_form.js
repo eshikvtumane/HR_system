@@ -39,7 +39,7 @@ $(document).ready(function(){
 
                     var d = {
                         value: data[i]['value'],
-                        text: data[i]['head'] + ', от ' + data[i]['date']
+                        text: data[i]['head'] + ', от ' + data[i]['date'] + ' (' + data[i]['status_name'] + ')'
                     };
                     control.addOption(d);
 
@@ -92,7 +92,7 @@ var createDict = function(vacancies, tbl_work){
 
     var message = document.getElementById('message');
 
-    if(position_id != '' && position_name != '' && salary_sum != '' && suggested_salary_sum != ''){
+    if(position_id && position_name && salary_sum && suggested_salary_sum && source_val){
         var arr = [
             position_name,
             vacancy_name,
@@ -214,16 +214,17 @@ WorkWithTable.prototype.addRecords = function(values){
     }
 
     // кнопка удаления записи
-    var btn = document.createElement('button');
-    btn.innerHTML = 'Удалить';
-    btn.setAttribute('class', 'btn btn-danger');
-    btn.setAttribute('onclick', this.del_fn + '('+ this.count_id +');');
+        var btn = document.createElement('button');
+        btn.innerHTML = 'Удалить';
+        btn.setAttribute('class', 'btn btn-danger');
+        btn.setAttribute('onclick', this.del_fn + '('+ this.count_id +');');
 
-    var td = document.createElement('td')
-    td.appendChild(btn);
-    tr.appendChild(td);
+        var td = document.createElement('td')
+        td.appendChild(btn);
+        tr.appendChild(td);
 
-    this.tbl_result.appendChild(tr);
+        this.tbl_result.appendChild(tr);
+
 };
 // удаление записи
 WorkWithTable.prototype.deleteRecords = function(id, vacancies){

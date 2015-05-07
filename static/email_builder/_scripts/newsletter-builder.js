@@ -340,7 +340,6 @@ perform_delete();
 
 // Скачивание шаблона
  $("#newsletter-builder-sidebar-buttons-abutton").click(function(){
-	 
 	$("#newsletter-preloaded-export").html($("#newsletter-builder-area-center-frame-content").html());
 	$("#newsletter-preloaded-export .sim-row-delete").remove();
 	$("#newsletter-preloaded-export .sim-row-palette").remove();
@@ -361,23 +360,12 @@ perform_delete();
 	 
 // Экспорт шаблона
 $("#newsletter-builder-sidebar-buttons-bbutton").click(function(){
-	
-	$("#sim-edit-export").fadeIn(500);
-	$("#sim-edit-export .sim-edit-box").slideDown(500);
-	$("#newsletter-preloaded-export").html($("#newsletter-builder-area-center-frame-content").html());
-	$("#newsletter-preloaded-export .sim-row-delete").remove();
-	$("#newsletter-preloaded-export .sim-row-palette").remove();
-	//$("#newsletter-preloaded-export .sim-row").removeClass("ui-draggable");
-	$("#newsletter-preloaded-export .sim-row-edit").removeAttr("data-type");
-	//$("#newsletter-preloaded-export .sim-row-edit").removeClass("sim-row-edit");
 
-	$("#newsletter-preloaded-export").removeAttr("class");
-	//$("div").removeClass("ui-resizable-handle").removeClass("ui-resizable-se").removeClass('ui-resizable').removeClass('resize').removeClass('ui-resizable-s');
-	
-	preload_export_html = $("#newsletter-preloaded-export").html();
+	 $("#sim-edit-export").fadeIn(500);
+	$("#sim-edit-export .sim-edit-box").slideDown(500);
 	//preload_export_html.find('div').removeClass("ui-resizable-handle").removeClass("ui-resizable-se").removeClass('ui-resizable').removeClass('resize').removeClass('ui-resizable-s');
 	
-	var generate_result = generateEmail(preload_export_html);
+	var generate_result = generateEmail();
 	document.getElementById('link').onclick = function(code) {
         this.href = 'data:text/plain;charset=utf-8,'
           + encodeURIComponent(generate_result);
@@ -391,17 +379,65 @@ $("#newsletter-builder-sidebar-buttons-bbutton").click(function(){
 	});
 
 
-
+    // передача данных для рассылки писем
+    $('#send_email').click(function(){
+        console.log('555')
+        var position_id = $('#id_position').val();
+        var title = $('#title_email').val();
+        if(position_id && title){
+            var email = generateEmail();
+            $.ajax({
+                type: 'GET',
+                url: '/email_constructor/email_sender/',
+                data: {
+                    'html': email,
+                    'position': position_id,
+                    'title': title
+                },
+                dataType: 'json',
+                success: function(data){
+                    var code = data[0]
+                    if(code=='200'){
+                        alert('Рассылка успешно произведена');
+                    }
+                    else{
+                        alert('Произошла ошибка: ' + data[1]);
+                    }
+                },
+                error: function(data) {
+                   alert("Произошла ошибка при передачи данных на сервер! " + data);
+                }
+            });
+        }
+        else{
+            alert('Заполните все поля!');
+        }
+    });
 
 });
 
 
-function generateEmail(html){
+
+function generateEmail(){
+
+
+	$("#newsletter-preloaded-export").html($("#newsletter-builder-area-center-frame-content").html());
+	$("#newsletter-preloaded-export .sim-row-delete").remove();
+	$("#newsletter-preloaded-export .sim-row-palette").remove();
+	//$("#newsletter-preloaded-export .sim-row").removeClass("ui-draggable");
+	$("#newsletter-preloaded-export .sim-row-edit").removeAttr("data-type");
+	//$("#newsletter-preloaded-export .sim-row-edit").removeClass("sim-row-edit");
+
+	$("#newsletter-preloaded-export").removeAttr("class");
+	//$("div").removeClass("ui-resizable-handle").removeClass("ui-resizable-se").removeClass('ui-resizable').removeClass('resize').removeClass('ui-resizable-s');
+
+	preload_export_html = $("#newsletter-preloaded-export").html();
+
 	var bg_style = '';
 
     // bg_url - глобальная переменная из constructor_init.js
 
-    var preload_export_html = html;
+    //var preload_export_html = html;
     var doctype = '';
 	var sim_wrapper_style = 'float: left;height: auto;width: 100%;margin: 0px;padding-top: 50px;padding-right: 0px;padding-bottom: 50px;padding-left: 0px;' + bg_url;
     var doctype = '<DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">';

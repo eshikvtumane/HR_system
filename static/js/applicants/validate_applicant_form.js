@@ -62,11 +62,11 @@ function validateForm(send_fn, url, success_fn){
 
         // валидация названия email
         $.formUtils.addValidator({
-          name : 'custom-email',
+          name : 'address',
           validatorFunction : function(value, $el, config, language, $form) {
             email_len = value.length;
             if(email_len != 0){
-                var reg = new RegExp('^([А-Яа-яЁё -]+)$');
+                var reg = new RegExp('^([^@]+@[^@]+\.[^@]+)$');
                 result = reg.test(value);
                 return result;
             }

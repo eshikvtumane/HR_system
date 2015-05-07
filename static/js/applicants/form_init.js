@@ -1,4 +1,7 @@
 window.onload = function(){
+
+fixedButton("fixed_button_update");
+
 $('input:text:first').focus();
 
  $('input').bind("keydown", function(e) {
@@ -81,6 +84,8 @@ $('#id_study_start').change(function(){
             img.src = '/media/gender/female.png';
         }
     });
+
+
 };
 
 //отлавливаем клики по пунктам меню вакансии
@@ -109,6 +114,24 @@ function readURL(){
         }
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function fixedButton(id){
+    var id = '#' + id;
+    if($(window).scrollTop() > 150){
+            $('#update_info').addClass('fixed-button-update')
+            $(id).fadeIn("slow");
+        }
+
+    $(window).scroll(function(){
+    console.log(id)
+        if($(window).scrollTop() > 150){
+            $('#update_info').addClass('fixed-button-update')
+        }
+        else{
+            $('#update_info').removeClass('fixed-button-update')
+        }
+    });
 }
 
 

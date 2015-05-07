@@ -14,7 +14,7 @@ $(document).ready(function(){
 $(document).on('submit', 'form#FileDownload', function(e){
     var period = document.getElementById('period').value;
     if(period != ''){
-        if(document.getElementById(vacancies).value){
+        if(vacancies){
             $.fileDownload($(this).prop('action'), {
             //preparingMessageHtml: "Подождите, отчёт формируется ...",
             //failMessageHtml: "Ошибка! Попробуйте произвести формировние отчёта позднее.",

@@ -251,14 +251,18 @@
               <!-- User Account: style can be found in dropdown.less -->
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <!--
                   <img src="{% static 'admin_lte/dist/img/user1-128x128.jpg'%}"
-                       class="user-image" alt="User Image"/>
+
+                       class="user-image" alt="User Image"/>-->
                   <span class="hidden-xs">{{ user.get_username }}</span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->
                   <li class="user-header">
+                      <!--
                     <img src="{% static 'admin_lte/dist/img/user1-128x128.jpg'%}" class="img-circle" alt="User Image" />
+                      -->
                     <p>
                       {{ user.get_full_name|default:user.username }}
 
@@ -283,7 +287,8 @@
                   <!-- Menu Footer-->
                   <li class="user-footer">
                     <div class="pull-left">
-                      <a href="#" class="btn btn-default btn-flat">Профиль</a>
+                      <!--<a href="#" class="btn btn-default btn-flat">Профиль</a>-->
+                        <a href="{% url 'users:change_password' %}" class="btn btn-default btn-flat">Сменить пароль</a>
                     </div>
                     <div class="pull-right">
                       <a href="{% url 'users:logout' %}" class="btn btn-default btn-flat">Выйти</a>
@@ -301,9 +306,9 @@
         <section class="sidebar">
           <!-- Sidebar user panel -->
           <div class="user-panel">
-            <div class="pull-left image">
+            <!--<div class="pull-left image">
               <img src="{% static 'admin_lte/dist/img/user1-128x128.jpg'%}" class="img-circle" alt="User Image" />
-            </div>
+            </div>-->
             <div class="pull-left info">
               <p>{{ user.get_full_name|default:user.username }}</p>
 
@@ -356,10 +361,6 @@
                   </ul>
             </li>
 
-
-
-
-
             <li>
               <a href="{% url 'reports:main_reports' %}">
                 <i class="fa fa-pie-chart"></i>
@@ -370,7 +371,7 @@
 
               <li>
                   <a href="{% url 'events:events_calendar' %}">
-                    <i class="fa fa-dashboard"></i> <span>Календарь событий
+                    <i class="fa fa-calendar"></i> <span>Календарь событий
                       </span>
                   </a>
 
@@ -379,26 +380,26 @@
 
                  <li>
                   <a href="{% url 'email_constructor:create_email' %}">
-                    <i class="fa fa-dashboard"></i> <span>Конструктор email
+                    <i class="fa fa-envelope"></i> <span>Конструктор писем
                       </span>
                   </a>
 
             </li>
 
-
+            <!--<li>
+              <a href="{% url 'employees:employees_view' %}">
+                <i class="fa fa-user-secret"></i> <span>Сотрудники предприятия</span>
+              </a>
+            </li>-->
             <li>
               <a href="{% url 'administration:add' %}">
                 <i class="fa fa-wrench"></i> <span>Администрирование</span>
               </a>
-
+            </li>
 
 
             <li class="header">Доп. функции</li>
-            <li>
-              <a href="#" id="hot_applicant_add">
-                <i class="fa fa-fire"></i> <span>HOT добавление кандидата</span>
-              </a>
-            </li>
+              <li><a target="_blank" href="{% url 'applicants:applicant_add' %}"><i class="fa fa-fire"></i> Добавление кандидата</a></li>
             <!--<li><a href="#"><i class="fa fa-circle-o text-danger"></i> Important</a></li>
             <li><a href="#"><i class="fa fa-circle-o text-warning"></i> Warning</a></li>
             <li><a href="#"><i class="fa fa-circle-o text-info"></i> Information</a></li>
@@ -423,93 +424,7 @@
 
     </div><!-- ./wrapper -->
 
-    <div class="easy_modal" id="modal1">
-  <div class="easy-modal-inner" style="width: 900px; background-color: #FFFFFF; padding: 30px 30px 30px 30px;" align="center">
-    <h2>Быстрое добавление кандидата</h2>
-      <div style="width: 100%;">
 
-      <div style="width: 35%;float:left;">
-          <table class="table">
-              <tr>
-                  <td>
-                      <b>Фамилия:</b>
-                  </td>
-                  <td>
-                      <input type="text" class="form-control">
-                  </td>
-              </tr>
-
-              <tr>
-                  <td>
-                        <b>Имя:</b>
-                  </td>
-                  <td>
-                      <input type="text" class="form-control">
-                  </td>
-              </tr>
-
-              <tr>
-                  <td>
-                        <b>Отчество:</b>
-                  </td>
-                  <td>
-                      <input type="text" class="form-control">
-                  </td>
-              </tr>
-
-                <tr>
-                  <td>
-                       <b>Дата рождения:</b>
-                  </td>
-                  <td>
-                      <input type="text" class="datetime form-control">
-                  </td>
-              </tr>
-              <tr>
-                  <td>
-                       <b>Телефон:</b>
-                  </td>
-                  <td>
-                      <input type="text" class="form-control">
-                  </td>
-              </tr>
-              <tr>
-                  <td>
-                        <b>Пол:</b>
-                  </td>
-                  <td>
-                      <select>
-                          <option></option>
-                          <option>Мужской</option>
-                          <option>Женский</option>
-                      </select>
-                  </td>
-              </tr>
-              <tr>
-                  <td>
-                       <b>Примечание:</b>
-                  </td>
-                  <td>
-                      <textarea type="text" name="note" class="form-control"></textarea>
-                  </td>
-              </tr>
-          </table>
-
-          </div>
-
-            <div style="width: 55%; float:left; margin-left: 3ex;">
-            {% comment %}
-                {% include 'applicants/includes/vacancy.html' %}
-                {% endcomment %}
-
-                {{ formVacancy }}
-          </div>
-
-        </div>
-      <button class="easy-modal-close btn btn-success">Сохранить</button>
-    <button class="easy-modal-close btn btn-danger">Закрыть</button>
-  </div>
-</div>
 
     <!--audio container
     <div id="sound" style="visibility: hidden"></div>-->

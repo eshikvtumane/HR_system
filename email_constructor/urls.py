@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 from django.conf.urls import patterns, include, url
-from views import EmailConstructorView, SavingImageAjax, SavingTinyMCEImage, SavingTemplatesAjax, LoadTemplateAjax, GenerateThumbnail
+from views import EmailConstructorView, SavingImageAjax, SavingTinyMCEImage, SavingTemplatesAjax, LoadTemplateAjax, GenerateThumbnail, EmailSender
 
 urlpatterns = patterns('',
     url(r'^$', EmailConstructorView.as_view(), name='create_email'),
@@ -17,4 +17,7 @@ urlpatterns = patterns('',
 
     # генерирование эскиза для видео
     url(r'^generate_thumbnail/$', GenerateThumbnail.as_view(), name='generate_thumbnail'),
+
+    # рассылка письма
+    url(r'^email_sender/$', EmailSender.as_view(), name='email_sender'),
 )

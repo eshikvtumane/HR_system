@@ -1,0 +1,37 @@
+.action-button
+{
+	position: relative;
+	padding: 7px 40px;
+	width: 200px;
+	text-align: center;
+  margin: 0px 10px 10px 0px;
+  float: left;
+	border-radius: 10px;
+	font-size: 17px;
+	color: #FFF;
+	text-decoration: none;
+}
+
+.blue
+{
+	background-color: #3498DB;
+}
+
+.red
+{
+	background-color: #E74C3C;
+}
+
+.green
+{
+	background-color: #82BF56;
+}
+
+.yellow
+{
+	background-color: #F2CF66;
+}
+
+.vertical-align{
+    vertical-align: middle;
+}

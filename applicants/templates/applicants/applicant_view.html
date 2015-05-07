@@ -17,6 +17,8 @@
 
     <!-- увеличение картинок -->
     <link rel="stylesheet" type="text/css" href="{% static 'js/fancy_box/source/jquery.fancybox.css' %}" >
+
+<link rel="stylesheet" type="text/css" href="{% static 'applicants/css/style.css' %}" >
 {% endblock %}
 
 {% block scripts %}
@@ -53,6 +55,7 @@
 {% endblock %}
 
 {% block content %}
+<form id="applicant_form" action="" method="post" enctype="multipart/form-data">
       <!-- Right side column. Contains the navbar and content of the page -->
       <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -61,6 +64,20 @@
           <h1>
             Страница кандидата <a href="#"  data-toggle="modal" data-target="#myModal">(История изменений анкеты)</a>
           </h1>
+            <div id='update_info' class="">
+
+                    <div class="box-body" align="center">
+                        <div id="save_loader">
+
+                        </div>
+                        <div id="create_applicant_message" style="padding-top: 2ex;">
+
+                        </div>
+                        <div style="padding-top: 1ex;">
+                            <input type="submit" value="Обновить анкету" class="btn btn-success">
+                        </div>
+                    </div>
+                </div>
 
             <!--<div style="margin-top: 2ex;">
                 <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
@@ -79,7 +96,7 @@
         </section>
 
  <!-- action="{% url 'applicants:applicant_add' %}" -->
-<form id="applicant_form" action="" method="post" enctype="multipart/form-data">
+
     {% csrf_token %}
     {{ applicant_form.date_created }}
         <!-- Main content -->
@@ -218,20 +235,12 @@
                 </div>
                 <!-- ./Контакты -->
 
-                <div class="box box-solid">
-
-                    <div class="box-body" align="center">
-                        <div id="save_loader">
-
-                        </div>
-                        <div id="create_applicant_message" style="padding-top: 2ex;">
-
-                        </div>
-                        <div style="padding-top: 3ex;">
-                            <input type="submit" value="Обновить анкету" class="btn btn-success">
-                        </div>
-                    </div>
+                <!-- Место жительства -->
+              <div class="box box-solid bg-green-gradient">
+                <div class="box-footer text-black">
+                    {% include 'applicants/includes/address.html' %}
                 </div>
+              </div><!-- /.box -->
 
             </section><!-- /.Left col -->
             <!-- right col (We are only adding the ID to make the widgets sortable)-->
@@ -315,12 +324,7 @@
                   </div>
               </div><!-- /.box -->
 
-              <!-- Место жительства -->
-              <div class="box box-solid bg-green-gradient">
-                <div class="box-footer text-black">
-                    {% include 'applicants/includes/address.html' %}
-                </div>
-              </div><!-- /.box -->
+
 
             </section><!-- right col -->
           </div><!-- /.row (main row) -->
@@ -328,11 +332,6 @@
         </section><!-- /.content -->
 
     </form>
-
-
-
-
-
 
 
 

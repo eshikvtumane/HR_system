@@ -29,6 +29,7 @@ from django.utils.decorators import method_decorator
 
 import datetime
 
+
 import bleach
 from django.db.models import Q
 import operator
@@ -147,7 +148,6 @@ class SavingModels():
             # создание объекта класса сохранения файлов
             sf = SavingFiles()
 
-            req['date_created'] = datetime.datetime.now()
             # конвертирование даты в формат, понятный БД
             try:
                 req['birthday'] = datetime.datetime.strptime(req['birthday'], "%d-%m-%Y").date()
@@ -252,16 +252,17 @@ class VacancySearchAjax(View):
     def get(self, request):
         if request.is_ajax:
             position = request.GET.get('position')
-            vacancies = Vacancy.objects.filter(Q(position=position) &\
+            '''vacancies = Vacancy.objects.filter(Q(position=position) &\
                                                            (Q(last_status__name__contains='Открыта') |\
                                                             Q(last_status__name__contains='Возобновлена')))\
-                                                            .values('head__name', 'id', 'published_at')
-            #vacancies = Vacancy.objects.filter(position=position).values('head__name', 'id', 'published_at')
+                                                            .values('head__name', 'id', 'published_at')'''
+            vacancies = Vacancy.objects.filter(position=position).values('head__name', 'id', 'published_at', 'last_status__name')
             result = [
                 {
                     'head': v['head__name'],
                      'date': v['published_at'].date().strftime("%d-%m-%Y"),
-                     'value':v['id']
+                     'value':v['id'],
+                    'status_name': v['last_status__name']
                 }
                 for v in vacancies
             ]
@@ -296,7 +297,7 @@ class ApplicantSearchView(PaginatorView):
             applicant_vacancy_list = Applicant.objects.all()\
                                         .values('id', 'last_name',
                                                 'first_name', 'middle_name',
-                                                'email', 'photo').reverse()[:10]
+                                                'email', 'photo', 'birthday').reverse()[:10]
         else:
             req = request.GET.copy()
 
@@ -320,9 +321,23 @@ class ApplicantSearchView(PaginatorView):
                     query_applicant_list[field + '__contains'] = req[field]
                     query_list['applicant__' + field + '__contains'] = req[field]
 
+
+            today = datetime.date.today()
+            age_min = int(req['age_start'])
+            age_max = int(req['age_end'])
+
+
+            date_start = datetime.date(today.year - age_max - 1, today.month, today.day)
+            date_end = datetime.date(today.year - age_min - 1, today.month, today.day)
+
+            print 'age', date_start, date_end
+
+            query_list['applicant__birthday__gte'] = query_applicant_list['birthday__gte'] = date_start
+            query_list['applicant__birthday__lte'] = query_applicant_list['birthday__lte'] = date_end
+
+            applicant_vacancy_list = []
             if position:
                 query_list['vacancy__position'] = position
-
                 salary_start = int(req['salary_start'].replace(' ', ''))
                 salary_end   = int(req['salary_end'].replace(' ', ''))
                 if salary_start == salary_end:
@@ -333,18 +348,41 @@ class ApplicantSearchView(PaginatorView):
                 query_list['salary__gte'] = salary_start
                 query_list['salary__lte'] = salary_end
 
-                applicant_vacancy_list = ApplicantVacancy.objects.filter(**query_list)\
-                    .order_by('salary')\
-                    .values('applicant', 'applicant__last_name',
+                try:
+                    reserve = request.GET['reserve']
+                except:
+                    reserve = False
+
+                # если установлена галочка резерв
+                if(reserve):
+                    # получаем объект статуса
+                    reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Резерв')
+                    # получаем объекты вакансий кандидатов
+                    applicant_vacancy = ApplicantVacancy.objects.filter(**query_list)
+
+                    # перебираем
+                    for av in applicant_vacancy:
+                        try:
+                            s = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
+                            # получаем последний статус
+                            last_status = s[s.count()-1]
+                            status = last_status.applicant_vacancy_status
+                            if status == reserve_object:
+                                applicant_vacancy_list.append(last_status.applicant_vacancy.applicant)
+                        except:
+                            pass
+                else:
+                    applicant_vacancy_list = ApplicantVacancy.objects.filter(**query_list)\
+                        .order_by('salary')\
+                        .values('applicant', 'applicant__last_name',
                             'applicant__first_name', 'applicant__middle_name',
-                            'applicant__email', 'applicant__photo', 'salary')
+                            'applicant__email', 'applicant__photo', 'salary', 'applicant__birthday')
 
             else:
-                #applicant_list = Applicant.objects.filter(query_applicant_list)
                 applicant_vacancy_list = Applicant.objects.filter(**query_applicant_list)\
                                         .values('id', 'last_name',
                                                 'first_name', 'middle_name',
-                                                'email', 'photo')
+                                                'email', 'photo', 'birthday')
 
 
         return self.render(request, applicant_vacancy_list)

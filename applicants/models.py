@@ -2,7 +2,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
-
+from django.utils import timezone
 
 # Create your models here.
 
@@ -30,8 +30,8 @@ class Applicant(models.Model):
     photo = models.FileField(upload_to='photo_applicants', default='default.gif', verbose_name='Фото кандидата', null=True, blank=True)
 
     # Место жительства
-    city = models.TextField(verbose_name='Город')
-    street = models.TextField(verbose_name='Улица')
+    city = models.TextField(verbose_name='Город', null=True, blank=True)
+    street = models.TextField(verbose_name='Улица', null=True, blank=True)
     building = models.TextField(verbose_name='Номер дома', null=True, blank=True)
 
     # Стаж
@@ -49,7 +49,7 @@ class Applicant(models.Model):
 
     # Источник
     #source = models.ForeignKey('SourceInformation', verbose_name='Источник')
-    date_created = models.DateTimeField(default=datetime.now(), verbose_name='Дата создания')
+    date_created = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
 
     def __unicode__(self):
         return '%s %s %s' % (self.first_name, self.last_name, self.middle_name)

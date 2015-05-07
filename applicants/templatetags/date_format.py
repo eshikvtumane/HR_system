@@ -12,9 +12,11 @@ def date_format(value):
 
 @register.filter(name='age')
 def age(born):
-    today = date.today()
-    age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
-    return __getDeclension(age)
+    if born:
+        today = date.today()
+        age = today.year - born.year - ((today.month, today.day) < (born.month, born.day))
+        return __getDeclension(age)
+    return ''
 
 year_words = [
     u'год',

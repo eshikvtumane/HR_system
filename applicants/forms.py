@@ -42,7 +42,7 @@ class ApplicantForm(forms.ModelForm):
                 'data-validation': "date",
                 'data-validation-format': "dd-mm-yyyy"
             }),
-            'photo': forms.FileInput(attrs={'accept':'.jpg, .jpeg, .png, .gif, .bmp',
+            'photo': forms.FileInput(attrs={'accept':'image/*',
                                             'class': 'upload'
                                             }),
             'city': forms.TextInput(attrs={
@@ -69,7 +69,7 @@ class ApplicantForm(forms.ModelForm):
             }),
             'email': forms.EmailInput(attrs={
                 'class': "form-control",
-                'data-validation': "email",
+                'data-validation': "address",
                 'autocomplete': 'off'
             }),
             'skype': forms.TextInput(attrs={
@@ -202,6 +202,9 @@ class CandidateSearchForm(forms.Form):
                                      }
                                 )
                             )
+
+    age_start = forms.Field(widget=forms.HiddenInput())
+    age_end = forms.Field(widget=forms.HiddenInput())
 
     salary_start = forms.Field(widget=forms.HiddenInput())
     salary_end = forms.Field(widget=forms.HiddenInput())

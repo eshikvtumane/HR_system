@@ -24,7 +24,7 @@ class Applicant(models.Model):
     sex = models.CharField(max_length=1, choices=GENDER_LIST, verbose_name='Пол', null=True, blank=True)
 
     # Дата рождения
-    birthday = models.DateField(verbose_name='Дата рождения')
+    birthday = models.DateField(verbose_name='Дата рождения',null=True,blank=True)
 
     # Фотография кандидата
     photo = models.FileField(upload_to='photo_applicants', default='default.gif', verbose_name='Фото кандидата', null=True, blank=True)

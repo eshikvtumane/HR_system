@@ -1,5 +1,4 @@
 #-*- coding: utf8 -*-
-
 import datetime
 import pytz
 import json
@@ -44,8 +43,6 @@ class AddVacancy(View):
             vacancy_form = AddVacancyForm(post_data)
 
             if vacancy_form.is_valid():
-                    #vacancy_form.instance.author = request.user
-
                     vacancy_form.save()
                     VacancyStatusHistory.objects.create(vacancy=vacancy_form.instance)
                     vacancy_id = vacancy_form.instance.id
@@ -54,9 +51,6 @@ class AddVacancy(View):
                         for benefit in post_data.getlist('benefits'):
                             VacancyBenefit.objects.create(vacancy=Vacancy.objects.get(id=vacancy_id) ,
                                                           benefit=Benefit.objects.get(id=int( benefit)))
-
-
-
 
                     response = json.dumps([{'vacancy_id':vacancy_id}])
                     return HttpResponse(response,content_type='application/json')
@@ -71,21 +65,21 @@ class VacancyView(View):
         vacancy = Vacancy.objects.get(pk=id)
         app_vacancies = ApplicantVacancy.objects.filter(vacancy_id = vacancy.id)
         applicants = []
-        reserved_applicants = []
+        applicant_hired = None
 
         for app_vacancy in app_vacancies:
-            applicants.append(app_vacancy.applicant)
             last_status = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
                 '-id')[0]
 
-            if last_status.applicant_vacancy_status.name == u'Резерв':
-                print("fjvdfjv")
-                reserved_applicants.append(app_vacancy.applicant)
+            applicants.append({'applicant':app_vacancy.applicant,'status':last_status.applicant_vacancy_status.name})
 
+            if last_status.applicant_vacancy_status.name.encode('utf-8').strip() == 'Принят на работу':
+                applicant_hired = app_vacancy.applicant
 
         head = vacancy.head
 
-        c = RequestContext(request,{ 'vacancy':vacancy,'head':head,'applicants':applicants,'reserved_applicants':reserved_applicants})
+        vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
+        c = RequestContext(request,{ 'vacancy':vacancy,'head':head,'applicants':applicants,'applicant_hired':applicant_hired,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})
         return render_to_response(self.template, c)
 
 
@@ -108,12 +102,11 @@ class VacancyEdit(View):
                                                        '%d-%m-%Y').date()
 
             vacancy = Vacancy.objects.get(pk=id)
-            vacancy.last_status = request.POST['status']
+            vacancy.last_status = VacancyStatus.objects.get(pk=request.POST['status'])
             vacancy_form = EditVacancyForm(post_data,instance=vacancy)
             if vacancy_form.is_valid():
                 vacancy_form.save()
-                VacancyStatusHistory.objects.create(vacancy=vacancy,status=VacancyStatus.objects.get(pk=request.POST[
-                    'status']))
+                VacancyStatusHistory.objects.create(vacancy=vacancy,status=VacancyStatus.objects.get(pk=request.POST['status']))
                 return HttpResponse("200")
             data = []
             data.append({"status":"400","errors":vacancy_form.errors})

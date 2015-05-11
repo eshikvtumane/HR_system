@@ -13,6 +13,7 @@
 {% block styles %}
     <!-- Стили для datepicker -->
     <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'vacancies/css/style.css' %}" >
 {% endblock %}
 
 
@@ -52,18 +53,39 @@
                 <div class="box-header">
                   {% load vacancy_attr_verbose %}
 
-                    <h5>{% get_verbose_field_name vacancy 'author'  %}:</h5>
-                    <strong>{{vacancy.author}}</strong>
-                    <h5>{% get_verbose_field_name vacancy 'position'  %}:</h5>
-                    <strong>{{vacancy.position}}</strong>
-                    <h5>{% get_verbose_field_name vacancy 'salary'  %}:</h5>
-                    <strong><i class="fa fa-rub"></i> {{vacancy.salary|intcomma}}</strong>
-                    <h5>{% get_verbose_field_name vacancy 'end_date'  %}:</h5>
-                    <strong>{{vacancy.end_date}}</strong>
-                    <h5>{% get_verbose_field_name vacancy 'published_at'  %}:</h5>
-                    <strong>{{vacancy.published_at}}</strong>
-                     <h5>{% get_verbose_field_name vacancy 'head'  %}:</h5>
-                    <strong>{{vacancy.head}}</strong>
+                    <div  class="action-button {{ status_icon }} pull-right">{{ current_status }}</div>
+                    <h4><strong>{% get_verbose_field_name vacancy 'author'  %}:</strong></h4>
+                    {{vacancy.author}}
+                    <h5><strong>{% get_verbose_field_name vacancy 'position'  %}:</strong></h5>
+                    {{vacancy.position}}
+                    <h5><strong>{% get_verbose_field_name vacancy 'salary'  %}:</strong></h5>
+                    <<i class="fa fa-rub"></i> {{vacancy.salary|intcomma}}
+                    <h5><strong>{% get_verbose_field_name vacancy 'end_date'  %}:</strong></h5>
+                    {{vacancy.end_date}}
+                    <h5><strong>{% get_verbose_field_name vacancy 'published_at'  %}:</strong></h5>
+                    {{vacancy.published_at}}
+                     <h5><strong>{% get_verbose_field_name vacancy 'head'  %}:</strong></h5>
+                    {{vacancy.head}}
+                     <h5><strong>{% get_verbose_field_name vacancy 'sex'  %}:</strong></h5>
+
+                    {% if vacancy.sex == '1' %}
+                        Муж.
+                    {% else %}
+                        Жен.
+                    {% endif %}
+
+                     <h5> <strong>{% get_verbose_field_name vacancy 'paid_vacation' %}:</strong></h5>
+                   {{vacancy.paid_vacation}}
+                     <h5><strong>{% get_verbose_field_name vacancy 'skills'  %}:</strong></h5>
+                    {{vacancy.skills}}
+                      <h5><strong>{% get_verbose_field_name vacancy 'advancement'  %}:</strong></h5>
+                    {{vacancy.advancement}}
+                     <h5><strong>{% get_verbose_field_name vacancy 'further_education'  %}:</strong></h5>
+                    {{vacancy.further_education}}
+                     <h5> <strong>{% get_verbose_field_name vacancy 'additional_info'  %}:</strong></h5>
+                   {{vacancy.additional_info}}
+
+
 
                     <br>
                     <br>
@@ -85,7 +107,8 @@
 
                             <ul id='applicant_list'>
                             {% for applicant in applicants  %}
-                               <a href="/applicants/view/{{applicant.id}}"> <li> {{applicant.first_name}} {{applicant.last_name}} {{applicant.middle_name}}
+                               <a href="/applicants/view/{{applicant.applicant.id}}"> <li> {{applicant.applicant.first_name}} {{applicant.applicant.last_name}} {{applicant.applicant.middle_name}}
+                               ({{ applicant.status }})
                                    </a></li>
                             {% endfor %}
 
@@ -101,16 +124,14 @@
 
                  <div class="box box-success">
                     <div class="box-header">
-                        <h4>Кандидаты(резерв) на данную должность</h4>
+                        <h4>Кандидат, принятый на работу</h4>
                         <div class="well">
 
-                            <ul id='reserved_applicant_list'>
-                            {% for applicant in reserved_applicants  %}
-                               <a href="/applicants/view/{{applicant.id}}"> <li> {{applicant.first_name}} {{applicant.last_name}} {{applicant.middle_name}}
-                                   </a></li>
-                            {% endfor %}
 
-                            </ul>
+                               <a href="/applicants/view/{{applicant_hired.id}}"> {{applicant_hired.first_name}} {{applicant_hired.last_name}} {{applicant_hired.middle_name}}
+                                   </a>
+
+
 
                         </div>
 

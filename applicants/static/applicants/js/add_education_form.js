@@ -46,7 +46,7 @@ $(document).ready(function(){
                 }
 
                 div_loader.innerHTML = '';
-                div_message.innerHTML = 'Вакансии загружены';
+                div_message.innerHTML = '';
             }
         });
     });

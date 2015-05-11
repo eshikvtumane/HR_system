@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.views.generic.base import TemplateView
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
@@ -24,8 +25,13 @@ urlpatterns = patterns('',
     url(r'^employees/', include('employees.urls',namespace='employees'))
 )
 
-
+if settings.DEBUG:
+    urlpatterns += patterns(
+        (r'404/$', TemplateView.as_view(template_name="404.html")),
+        (r'500/$', TemplateView.as_view(template_name="500.html")),
+    )
 #http://stackoverflow.com/questions/16196603/images-from-imagefield-in-django-dont-load-in-templates
 #https://docs.djangoproject.com/en/dev/howto/static-files/#deploying-static-files-in-a-nutshell
 urlpatterns += staticfiles_urlpatterns()
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

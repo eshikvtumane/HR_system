@@ -4,7 +4,6 @@ $(document).on('submit', 'form#FileDownload', function(e){
 console.log('fff')
     var period = document.getElementById('period').value;
     if(period == '__-__-____'){
-    console.log('fff2')
         period = new Date();
         var date = period.getDate();
         var month = (period.getMonth() + 1);

@@ -7,12 +7,16 @@ from django.http import HttpResponse
 from applicants.models import Major, SourceInformation
 from vacancies.models import ApplicantVacancyStatus
 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 from datetime import datetime
 
 # Create your views here.
 # рендер страницы добавления значений в БД
 class ValueAddView(View):
     template = 'administration/name_add.html'
+    @method_decorator(login_required)
     def get(self, request):
         args = {}
         rc = RequestContext(request, args)
@@ -66,16 +70,19 @@ class AjaxView(View):
 
 # Сохранение специальностей в БД
 class MajorSaveView(AjaxView):
+    @method_decorator(login_required)
     def post(self, request):
         return self.savingValues(request, Major, 'name', 'speciality[]')
 
 # Сохранение источников в БД
 class SourceSaveView(AjaxView):
+    @method_decorator(login_required)
     def post(self, request):
         return self.savingValues(request, SourceInformation, 'source', 'source[]')
 
 # Сохранение статусов вакансий в БД
 class VacancyStatusSaveView(AjaxView):
+    @method_decorator(login_required)
     def post(self, request):
         return self.savingValues(request, ApplicantVacancyStatus, 'name', 'vacancy[]')
 

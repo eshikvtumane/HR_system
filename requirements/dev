@@ -12,3 +12,8 @@ bleach
 celery
 swampdragon
 Pillow
+gunicorn
+dj-static
+greenlet
+eventlet
+gevent

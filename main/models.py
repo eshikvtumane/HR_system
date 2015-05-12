@@ -12,5 +12,5 @@ class Todo(models.Model):
         verbose_name_plural = 'Записки'
 
     user = models.ForeignKey(User)
-    todo = models.TextField()
+    task = models.TextField()
     date_create = models.DateTimeField(default=datetime.now())

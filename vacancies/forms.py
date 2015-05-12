@@ -80,6 +80,19 @@ class VacancyForm(ModelForm):
                 'id':'skills',
 
             }),
+
+            'additional_info':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'additional_info',
+
+            }),
+
+
+            'advancement':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'advancement',
+
+            }),
         }
 
 
@@ -97,7 +110,6 @@ class EditVacancyForm(VacancyForm):
                                      'class':'select' })
 
          )
-
 
    class Meta(VacancyForm.Meta):
        exclude = ['position','author','head','last_status','published_at']

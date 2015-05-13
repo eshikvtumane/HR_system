@@ -7,7 +7,7 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Todo(models.Model):
     class Meta:
-        db_table = 'Todos'
+        db_table = 'Notes'
         verbose_name = 'Запись'
         verbose_name_plural = 'Записки'
 

@@ -1,0 +1,18 @@
+[
+    {
+        "model": "HR_system.events",
+        "pk": 1,
+        "fields":{
+            "name": "Интервью",
+            "color": "#3c8dbc"
+        }
+    },
+    {
+        "model": "HR_system.events",
+        "pk": 2,
+        "fields":{
+            "name": "Тестирование",
+            "color": "#f39c12"
+        }
+    }
+]

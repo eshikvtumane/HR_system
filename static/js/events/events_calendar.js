@@ -164,21 +164,33 @@ function editEventData(calEvent, jsEvent, view){
 
 
 
-
+//список праздничных дней
+var holidays = new Array();
 //при загрузке страницы...
 $(function(){
+      //Инициализируем диалоговое окно с редактированием события
+        dialog = $( "#edit_event" ).dialog({
+        autoOpen: false,
+        height: 350,
+        width: 600,
+        modal: true
 
+    });
 
-  //Инициализируем диалоговое окно с редактированием события
-    dialog = $( "#edit_event" ).dialog({
-    autoOpen: false,
-    height: 350,
-    width: 600,
-    modal: true
-
-
-
-});
+    // Получаем список праздничных и предпразничных дней
+    $.ajax({
+        url: 'http://basicdata.ru/api/json/calend/',
+        crossDomain: true,
+        dataType: 'jsonp',
+        jsonp: 'jsonp_callback',
+        success: function(data){
+            holidays = data;
+        },
+        error: function(){
+            holidays = [];
+            console.log('Error get holidays');
+        }
+    });
 
       var event_remove_dialog =$( "#event_remove_confirm" ).dialog({
       autoOpen: false,
@@ -197,14 +209,38 @@ $(function(){
 
 
     //инициализируем jqueryui datepicker плагин на форме редактирования события
-    $("#start,#end").datetimepicker({ dateFormat: 'dd-mm-yy' });
+    $("#start,#end").datetimepicker($.extend($.datepicker.regional['ru'], {
+        dateFormat: 'dd-mm-yy',
+        stepMinute: 15
+    }));
 
 
     form = dialog.find( "form" ).on( "submit", function( e ) {
       e.preventDefault();
     });
 
+/* инициализируем внешние события
+		-----------------------------------------------------------------*/
 
+
+		$('#external-events .fc-event').each(function() {
+			// добавляем данные к внешним событиям
+			$(this).data('event', {
+				title: $.trim($(this).text()), //используем текст элемента в качестве заголовкка события
+				id: $(this).attr('id'),
+				stick: true,
+				start: "09:00",
+				duration: "01:00"
+			});
+
+			// делаем событие draggable
+			$(this).draggable({
+				zIndex: 999,
+				revert: true,
+				revertDuration: 0
+			});
+
+		});
 
    //активируем fullCalendar плагин
     $('#scheduler').fullCalendar({
@@ -224,6 +260,7 @@ $(function(){
         maxTime: moment.duration('18:00:00'),
         timezone:'Asia/Vladivostok',
         events:'/events/get_events/',
+        hiddenDays: [0, 6],
         eventRender:function(event,element,view){
                 //добавляем кастомные атрибуты к загружаемым в календарь событиям
                 element.attr(
@@ -257,10 +294,38 @@ $(function(){
                 var end = event.end.format();
                 addEvent(event_type, start, end, app_vacancy_id);
 
+        },
+        dayRender: function(date, cell, view){
+            // изменение стиля ячейки, отображающий праздничный день
+            var buf_date = String(date.date()) + '-' + String(date.month()) + '-' + String(date.year());
+            var date_now = new Date()
+            var date_now = date_now.getDate() + '-' + date_now.getMonth() + '-' + date_now.getFullYear()
+
+            // Если текущий день совпадает с обрабатываемым днём, то пропускаем операцию изменения стиля
+            if(buf_date !== date_now){
+                try{
+                    var day_status = holidays[String(date.year())][String(date.year(date.month()+1))][String(date.date())]['isWorking'];
+                }
+                catch(err){
+                    var day_status = 0
+                }
+
+                if(day_status == '2'){
+                    // праздничный день
+                    cell.css('background-color', '#ffdada');
+                }
+                else if(day_status == '3'){
+                    // Предпраздничный день
+                    cell.css('background-color', '#ddfffb');
+                }
+                else{
+
+                }
+            }
         }
 
-
     });
+
 
 
 //открытие окна с отправлением оповещения
@@ -299,29 +364,7 @@ $('#delete_event').button().on('click',function(){
 });
 
 
-		/* инициализируем внешние события
-		-----------------------------------------------------------------*/
 
-		$('#external-events .fc-event').each(function() {
-
-			// добавляем данные к внешним событиям
-			$(this).data('event', {
-				title: $.trim($(this).text()), //используем текст элемента в качестве заголовкка события
-				id: $(this).attr('id'),
-				stick: true, 
-				start: "09:00",
-				duration: "01:00"
-
-			});
-
-			// делаем событие draggable
-			$(this).draggable({
-				zIndex: 999,
-				revert: true,
-				revertDuration: 0
-			});
-
-		});
 
 
     //сохраняем id вакансии по которой перешли в календарь в скрытом поле

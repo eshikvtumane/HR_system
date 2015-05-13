@@ -24,7 +24,7 @@ class Applicant(models.Model):
     sex = models.CharField(max_length=1, choices=GENDER_LIST, verbose_name='Пол', null=True, blank=True)
 
     # Дата рождения
-    birthday = models.DateField(verbose_name='Дата рождения')
+    birthday = models.DateField(verbose_name='Дата рождения', null=True, blank=True)
 
     # Фотография кандидата
     photo = models.FileField(upload_to='photo_applicants', default='default.gif', verbose_name='Фото кандидата', null=True, blank=True)
@@ -49,6 +49,8 @@ class Applicant(models.Model):
 
     # Источник
     #source = models.ForeignKey('SourceInformation', verbose_name='Источник')
+
+    note = models.TextField(verbose_name='Примечание', null=True, blank=True)
     date_created = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
 
     def __unicode__(self):
@@ -56,6 +58,7 @@ class Applicant(models.Model):
 
     def getFullName(self):
         return '%s %s %s' % (self.first_name, self.last_name, self.middle_name)
+
 
 
 class Phone(models.Model):

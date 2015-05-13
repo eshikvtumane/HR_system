@@ -74,7 +74,7 @@ class Vacancy(models.Model):
     marriage_status = models.CharField(max_length=100, verbose_name=u'Семейный статус',choices=MARRIAGE_STATUS_LIST, null=True,blank=True)
     duties = models.TextField(verbose_name=u'Обязанности',null=True,blank=True)
     end_date = models.DateField(verbose_name=u'Крайний срок',null=True,blank=True)
-    additional_info = models.TextField(verbose_name=u"Описание",null=True,blank=True)
+    additional_info = models.TextField(verbose_name=u"Дополнительная информация",null=True,blank=True)
     skills = models.TextField(verbose_name=u"Необходимые навыки",null=True,blank=True)
     creation_reason = models.TextField(verbose_name=u'Причина появления вакансии',null=True,blank=True)
     head =  models.ForeignKey(Head,verbose_name=u"Руководитель")

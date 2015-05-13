@@ -22,6 +22,7 @@
 <script src="{% static 'js/fullcalendar/lang-all.js'%}" type="text/javascript"></script>
 <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <script src="{% static 'js/jquery/jquery-ui-timepicker-addon.js' %}" type="text/javascript"></script>
+<script src="{% static 'js/jquery/datepicker-ru.js' %}" type="text/javascript"></script>
 <script src="{% static 'js/events/events_calendar.js' %}" type="text/javascript"></script>
 
 {% endblock %}
@@ -59,8 +60,8 @@
          <section class="col-lg-7 connectedSortable">
                 <div class="box box-info">
                 <div class="box-header">
-                  <i class="fa fa-envelope"></i>
-                  <h3 class="box-title">Расписание</h3>
+                  <i class="fa fa-calendar"></i>
+                  <h3 class="box-title">Календарь событий</h3>
                   <!-- tools box -->
                     <!--
                   <div class="pull-right box-tools">
@@ -101,7 +102,7 @@
                  <h4>События</h4>
 
                 {% for event in events %}
-                    <div class='fc-event' id = '{{event.id}}'>{{event.name}}</div>
+                    <div class='fc-event external-event' style="background-color: {{event.color}}" id = '{{event.id}}'>{{event.name}}</div>
                 {% endfor %}
 
             {% else %}
@@ -113,6 +114,51 @@
 		</div>
 
 
+                </div>
+                </div>
+
+                 <!-- легенда -->
+                 <div class="box box-info">
+                <div class="box-header">
+                    <h3>Легенда</h3>
+
+                  <!-- tools box -->
+                  <div class="pull-right box-tools">
+
+                  </div><!-- /. tools -->
+                </div>
+                <div class="box-body" style="background-color:#9cdbad;">
+
+                    <div>
+                        <a style="color:#e9f4f3 !important;">
+                            <i class="fa fa-square" style="font-size: 6ex;"></i>
+                        </a>
+                        Прошедший день
+                    </div>
+                    <hr>
+
+                    <div>
+                        <a style="color:#fcf8e3 !important;">
+                            <i class="fa fa-square" style="font-size: 6ex;"></i>
+                        </a>
+                        Текущий день
+                    </div>
+                    <hr>
+
+                    <div>
+                        <a style="color:#ddfffb !important;">
+                            <i class="fa fa-square" style="font-size: 6ex;"></i>
+                        </a>
+                        Предпраздничный день
+                    </div>
+                    <hr>
+
+                    <div>
+                        <a style="color:#ffdada !important;">
+                            <i class="fa fa-square" style="font-size: 6ex;"></i>
+                        </a>
+                        Праздничный день
+                    </div>
                 </div>
                 </div>
 
@@ -244,7 +290,7 @@
                               </form>
                             </div>
                             <div class="box-footer clearfix">
-                              <button class="pull-right btn btn-default" id="sendEmail">Отправить<i class="fa fa-arrow-circle-right"></i></button>
+                              <button class="pull-right btn btn-default" id="sendEmail">Отправить <i class="fa fa-arrow-circle-right"></i></button>
                             </div>
                           </div>
 

@@ -21,19 +21,31 @@ class MainPageView(View):
     @method_decorator(login_required)
     def get(self, request):
         args = {}
+        return self.render(request)
+
+    def post(self, request):
+        args = {}
+        record = request.POST['record']
+        try:
+            Todo(todo=record, user=request.user).save()
+        except:
+            pass
+        return self.render(request)
+
+    def render(self, request, args={}):
         args['todo'] = Todo.objects.filter(user=request.user)
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
 
-class TodoAddAjax(View):
-    def get(self, request):
-        record = request.GET['record']
+class TodoDeleteAjax(View):
+    def get(self, request, record_id):
+        id = record_id
         try:
-            Todo(todo=record).save()
+            Todo.objects.get(pk=id).delete()
             result = json.dumps(['200'])
         except Exception, e:
             result = json.dumps(['500', e.message])
-        return HttpResponse(result, content_type='application/json')
+        return HttpResponse(result, content_type='applicant/json')
 
 class GlobalSearchView(PaginatorView):
     template = 'applicants/applicant_search.html'#'applicants/applicant_global_search.html'

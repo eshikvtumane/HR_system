@@ -128,7 +128,8 @@ def get_events_ajax(request):
                            'name':event.applicant_vacancy.applicant.getFullName(),
                            'phones':phones,
                            'email': event.applicant_vacancy.applicant.email,
-                           'author': event.author.username
+                           'author': event.author.username,
+                           'color': event.event.color
                            })
 
 

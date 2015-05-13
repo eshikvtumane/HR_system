@@ -27,7 +27,7 @@ class MainPageView(View):
         args = {}
         record = request.POST['record']
         try:
-            Todo(todo=record, user=request.user).save()
+            Todo(task=record, user=request.user).save()
         except:
             pass
         return self.render(request)

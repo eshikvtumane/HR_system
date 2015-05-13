@@ -54,14 +54,14 @@
                   {% load vacancy_attr_verbose %}
 
                     <div  class="action-button {{ status_icon }} pull-right">{{ current_status }}</div>
-                    <h4><strong>{% get_verbose_field_name vacancy 'author'  %}:</strong></h4>
+                    <h5><strong>{% get_verbose_field_name vacancy 'author'  %}:</strong></h5>
                     {{vacancy.author}}
                     <h5><strong>{% get_verbose_field_name vacancy 'position'  %}:</strong></h5>
                     {{vacancy.position}}
                     <h5><strong>{% get_verbose_field_name vacancy 'salary'  %}:</strong></h5>
                     <<i class="fa fa-rub"></i> {{vacancy.salary|intcomma}}
                     <h5><strong>{% get_verbose_field_name vacancy 'end_date'  %}:</strong></h5>
-                    {{vacancy.end_date}}
+                    {{vacancy.end_date|default:"Нет данных"}}
                     <h5><strong>{% get_verbose_field_name vacancy 'published_at'  %}:</strong></h5>
                     {{vacancy.published_at}}
                      <h5><strong>{% get_verbose_field_name vacancy 'head'  %}:</strong></h5>
@@ -75,21 +75,23 @@
                     {% endif %}
 
                      <h5> <strong>{% get_verbose_field_name vacancy 'paid_vacation' %}:</strong></h5>
-                   {{vacancy.paid_vacation}}
+                   {{vacancy.paid_vacation|default:"Нет данных"}}
                      <h5><strong>{% get_verbose_field_name vacancy 'skills'  %}:</strong></h5>
-                    {{vacancy.skills}}
+                    {{vacancy.skills|default:"Нет данных"}}
                       <h5><strong>{% get_verbose_field_name vacancy 'advancement'  %}:</strong></h5>
-                    {{vacancy.advancement}}
+                    {{vacancy.advancement|default:"Нет данных"}}
                      <h5><strong>{% get_verbose_field_name vacancy 'further_education'  %}:</strong></h5>
-                    {{vacancy.further_education}}
+                    {{vacancy.further_education|default:"Нет данных"}}
                      <h5> <strong>{% get_verbose_field_name vacancy 'additional_info'  %}:</strong></h5>
-                   {{vacancy.additional_info}}
+                   {{vacancy.additional_info|default:"Нет данных"}}
 
 
 
                     <br>
                     <br>
-                    <a href="/vacancies/{{ vacancy.id }}/edit">Редактировать вакансию</a>
+                    <a  href="/vacancies/{{ vacancy.id }}/edit"><button type="button"
+                                                                        class="btn btn-primary">Редактировать
+                        вакансию</button></a>
 
                 </div>
 

@@ -7,10 +7,10 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Todo(models.Model):
     class Meta:
-        db_table = 'Notes'
+        db_table = 'Todos'
         verbose_name = 'Запись'
         verbose_name_plural = 'Записки'
 
     user = models.ForeignKey(User)
-    todo = models.TextField()
+    task = models.TextField()
     date_create = models.DateTimeField(default=datetime.now())

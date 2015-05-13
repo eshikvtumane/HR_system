@@ -9,6 +9,7 @@ from applicants.models import Position
 class VacancyForm(ModelForm):
      class Meta:
         model = Vacancy
+        exclude = ['published_at']
         labels = {
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),
@@ -81,9 +82,27 @@ class VacancyForm(ModelForm):
                 'id':'skills',
 
             }),
+
+            'additional_info':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'additional_info',
+
+            }),
+
+
+            'advancement':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'advancement',
+
+            }),
+            'additional_info':forms.Textarea(attrs={
+                'class':'form-control'
+
+
+            })
+
         }
-
-
+        
 class AddVacancyForm(VacancyForm):
 
     class Meta(VacancyForm.Meta):
@@ -98,7 +117,6 @@ class EditVacancyForm(VacancyForm):
                                      'class':'select' })
 
          )
-
 
    class Meta(VacancyForm.Meta):
        exclude = ['position','author','head','last_status','published_at']

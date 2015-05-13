@@ -67,13 +67,13 @@ class Vacancy(models.Model):
         ('1', 'В браке'),
         ('2', 'Холост'),
     )
-    salary = models.FloatField(verbose_name=u"Заработная плана")
+    salary = models.FloatField(verbose_name=u"Заработная плата")
     sex =  models.CharField(max_length=1, choices=GENDER_LIST, verbose_name='Пол', null=True, blank=True)
     published_at = models.DateTimeField(verbose_name=u'Дата размещения',
                                     default=timezone.now)
-    marriage_status = models.CharField(max_length=100, verbose_name=u'Семейный статус',choices=MARRIAGE_STATUS_LIST, null=True,blank=True)
+    marriage_status = models.CharField(max_length=1, verbose_name=u'Семейный статус',choices=MARRIAGE_STATUS_LIST, null=True,blank=True)
     duties = models.TextField(verbose_name=u'Обязанности',null=True,blank=True)
-    end_date = models.DateField(verbose_name=u'Крайний срок',null=True,blank=True)
+    end_date = models.DateField(verbose_name=u'Предполагаемый срок закрытия',null=True,blank=True)
     additional_info = models.TextField(verbose_name=u"Дополнительная информация",null=True,blank=True)
     skills = models.TextField(verbose_name=u"Необходимые навыки",null=True,blank=True)
     creation_reason = models.TextField(verbose_name=u'Причина появления вакансии',null=True,blank=True)

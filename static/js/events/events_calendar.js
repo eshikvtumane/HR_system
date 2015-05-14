@@ -164,10 +164,16 @@ function editEventData(calEvent, jsEvent, view){
 
 
 
-//список праздничных дней
-var holidays = new Array();
+
+
 //при загрузке страницы...
 $(function(){
+//список праздничных дней
+    var holidays = new Array();
+    var date_now = new Date()
+    var date_now = date_now.getDate() + '-' + date_now.getMonth() + '-' + date_now.getFullYear()
+
+
       //Инициализируем диалоговое окно с редактированием события
         dialog = $( "#edit_event" ).dialog({
         autoOpen: false,
@@ -179,12 +185,11 @@ $(function(){
 
     // Получаем список праздничных и предпразничных дней
     $.ajax({
-        url: 'http://basicdata.ru/api/json/calend/',
-        crossDomain: true,
-        dataType: 'jsonp',
-        jsonp: 'jsonp_callback',
+        url: '/static/cal.json',
+        async: false,
         success: function(data){
-            holidays = data;
+            holidays = data['data'];
+            console.log('holidays', holidays)
         },
         error: function(){
             holidays = [];
@@ -298,13 +303,12 @@ $(function(){
         dayRender: function(date, cell, view){
             // изменение стиля ячейки, отображающий праздничный день
             var buf_date = String(date.date()) + '-' + String(date.month()) + '-' + String(date.year());
-            var date_now = new Date()
-            var date_now = date_now.getDate() + '-' + date_now.getMonth() + '-' + date_now.getFullYear()
 
             // Если текущий день совпадает с обрабатываемым днём, то пропускаем операцию изменения стиля
+
             if(buf_date !== date_now){
                 try{
-                    var day_status = holidays[String(date.year())][String(date.year(date.month()+1))][String(date.date())]['isWorking'];
+                    var day_status = holidays[String(date.year())][String(date.month()+1)][String(date.date())]['isWorking'];
                 }
                 catch(err){
                     var day_status = 0

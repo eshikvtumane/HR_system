@@ -50,10 +50,14 @@ window.onload = function(){
                     position : 'top center'
                 })
             },
-            error: function(data) {
+            error: function(xhr,errmsg,err) {
                $.notify("Произошла ошибка при обновлении данных!Попробуйте ещё раз!",'error',{
                     position : 'top center'
-                })
+                });
+
+                console.log(xhr.status + '' + xhr.responseText)
+
+
             }
         });
 

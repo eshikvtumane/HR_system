@@ -1,22 +1,24 @@
 
 $(document).ready(function () {
-    $('#saveTodo').click(function(){
-        var $record = $('textarea_note').val();
-        if($record){
+   $('.remove-todo').click(function(){
+   console.log(111)
+        var $record_id = $(this).attr('id');
+        if($record_id){
             $.ajax({
                 type: 'GET',
-                url: '',
-                data: {
-                    'record': $record
-                },
+                url: '/todo_delete/' + $record_id,
+                /*data: {
+                    'record_id': $record_id
+                },*/
                 dataType: 'json',
                 success: function(data){
                     var code = data[0]
                     if(code == '200'){
-
+                        $('#todo-'+$record_id).fadeOut('slow');
                     }
                     else{
-                        alert('Произошла ошибка при сохранении');
+                        alert('Произошла ошибка при удалении');
+                        console.log(data[1]);
                     }
                 }
             });

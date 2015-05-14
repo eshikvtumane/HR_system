@@ -150,7 +150,8 @@ class SavingModels():
 
             # конвертирование даты в формат, понятный БД
             try:
-                req['birthday'] = datetime.datetime.strptime(req['birthday'], "%d-%m-%Y").date()
+                if req['birthday']:
+                    req['birthday'] = datetime.datetime.strptime(req['birthday'], "%d-%m-%Y").date()
             except:
                 req['birthday'] = datetime.datetime.strptime(req['birthday'], "%Y-%m-%d").date()
 
@@ -303,6 +304,10 @@ class ApplicantSearchView(PaginatorView):
 
 
             position = req['position']
+            try:
+                employee = request.GET['employee']
+            except:
+                employee = False
 
             applicant_fields = [
                 'first_name',
@@ -354,9 +359,29 @@ class ApplicantSearchView(PaginatorView):
                     reserve = False
 
                 # если установлена галочка резерв
-                if(reserve):
+
+                if reserve:
                     # получаем объект статуса
                     reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Резерв')
+                    # получаем объекты вакансий кандидатов
+                    applicant_vacancy = ApplicantVacancy.objects.filter(**query_list)
+
+                    # перебираем
+                    for av in applicant_vacancy:
+                        try:
+                            s = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
+                            # получаем последний статус
+                            last_status = s[s.count()-1]
+                            status = last_status.applicant_vacancy_status
+                            if status == reserve_object:
+                                applicant_vacancy_list.append(last_status.applicant_vacancy.applicant)
+                        except:
+                            pass
+                elif employee:
+                    del query_list['salary__gte']
+                    del query_list['salary__lte']
+                    # получаем объект статуса
+                    reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Принят на работу')
                     # получаем объекты вакансий кандидатов
                     applicant_vacancy = ApplicantVacancy.objects.filter(**query_list)
 

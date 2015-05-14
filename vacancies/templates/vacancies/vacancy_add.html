@@ -19,6 +19,7 @@
 
 {% block scripts %}
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
+<script src="{% static 'js/selectize/selectize.js' %}"></script>
 <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 <script src="{% static 'js/form-validator/jquery.form-validator.min.js' %}"></script>
 <script src="{% static 'vacancies/js/vacancy_add.js' %}"></script>
@@ -54,8 +55,6 @@
 
               <div class="box box-success">
                 <div class="box-header">
-
-
                         {{ vacancy_form.position.label_tag}}
                         {{ vacancy_form.position}}
                         {{ vacancy_form.salary.label_tag}}
@@ -70,7 +69,8 @@
                         {{ vacancy_form.paid_vacation}}
                         {{ vacancy_form.skills.label_tag}}
                         {{ vacancy_form.skills}}
-
+                        {{ vacancy_form.additional_info.label_tag}}
+                        {{ vacancy_form.additional_info}}
                  <div class="form-group">
 
                      <label for='benefits'>Льготы</label>
@@ -115,12 +115,14 @@
               <div class="box box-success">
                 <div class="box-header">
 
-                 {{ vacancy_form.duties.label_tag}}
+                        {{ vacancy_form.duties.label_tag}}
                         {{ vacancy_form.duties}}
                         {{ vacancy_form.creation_reason.label_tag}}
                         {{ vacancy_form.creation_reason}}
                         {{ vacancy_form.further_education.label_tag}}
                         {{ vacancy_form.further_education}}
+                        {{ vacancy_form.advancement.label_tag}}
+                        {{ vacancy_form.advancement}}
 
                 </div>
               </div>

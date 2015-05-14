@@ -15,6 +15,7 @@ class Event(models.Model):
 
 
     name = models.CharField(max_length=50,verbose_name="Название действия")
+    color = models.CharField(max_length=50,verbose_name="Цвет фона", default='#FFFFFF')
     def __unicode__(self):
         return self.name
 

@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    $('input:text:first').focus();
+    //$('input:text:second').focus();
 
      $('input').bind("keydown", function(e) {
         var n = $("input").length;

@@ -9,6 +9,7 @@ from applicants.models import Position
 class VacancyForm(ModelForm):
      class Meta:
         model = Vacancy
+        exclude = ['published_at']
         labels = {
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),
@@ -19,6 +20,7 @@ class VacancyForm(ModelForm):
             'salary': forms.NumberInput(attrs={
                 'class': "form-control",
                 'name':'salary',
+                'min': 0,
                 'data-validation': 'number',
                 'data-validation-allowing': 'float',
                 'data-validation-error-msg':"В поле зарплаты должно быть указано число!"
@@ -34,20 +36,20 @@ class VacancyForm(ModelForm):
             }),
 
             'position':forms.Select(attrs={
-                'class':'form-control',
+                'class':'select',
                 'id':'position',
                 'data-validation':'required',
                 'data-validation-error-msg':"Это поле обязательно для заполнения!"
             }),
 
             'sex':forms.Select(attrs={
-                'class':'form-control',
+                'class':'select',
                 'id':'sex',
 
             }),
 
             'marriage_status':forms.Select(attrs={
-                'class':'form-control',
+                'class':'select',
                 'id':'marriage_status',
 
             }),
@@ -55,6 +57,7 @@ class VacancyForm(ModelForm):
              'paid_vacation':forms.NumberInput(attrs={
                 'class':'form-control',
                 'id':'paid_vacation',
+                'min': 0
                 'data-validation': 'number',
                 'data-validation-error-msg':"В поле отпуска должно быть указано число!"
 
@@ -82,9 +85,27 @@ class VacancyForm(ModelForm):
                 'id':'skills',
 
             }),
+
+            'additional_info':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'additional_info',
+
+            }),
+
+
+            'advancement':forms.Textarea(attrs={
+                'class':'form-control',
+                'id':'advancement',
+
+            }),
+            'additional_info':forms.Textarea(attrs={
+                'class':'form-control'
+
+
+            })
+
         }
-
-
+        
 class AddVacancyForm(VacancyForm):
 
     class Meta(VacancyForm.Meta):
@@ -100,7 +121,6 @@ class EditVacancyForm(VacancyForm):
 
          )
 
-
    class Meta(VacancyForm.Meta):
        exclude = ['position','author','head','last_status','published_at']
 
@@ -109,14 +129,14 @@ class SearchVacancyForm(VacancyForm):
     status = forms.ModelChoiceField(queryset=VacancyStatus.objects.all(),
                                    label=_(u'Статус'),
                                    widget=forms.Select(attrs={
-                                     'class':'form-control' })
+                                     'class':'select' })
 
                                    )
 
     head = forms.ModelChoiceField(queryset=Head.objects.all(),
                                    label=_(u'Руководитель'),
                                    widget=forms.Select(attrs={
-                                     'class':'form-control' })
+                                     'class':'select' })
 
                                    )
 

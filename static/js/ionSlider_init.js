@@ -13,7 +13,7 @@ $(document).ready(function(){
     var start = start_input.value;
     var end = end_input.value;
 
-    sliderInit($age, start_input, end_input, 10, 60, 10, 100)
+    sliderInit($age, start_input, end_input, 14, 60, 14, 100)
 });
 
 function sliderInit($slider, start_input, end_input, default_start, default_end, min, max){

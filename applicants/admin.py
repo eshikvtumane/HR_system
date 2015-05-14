@@ -148,9 +148,9 @@ class ApplicantAdmin(admin.ModelAdmin):
     list_filter = (YesterdayListFilter, 'sex')
     search_fields = ('last_name', 'first_name')
 
+
     '''
         TO BE REFACTORED !!!!
-        NOW!!!!
     '''
     def get_status(self, obj):
         result_statuses = ''
@@ -198,6 +198,7 @@ class ApplicantAdmin(admin.ModelAdmin):
 
     get_link.short_description = 'Ссылка на страницу'
     get_link.allow_tags = True
+
 
 
 

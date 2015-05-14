@@ -14,6 +14,7 @@ class ApplicantForm(forms.ModelForm):
     class Meta:
         model = Applicant
         fields = '__all__'
+        exclude = ('date_created',)
         widgets = {
             'first_name': forms.TextInput(attrs={
                 'class': "form-control",
@@ -90,7 +91,12 @@ class ApplicantForm(forms.ModelForm):
                 'class': "form-control",
                 'autocomplete': 'off'
             }),
-            'date_created': forms.HiddenInput()
+            'note': forms.Textarea(attrs={
+                'class': "form-control",
+                'rows': '3',
+                'cols': '3',
+                'autocomplete': 'off'
+            })
         }
 
 # кортеж годов (для выбора начала обучения)
@@ -211,6 +217,10 @@ class CandidateSearchForm(forms.Form):
 
     reserve = forms.BooleanField(label='Резерв',
                                        widget=forms.CheckboxInput(attrs={
+                                       })
+            )
+
+    employee = forms.BooleanField(widget=forms.CheckboxInput(attrs={
                                        })
             )
 

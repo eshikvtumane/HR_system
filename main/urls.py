@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, include, url
-from views import MainPageView, GlobalSearchView, TodoAddAjax
+from views import MainPageView, GlobalSearchView, TodoDeleteAjax
 
 
 urlpatterns = patterns('',
@@ -9,6 +9,6 @@ urlpatterns = patterns('',
 
     url(r'^$', MainPageView.as_view(), name="main_page"),
     url(r'^global_search/$', GlobalSearchView.as_view(), name="global_search"),
-    url(r'^todo_add/$', TodoAddAjax.as_view(), name="todo_add"),
+    url(r'^todo_delete/(?P<record_id>[0-9]+)/$', TodoDeleteAjax.as_view(), name="todo_delete"),
     #url(r'^admin/', include(admin.site.urls)),
 )

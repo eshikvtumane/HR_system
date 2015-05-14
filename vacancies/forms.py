@@ -57,7 +57,7 @@ class VacancyForm(ModelForm):
              'paid_vacation':forms.NumberInput(attrs={
                 'class':'form-control',
                 'id':'paid_vacation',
-                'min': 0
+                'min': 0,
                 'data-validation': 'number',
                 'data-validation-error-msg':"В поле отпуска должно быть указано число!"
 
@@ -97,12 +97,8 @@ class VacancyForm(ModelForm):
                 'class':'form-control',
                 'id':'advancement',
 
-            }),
-            'additional_info':forms.Textarea(attrs={
-                'class':'form-control'
-
-
             })
+
 
         }
         

@@ -1,11 +1,15 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.views.generic import View
 
+
+
 from vacancies.models import ApplicantVacancy, Vacancy, ApplicantVacancyApplicantVacancyStatus, VacancyStatusHistory, Position, Department
-from applicants.models import SourceInformation
+from applicants.models import SourceInformation,Position
+
+
 
 from forms import SummaryStatementRecruimentForm, PositionStatementForm
 from datetime import datetime, timedelta
@@ -17,6 +21,9 @@ from django.db.models import Q
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+
+
+from chartit import DataPool,Chart
 
 import pprint
 
@@ -968,4 +975,18 @@ class VacancyReportGenerateAjax(View, DateRange):
         sheet.header_str = ''
         sheet.footer_str = ''
         return gp.saveWorkbookInResponse()
+
+
+class ChartsView(View):
+    def get(self,request):
+        self.template = 'reports/charts.html'
+        c = RequestContext(request)
+        return render_to_response(self.template,c)
+
+
+def get_vacancies_to_position_distribution(request):
+    if request.is_ajax:
+       vacancies_distribution = [[position.name,position.vacancy_set.count()] for position in Position.objects.all()]
+       result = json.dumps(vacancies_distribution)
+       return HttpResponse(result,content_type='application/json')
 

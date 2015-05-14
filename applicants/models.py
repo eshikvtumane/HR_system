@@ -129,6 +129,7 @@ class ApplicantEducation(models.Model):
     study_end = models.IntegerField(max_length=4, verbose_name='Окончание учёбы')
 
 
+
 # Должность
 class Position(models.Model):
     class Meta:
@@ -139,6 +140,7 @@ class Position(models.Model):
     name = models.TextField(verbose_name='Должность')
     author = models.ForeignKey(User)
     date_created = models.DateTimeField(default=datetime.now())
+
 
     def __unicode__(self):
         return self.name

@@ -1,11 +1,15 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 
+
 {% block styles %}
 
 {% endblock styles %}
 
 {% block scripts %}
+<script src="{% static 'js/highcharts.js' %}"></script>
+    <script src="{% static 'reports/js/charts.js' %}"></script>
+
 
 {% endblock scripts %}
 
@@ -17,11 +21,11 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
           <h1>
-            Распределение вакансий по должностям
+            Инфографика
           </h1>
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
-            <li class="active">Распределение вакансий по должностям</li>
+            <li class="active">Инфографика</li>
           </ol>
         </section>
 
@@ -32,10 +36,19 @@
             <!-- Left col -->
             <section class="col-lg-7 connectedSortable">
               <div class="box box-success">
-                     <div>
-                          <a href="{% url 'reports:statement_recruitment_report' %}">Рапрседеление вакансий по
-                              должностям</a>
+                     <div id="tabs">
+                          <ul>
+                          <li><a href="#vacancies_distribution">Распределение вакансий по должностям</a></li>
+                         <li><a href="#chart2">График 2</a></li>
+                         <li><a href="#chart3">График 3</a></li>
+                         </ul>
+
                       </div>
+
+                    <div id="vacancies_distribution" ></div>
+                   <div id="chart2" ></div>
+                   <div id="chart3" ></div>
+
 
               </div>
             </section>

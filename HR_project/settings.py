@@ -66,6 +66,7 @@ INSTALLED_APPS = (
     'swampdragon',
     'notifications',
     'employees'
+
 )
 
 MIDDLEWARE_CLASSES = (

@@ -17,7 +17,8 @@ urlpatterns = patterns('',
     url(r'^vacancy_report_generate/$', VacancyReport.as_view(), name='vacancy_report'),
     url(r'^vacancy_report_generate_ajax/$', VacancyReportGenerateAjax.as_view(), name='vacancy_report_ajax'),
     url(r'^position_charts/$',ChartsView.as_view() , name='charts'),
-    url(r'^get_vacancies_to_position_distribution/$','reports.views.get_vacancies_to_position_distribution')
+    url(r'^get_vacancies_to_position_distribution/$','reports.views.get_vacancies_to_position_distribution'),
+    url(r'^get_position_salary_avg/$','reports.views.get_requested_salary_avg'),
 
 
 )

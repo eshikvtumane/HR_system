@@ -17,7 +17,7 @@ from dateutil import relativedelta as rdelta
 import json
 import xlwt
 
-from django.db.models import Q
+from django.db.models import Q,Avg,Sum
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -990,3 +990,22 @@ def get_vacancies_to_position_distribution(request):
        result = json.dumps(vacancies_distribution)
        return HttpResponse(result,content_type='application/json')
 
+def get_requested_salary_avg(request):
+    if request.is_ajax:
+       positions_with_avg_salary_list = []
+       positions = Position.objects.all()
+       for position in positions:
+           counter = 0
+           salary_sum = 0
+           for vacancy in position.vacancy_set.all():
+               for app_vacancy in vacancy.applicantvacancy_set.all():
+                salary_sum += app_vacancy.salary
+                counter += 1
+           print salary_sum
+           print counter
+           if salary_sum and counter:
+            avg = salary_sum/counter
+            position_with_avg = [position.name,avg]
+            positions_with_avg_salary_list.append(position_with_avg)
+       result = json.dumps(positions_with_avg_salary_list)
+       return HttpResponse(result,content_type='application/json')

@@ -41,7 +41,7 @@ $('#benefits').selectize({
             dataType: 'json',
             data: datastring,
             success: function (data) {
-               var vacancy_id = data[0]["vacancy_id"];
+               var vacancy_id = data["vacancy_id"];
                window.location.href = '/vacancies/' + vacancy_id;
 
 

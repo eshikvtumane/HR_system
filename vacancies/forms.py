@@ -25,6 +25,7 @@ class VacancyForm(ModelForm):
                 'data-validation-allowing': 'float',
                 'data-validation-error-msg':"В поле зарплаты должно быть указано число!"
             }),
+
             'end_date': forms.DateInput(attrs={
                 'id':'end_date',
                 'class': "form-control",
@@ -40,6 +41,11 @@ class VacancyForm(ModelForm):
                 'id':'position',
                 'data-validation':'required',
                 'data-validation-error-msg':"Это поле обязательно для заполнения!"
+            }),
+
+            'education':forms.Select(attrs={
+                'class':'select',
+                'id':'education',
             }),
 
             'sex':forms.Select(attrs={

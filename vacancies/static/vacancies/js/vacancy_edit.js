@@ -27,6 +27,11 @@ window.onload = function(){
     });
 
 
+    $('#benefits').selectize({
+        maxItems: null
+    });
+
+
     //Обновление вакансии
     function updateVacancy () {
         var datastring = $('#frm_update_vacancy').serialize();

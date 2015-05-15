@@ -81,6 +81,7 @@ class Vacancy(models.Model):
     position = models.ForeignKey(Position,verbose_name=u'Должность' )
     author = models.ForeignKey(User,verbose_name=u'Автор')
     advancement = models.TextField(verbose_name=u'Карьерный рост',null=True,blank=True)
+    education = models.ForeignKey(Education,verbose_name='Требуемое образование',null=True,blank=True)
     further_education = models.TextField(verbose_name=u'Возможность обучения/стажировок',null=True,blank=True)
     paid_vacation = models.IntegerField(verbose_name=u'Оплачиваемый отпуск(кол-во дней)',null=True,blank=True)
     last_status = models.ForeignKey('VacancyStatus', default=DEFAULT_VACANCY_STATUS)
@@ -179,12 +180,3 @@ class VacancyBenefit(models.Model):
     benefit = models.ForeignKey(Benefit)
 
 
-
-class VacancyEducation(models.Model):
-    class Meta:
-        db_table = "VacancyEducation"
-        verbose_name = "Образование по вакансии"
-        verbose_name_plural = "Образования по вакансии"
-
-    vacancy = models.ForeignKey(Vacancy)
-    education = models.ForeignKey(Education)

@@ -59,6 +59,8 @@
                         {{ vacancy_form.position}}
                         {{ vacancy_form.salary.label_tag}}
                         {{ vacancy_form.salary}}
+                        {{ vacancy_form.education.label_tag}}
+                        {{ vacancy_form.education}}
                         {{ vacancy_form.end_date.label_tag}}
                         {{ vacancy_form.end_date}}
                         {{ vacancy_form.sex.label_tag}}
@@ -107,7 +109,6 @@
             </div>
 
 
-
             </section><!-- /.Left col -->
             <!-- right col (We are only adding the ID to make the widgets sortable)-->
             <section class="col-lg-6 connectedSortable">
@@ -123,6 +124,8 @@
                         {{ vacancy_form.further_education}}
                         {{ vacancy_form.advancement.label_tag}}
                         {{ vacancy_form.advancement}}
+                        <br>
+                        <div id="error_box"></div>
 
                 </div>
               </div>

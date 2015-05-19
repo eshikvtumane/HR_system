@@ -17,4 +17,3 @@ dj-static
 greenlet
 eventlet
 gevent
-django-chartit

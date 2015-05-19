@@ -25,6 +25,7 @@ class VacancyForm(ModelForm):
                 'data-validation-allowing': 'float',
                 'data-validation-error-msg':"В поле зарплаты должно быть указано число!"
             }),
+
             'end_date': forms.DateInput(attrs={
                 'id':'end_date',
                 'class': "form-control",
@@ -42,6 +43,11 @@ class VacancyForm(ModelForm):
                 'data-validation-error-msg':"Это поле обязательно для заполнения!"
             }),
 
+            'education':forms.Select(attrs={
+                'class':'select',
+                'id':'education',
+            }),
+
             'sex':forms.Select(attrs={
                 'class':'select',
                 'id':'sex',
@@ -57,7 +63,10 @@ class VacancyForm(ModelForm):
              'paid_vacation':forms.NumberInput(attrs={
                 'class':'form-control',
                 'id':'paid_vacation',
-                'min': 0
+                'min': 0,
+                'data-validation': 'number',
+                'data-validation-error-msg':"В поле отпуска должно быть указано число!"
+
             }),
             'duties':forms.Textarea(attrs={
                 'class':'form-control',
@@ -94,12 +103,8 @@ class VacancyForm(ModelForm):
                 'class':'form-control',
                 'id':'advancement',
 
-            }),
-            'additional_info':forms.Textarea(attrs={
-                'class':'form-control'
-
-
             })
+
 
         }
         

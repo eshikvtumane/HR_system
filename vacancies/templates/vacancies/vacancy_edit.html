@@ -45,6 +45,7 @@
           <!-- Main row -->
           <div class="row">
             <!-- Left col -->
+              <form id='frm_update_vacancy'>{% csrf_token %}
             <section class="col-lg-6 connectedSortable">
                 <!--
                     Форма редактирования вакансии
@@ -52,15 +53,17 @@
 
               <div class="box box-success">
                 <div class="box-header">
-                    <form id='frm_update_vacancy'>{% csrf_token %}
+
                     {% load bootstrap %}
                     {{ vacancy_form|bootstrap}}
+
+
                         <input id="vacancy_id" type="hidden"
                                value="{{vacancy.id}}">
                     <button id="update_vacancy" class="btn btn-primary">Сохранить
                         данные</button>
 
-                    </form>
+
                 </div>
               <div id="error_list">
 
@@ -82,11 +85,42 @@
                         <strong>Руководитель</strong>
                         <h5>{{vacancy.head}}</h5>
 
+                        <div class="form-group">
+                        <strong>Льготы:</strong>
+
+                          {% if added_benefits %}
+                        <ul>
+                            {% for benefit in added_benefits %}
+                                    <li><h5>{{benefit}}</h5></li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <h5>Нет данных</h5>
+                    {% endif %}
+                    </div>
+
+                     <div class="form-group">
+
+                             <label for='benefits'>Добавить льготы</label>
+
+
+                             <select id="benefits" class="form-control" name="benefits" multiple="multiple">
+                                    <option value=""></option>
+                                    {% for benefit in benefits %}
+                                        <option value="{{  benefit.id}}">{{ benefit.name }}</option>
+                                    {% endfor %}
+                                </select>
+
+
+
+                </div>
+
                 </div>
 
               </div>
             </section><!-- right col -->
 
+        </form>
         </div><!-- /.row (main row) -->
         </section><!-- /.content -->
       </div><!-- /.content-wrapper -->

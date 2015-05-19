@@ -41,13 +41,16 @@ $('#benefits').selectize({
             dataType: 'json',
             data: datastring,
             success: function (data) {
-               var vacancy_id = data[0]["vacancy_id"];
+               var vacancy_id = data["vacancy_id"];
                window.location.href = '/vacancies/' + vacancy_id;
 
 
             },
-            error: function(data) {
-                    console.log("ERROR")
+            error: function(xhr,errmsg,err) {
+                   $.notify("Произошла ошибка при добавлении вакансии!Попробуйте ещё раз!",'error',{
+                    position : 'top center'
+                });
+                    console.log(xhr.status + '' + xhr.responseText);
             }
         });
 
@@ -84,8 +87,11 @@ $('#benefits').selectize({
                 $("<label for='heads'>Руководитель</label>").appendTo($heads_div);
                 $select.appendTo(heads_div)
             },
-            error: function(data) {
-               console.log("ERROR, retrieving heads")
+            error: function(xhr,errmsg,err) {
+                  $.notify("Произошла ошибка на сервере!Попробуйте ещё раз!",'error',{
+                    position : 'top center'
+                });
+                    console.log(xhr.status + '' + xhr.responseText)
             }
         });
         return false;

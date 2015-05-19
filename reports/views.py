@@ -1,11 +1,15 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.views.generic import View
 
+
+
 from vacancies.models import ApplicantVacancy, Vacancy, ApplicantVacancyApplicantVacancyStatus, VacancyStatusHistory, Position, Department
-from applicants.models import SourceInformation
+from applicants.models import SourceInformation,Position
+
+
 
 from forms import SummaryStatementRecruimentForm, PositionStatementForm
 from datetime import datetime, timedelta
@@ -13,10 +17,13 @@ from dateutil import relativedelta as rdelta
 import json
 import xlwt
 
-from django.db.models import Q
+from django.db.models import Q,Avg,Sum
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+
+
+from chartit import DataPool,Chart
 
 import pprint
 
@@ -969,3 +976,36 @@ class VacancyReportGenerateAjax(View, DateRange):
         sheet.footer_str = ''
         return gp.saveWorkbookInResponse()
 
+
+class ChartsView(View):
+    def get(self,request):
+        self.template = 'reports/charts.html'
+        c = RequestContext(request)
+        return render_to_response(self.template,c)
+
+
+def get_vacancies_to_position_distribution(request):
+    if request.is_ajax:
+       vacancies_distribution = [[position.name,position.vacancy_set.count()] for position in Position.objects.all()]
+       result = json.dumps(vacancies_distribution)
+       return HttpResponse(result,content_type='application/json')
+
+def get_requested_salary_avg(request):
+    if request.is_ajax:
+       positions_with_avg_salary_list = []
+       positions = Position.objects.all()
+       for position in positions:
+           counter = 0
+           salary_sum = 0
+           for vacancy in position.vacancy_set.all():
+               for app_vacancy in vacancy.applicantvacancy_set.all():
+                salary_sum += app_vacancy.salary
+                counter += 1
+           print salary_sum
+           print counter
+           if salary_sum and counter:
+            avg = salary_sum/counter
+            position_with_avg = [position.name,avg]
+            positions_with_avg_salary_list.append(position_with_avg)
+       result = json.dumps(positions_with_avg_salary_list)
+       return HttpResponse(result,content_type='application/json')

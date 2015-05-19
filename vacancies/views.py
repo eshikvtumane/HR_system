@@ -16,9 +16,6 @@ from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyS
 from events.models import ApplicantVacancyEvent
 
 
-
-
-
 class AddVacancy(View):
     template = 'vacancies/vacancy_add.html'
     def get(self,request):
@@ -47,13 +44,14 @@ class AddVacancy(View):
                     VacancyStatusHistory.objects.create(vacancy=vacancy_form.instance)
                     vacancy_id = vacancy_form.instance.id
                     #сохраняем льготы
-                    if post_data['benefits']:
+                    benefits = post_data.get('benfits' or None)
+                    if benefits:
                         for benefit in post_data.getlist('benefits'):
                             VacancyBenefit.objects.create(vacancy=Vacancy.objects.get(id=vacancy_id) ,
                                                           benefit=Benefit.objects.get(id=int( benefit)))
 
-                    response = json.dumps([{'vacancy_id':vacancy_id}])
-                    return HttpResponse(response,content_type='application/json')
+                    response = {'vacancy_id':vacancy_id}
+                    return JsonResponse(response, status = 200)
             else:
 
                     return JsonResponse(vacancy_form.errors,status=400)
@@ -68,18 +66,29 @@ class VacancyView(View):
         applicant_hired = None
 
         for app_vacancy in app_vacancies:
+            #выбираем последний статус в объектах Applicant-Vacancy по данной вакансии
             last_status = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
                 '-id')[0]
 
+            #добавляем кандидата в массив кандидатов с его текущим статусом по данной вакансии
             applicants.append({'applicant':app_vacancy.applicant,'status':last_status.applicant_vacancy_status.name})
 
+            #если кандидат был принят на работу по данной вакансии, то выводим его данные на страницу
             if last_status.applicant_vacancy_status.name.encode('utf-8').strip() == 'Принят на работу':
                 applicant_hired = app_vacancy.applicant
 
+        #руководитель отдела, подавший заявку на вакансию
         head = vacancy.head
-
+        #льготы по данной вакансии
+        benefits = []
+        vacancy_benefits = VacancyBenefit.objects.filter(vacancy=vacancy)
+        for vac_benefit in vacancy_benefits:
+            benefits.append(vac_benefit.benefit.name)
+        #текущий статус вакансии
         vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
-        c = RequestContext(request,{ 'vacancy':vacancy,'head':head,'applicants':applicants,'applicant_hired':applicant_hired,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})
+        c = RequestContext(request,{ 'vacancy':vacancy,'head':head,'applicants':applicants,
+                                     'applicant_hired':applicant_hired,'current_status':vacancy_status.status.name,
+                                     'status_icon':vacancy_status.status.icon_class,'benefits':benefits})
         return render_to_response(self.template, c)
 
 
@@ -92,7 +101,11 @@ class VacancyEdit(View):
         last_vacancy_status_history = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
         default_vacancy_status = last_vacancy_status_history.status
         vacancy_form = EditVacancyForm(instance=vacancy,initial={'status':default_vacancy_status.id})
-        c = RequestContext(request,{ 'vacancy':vacancy,'vacancy_form':vacancy_form})
+        benefits = Benefit.objects.all()
+        vac_benefits = VacancyBenefit.objects.filter(vacancy=vacancy)
+        added_benefits = [vac_benefit.benefit.name for vac_benefit in vac_benefits ]
+        c = RequestContext(request,{ 'vacancy':vacancy,'vacancy_form':vacancy_form,'benefits':benefits,
+                                     'added_benefits':added_benefits})
         return render_to_response(self.template, c)
 
     def post(self,request,id):
@@ -106,12 +119,15 @@ class VacancyEdit(View):
             vacancy_form = EditVacancyForm(post_data,instance=vacancy)
             if vacancy_form.is_valid():
                 vacancy_form.save()
+
+                benefits = post_data.get('benfits' or None)
+                if benefits:
+                        for benefit in post_data.getlist('benefits'):
+                            VacancyBenefit.objects.create(vacancy=Vacancy.objects.get(id=vacancy.id) ,
+                                                          benefit=Benefit.objects.get(id=int( benefit)))
                 VacancyStatusHistory.objects.create(vacancy=vacancy,status=VacancyStatus.objects.get(pk=request.POST['status']))
-                return HttpResponse("200")
-            data = []
-            data.append({"status":"400","errors":vacancy_form.errors})
-            data = json.dumps(data)
-            return HttpResponse(data,content_type="application/json")
+                return JsonResponse(status='200')
+            return JsonResponse(vacancy_form.errors,status = '400')
 
 
 
@@ -156,9 +172,6 @@ class VacancySearch(View):
             else:
                 vacancies = []
 
-
-
-
             if request.GET['status']:
                 result_vacancies = []
                 if not query_list:
@@ -168,14 +181,9 @@ class VacancySearch(View):
                     if vacancy_status.status.id == int(request.GET['status']):
                         result_vacancies.append(vacancy)
 
-
-
-
             for vacancy in result_vacancies:
                 vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
                 vacancies_list.append({'vacancy':vacancy,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})
-
-
 
         else:
             vacancies = Vacancy.objects.all()

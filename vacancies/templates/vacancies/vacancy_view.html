@@ -82,9 +82,18 @@
                     {{vacancy.advancement|default:"Нет данных"}}
                      <h5><strong>{% get_verbose_field_name vacancy 'further_education'  %}:</strong></h5>
                     {{vacancy.further_education|default:"Нет данных"}}
+                    <h5><strong>Льготы</strong></h5>
+                    {% if benefits %}
+                        <ul>
+                            {% for benefit in benefits %}
+                                    <li>{{benefit}}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        Нет данных
+                    {% endif %}
                      <h5> <strong>{% get_verbose_field_name vacancy 'additional_info'  %}:</strong></h5>
                    {{vacancy.additional_info|default:"Нет данных"}}
-
 
 
                     <br>
@@ -102,26 +111,6 @@
 
               <!-- right col (We are only adding the ID to make the widgets sortable)-->
             <section class="col-lg-6 connectedSortable">
-                 <div class="box box-success">
-                    <div class="box-header">
-                        <h4>Кандидаты на данную должность</h4>
-                        <div class="well">
-
-                            <ul id='applicant_list'>
-                            {% for applicant in applicants  %}
-                               <a href="/applicants/view/{{applicant.applicant.id}}"> <li> {{applicant.applicant.first_name}} {{applicant.applicant.last_name}} {{applicant.applicant.middle_name}}
-                               ({{ applicant.status }})
-                                   </a></li>
-                            {% endfor %}
-
-                            </ul>
-
-                        </div>
-
-                    </div>
-
-
-              </div>
 
 
                  <div class="box box-success">
@@ -141,6 +130,29 @@
 
 
               </div>
+
+               <div class="box box-success">
+                    <div class="box-header" style="max-height:800px;overflow:scroll;">
+                        <h4>Финальные кандидаты</h4>
+                        <div class="well">
+
+                            <ul id='applicant_list'>
+                            {% for applicant in applicants  %}
+                               <a href="/applicants/view/{{applicant.applicant.id}}"> <li> {{applicant.applicant.first_name}} {{applicant.applicant.last_name}} {{applicant.applicant.middle_name}}
+                               ({{ applicant.status }})
+                                   </a></li>
+                            {% endfor %}
+
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+
+              </div>
+
+
 
             </section><!-- right col -->
 

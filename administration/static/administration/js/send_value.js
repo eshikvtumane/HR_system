@@ -71,6 +71,32 @@ $(document).ready(function(){
             'Нет добавленных файлов'
         );
     });
+
+    // обновление производственного календаря
+    $('#production_calendar_update').click(function(){
+        var $error_div = $('#calendar_update_error');
+        var error_message = '<label style="font-color: red;">Произошла ошибка</label>';
+        $.ajax({
+            type: 'GET',
+            url: '/administration/ajax_calendar_update/',
+            dateType: 'json',
+            success: function(data){
+                var code = data[0];
+                if(code == '200'){
+                    $error_div.html('Обновление прошло успешно');
+                    console.log('error', data[1]);
+                }
+                else{
+                    $error_div.html(error_message);
+                    console.log('error', data[1]);
+                }
+            },
+            error: function(data){
+                $error_div.html(error_message);
+                console.log('server error', data);
+            }
+        });
+    });
 });
 
 /* сохранение специальностей

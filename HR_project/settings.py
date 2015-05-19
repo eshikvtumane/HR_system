@@ -33,6 +33,8 @@ DEBUG_TOOLBAR_CONFIG = {
     'JQUERY_URL': os.path.join(BASE_DIR, '/static/js/jquery/jquery-2.1.3.min.js')
 }
 
+# ссыдка на производственный календарь
+PRODUCTION_CALENDAR = 'http://basicdata.ru/api/json/calend/'
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 LOGIN_URL = 'users:login'

@@ -38,6 +38,9 @@ class MainPageView(View):
         return render_to_response(self.template, rc)
 
 class TodoDeleteAjax(View):
+    '''
+        Удаление заметки
+    '''
     def get(self, request, record_id):
         id = record_id
         try:

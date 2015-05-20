@@ -198,6 +198,7 @@
                                                 {% endthumbnail %}
                                             {% else %}
                                                 {% thumbnail a.photo "100x100" crop="center" as im %}
+
                                                     <img class="lazy" data-original="{{ im.url }}">
                                                 {% endthumbnail %}
                                             {% endif %}

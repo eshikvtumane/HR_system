@@ -144,7 +144,7 @@
                       {% for record in todo %}
                         <li id="todo-{{ record.id }}">
                           <!-- todo text -->
-                          <span class="text">{{ record.todo }}</span>
+                          <span class="text">{{ record.task }}</span>
                           <!-- Emphasis label -->
                             {% if record.date_create|naturalday == 'сегодня' %}
                                 <small class="label label-success">

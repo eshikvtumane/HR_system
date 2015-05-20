@@ -1,6 +1,6 @@
 #-*- coding:utf-8 -*-
 from django.conf.urls import patterns, include, url
-from views import ValueAddView, MajorSaveView, SourceSaveView, VacancyStatusSaveView
+from views import ValueAddView, MajorSaveView, SourceSaveView, VacancyStatusSaveView, CalendarUpdate
 
 
 urlpatterns = patterns('',
@@ -13,5 +13,6 @@ urlpatterns = patterns('',
     url(r'^ajax_spec/$', MajorSaveView.as_view()),
     # добавление статусов вакансий через ajax
     url(r'^ajax_vacancy/$', VacancyStatusSaveView.as_view()),
-
+    # обновление производственного календаря
+    url(r'^ajax_calendar_update/$', CalendarUpdate.as_view()),
 )

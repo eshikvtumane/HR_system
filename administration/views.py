@@ -10,6 +10,11 @@ from vacancies.models import ApplicantVacancyStatus
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
+import urllib
+import json
+import os
+import HR_project.settings as project
+
 from datetime import datetime
 
 # Create your views here.
@@ -86,3 +91,26 @@ class VacancyStatusSaveView(AjaxView):
     def post(self, request):
         return self.savingValues(request, ApplicantVacancyStatus, 'name', 'vacancy[]')
 
+
+# обновление производственного  календаря
+class CalendarUpdate(View):
+    def get(self, request):
+        if request.is_ajax:
+            # ссылка на производственный календарь
+            try:
+                # если в настройках указана ссылка на файл
+                PRODUCTION_CALENDAR = project.PRODUCTION_CALENDAR
+            except:
+                PRODUCTION_CALENDAR = 'http://basicdata.ru/api/json/calend/'
+
+            try:
+                # скачивание файла
+                download_file = urllib.URLopener()
+                download_file.retrieve(PRODUCTION_CALENDAR, os.path.join(project.BASE_DIR, 'static/cal.json'))
+                result = json.dumps(['200', 'Success'])
+            except:
+                result = json.dumps(['300', 'ошибка при скачивании файла с ' + PRODUCTION_CALENDAR])
+
+        else:
+            result = json.dumps(['400', 'not JSON request'])
+        return HttpResponse(result, 'application/json')

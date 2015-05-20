@@ -16,9 +16,6 @@ from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyS
 from events.models import ApplicantVacancyEvent
 
 
-
-
-
 class AddVacancy(View):
     template = 'vacancies/vacancy_add.html'
     def get(self,request):
@@ -155,8 +152,6 @@ class VacancySearch(View):
                 result_vacancies = list(vacancies)
             else:
                 vacancies = []
-
-
 
 
             if request.GET['status']:

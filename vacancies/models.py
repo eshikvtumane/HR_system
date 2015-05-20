@@ -149,14 +149,11 @@ class ApplicantVacancyApplicantVacancyStatus(models.Model):
         verbose_name_plural = 'Текущий статус кандидата по вакансии'
 
     applicant_vacancy = models.ForeignKey('ApplicantVacancy')
-    applicant_vacancy_status = models.ForeignKey('ApplicantVacancyStatus',default =
+    applicant_vacancy_status = models.ForeignKey('ApplicantVacancyStatus', default =
     DEFAULT_APPLICANT_VACANCY_STATUS)
     date = models.DateTimeField(verbose_name='Дата присвоения',default=timezone.now)
     author = models.ForeignKey(User,verbose_name='Автор')
     note = models.TextField(verbose_name='Примечание',blank=True,null=True)
-
-
-
 
 
 class Benefit(models.Model):

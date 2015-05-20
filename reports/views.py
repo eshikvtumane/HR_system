@@ -984,12 +984,15 @@ class ChartsView(View):
         return render_to_response(self.template,c)
 
 
+
+#график распределения количества вакансий по должностям
 def get_vacancies_to_position_distribution(request):
     if request.is_ajax:
        vacancies_distribution = [[position.name,position.vacancy_set.count()] for position in Position.objects.all()]
        result = json.dumps(vacancies_distribution)
        return HttpResponse(result,content_type='application/json')
 
+#график для отображения средней запрашиваемой зарплаты по должностям
 def get_requested_salary_avg(request):
     if request.is_ajax:
        positions_with_avg_salary_list = []
@@ -1001,11 +1004,10 @@ def get_requested_salary_avg(request):
                for app_vacancy in vacancy.applicantvacancy_set.all():
                 salary_sum += app_vacancy.salary
                 counter += 1
-           print salary_sum
-           print counter
            if salary_sum and counter:
-            avg = salary_sum/counter
+            avg = float(salary_sum)/counter
             position_with_avg = [position.name,avg]
             positions_with_avg_salary_list.append(position_with_avg)
        result = json.dumps(positions_with_avg_salary_list)
        return HttpResponse(result,content_type='application/json')
+

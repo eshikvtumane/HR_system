@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 from vacancies.models import ApplicantVacancy
 
 
-
-
 #Событие, связанное с кандидатом
 class Event(models.Model):
     class Meta:

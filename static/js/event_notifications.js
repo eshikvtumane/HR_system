@@ -20,11 +20,16 @@ swampdragon.ready(function(){
     //добавление оповещения к меню
     swampdragon.getList('notifications',{},function(context,data){
         data.forEach(function(notification){
+
             var li = $("<li>");
-            var $messageContainer = $('<a>').attr('href','#');
-            $messageContainer.html(notification.message);
-            $messageContainer.appendTo(li);
-            notificationsMenu.append(li);
+            var div = $('<div>');
+            div.css("word-wrap",'break-word');
+            //var $messageContainer = $('<a>').attr('href','#');
+            //$messageContainer.html(notification.message);
+            //$messageContainer.appendTo(li);
+            li.html(notification.message)
+            li.appendTo(div)
+            notificationsMenu.append(div);
         })
     });
 
@@ -51,11 +56,13 @@ function addNotification(notification) {
     }
     $('#notification_label').css("display", "block");
     // Добавление оповещения к меню
-    var li = $("<li>");
+    var $li = $("<li>");
+
     var $messageContainer = $('<a>').attr('href','#');
+    messageContainer.css("word-wrap","break-word");
     $messageContainer.html(notification.message);
-    $messageContainer.appendTo(li);
-    notificationsMenu.prepend(li);
+    $messageContainer.appendTo($li);
+    notificationsMenu.prepend($li);
     playSound('notification');
 
     // Удаляем лишние оповещения

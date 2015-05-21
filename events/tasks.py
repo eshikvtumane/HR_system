@@ -20,7 +20,8 @@ def check_events():
     for event in today_events:
         #если событие назначено на время в интервале 30 минут(от текущего момента), то создаём оповещение
         if abs(fromUTCtoLocal(event.start) - current_time) <= datetime.timedelta(minutes=30):
-             message = "На " + str(fromUTCtoLocal(event.start).time()) + " назначено " + str(event.event)
+             message = "На " + str(fromUTCtoLocal(event.start).time()) + " назначено " + str(event.event) + ' для ' + \
+                       str(event.applicant_vacancy.applicant)
              Notification.objects.create(message=message)
         #выбираем последний присвоенный статус по данной вакансии
         last_vacancy_status = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy = event.applicant_vacancy).order_by('-pk')[0]

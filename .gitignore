@@ -11,3 +11,4 @@ media/resume/
 media/photo_applicants/
 media/email_images/
 media/tmp/
+settings_local.py

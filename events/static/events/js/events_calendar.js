@@ -170,8 +170,8 @@ function editEventData(calEvent, jsEvent, view){
 $(function(){
 //список праздничных дней
     var holidays = new Array();
-    var date_now = new Date()
-    var date_now = date_now.getDate() + '-' + date_now.getMonth() + '-' + date_now.getFullYear()
+    var date_now = new Date();
+    var date_now = date_now.getDate() + '-' + date_now.getMonth() + '-' + date_now.getFullYear();
 
 
       //Инициализируем диалоговое окно с редактированием события
@@ -201,10 +201,15 @@ $(function(){
       autoOpen: false,
       resizable: false,
       height:200,
+      width: 500,
       modal: true,
       buttons: {
-        "Удалить действие": function() {
+        "Удалить": function() {
           $( this ).dialog( "close" );
+          var event_id = $("#event_id").val();
+          deleteEvent(event_id);
+
+
         },
         "Отмена": function() {
           $( this ).dialog( "close" );
@@ -403,7 +408,7 @@ $('#save_event').button().on('click',function(){
 $('#delete_event').button().on('click',function(){
     var event_id = $("#event_id").val();
      event_remove_dialog.dialog( "open" );
-    //deleteEvent(event_id);
+
 });
 
 

@@ -3,7 +3,7 @@ import datetime
 import json
 import pytz
 from collections import OrderedDict
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, render_to_response
 from django.views.generic import View
 from applicants.models import Applicant, Phone
@@ -12,10 +12,15 @@ from vacancies.models import ApplicantVacancy, Vacancy
 from .models import ApplicantVacancyEvent,Event
 from django.template import RequestContext
 from utils.functions import fromLocaltoUTC,fromUTCtoLocal
+from utils.sending_email import EmailSender
 
+
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 class EventsCalendar(View):
     template = 'events/calendar.html'
+    @method_decorator(login_required)
     def get(self,request):
         c = RequestContext(request)
         try:
@@ -31,6 +36,7 @@ class EventsCalendar(View):
 
 class EventsView(View):
     template = 'events/events_view.html'
+    @method_decorator(login_required)
     def get(self,request,applicant_id):
         applicant = Applicant.objects.get(id = applicant_id)
         app_vacancies = ApplicantVacancy.objects.filter(applicant = applicant )
@@ -203,5 +209,28 @@ def delete_event_ajax(request):
             return  HttpResponse('400')
 
 
+def httpresposejson(code, message):
+    #result = json.dumps([code, message])
+    return JsonResponse({'code': code, 'messages': message})
+    #return HttpResponse(result, content_type='application/json')
+
+# send email
+def send_message_ajax(request):
+    if request.is_ajax():
+        # send email
+        method = request.POST
+        try:
+            message = method['message']
+            recipients = [method['email']]
+            title = method['title']
+        except Exception, e:
+            return httpresposejson('500', 'Преданы не все параметры (сообщение, тема, кому отправить)')
+
+        print message[0]
+        sender = EmailSender()
+        result = sender.send(message, recipients, title)
+        if result:
+            return httpresposejson('200', 'Success')
+        return httpresposejson('500', 'Error send')
 
 

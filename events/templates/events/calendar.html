@@ -178,7 +178,7 @@
 
        <!-- Форма для редактирования события-->
 
-                <div id="edit_event" title="Изменение события">
+                <div style="display:none;" id="edit_event" title="Изменение события">
                       <form class="form">
                       <div class="row">
                           <div class="col-md-7">
@@ -250,10 +250,6 @@
 
 
 
-
-
-
-
     <!-- Форма email-оповещения пользователя-->
         <div class="modal fade" id="email_modal" tabindex="-1"
                role="dialog"
@@ -284,10 +280,17 @@
                                   <input type="text" class="form-control" name="subject" placeholder="Тема" id='subject' />
                                 </div>
                                 <div>
+
                                   <textarea id="message" class="textarea" placeholder="Сообщение"
                                              style="width: 100%; height: 125px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
                                 </div>
                               </form>
+
+                                <div>
+                                    <button class="add-info" value="Ул.Серышева, 31(вход с ул.Шмидта), 4 эт.,каб.3. "><i class="fa fa-plus"> Адрес</i></button>
+                                    <button class="add-info" value="hr@riavs.ru, www.riavs.ru. "><i class="fa fa-plus"> Контакты</i></button>
+                                    <button class="add-info" value="РИА 'Восточная столица'. "><i class="fa fa-plus"> Компанию</i></button>
+                                </div>
                             </div>
                             <div class="box-footer clearfix">
                               <button class="pull-right btn btn-default" id="sendEmail">Отправить <i class="fa fa-arrow-circle-right"></i></button>

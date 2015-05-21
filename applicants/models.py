@@ -59,6 +59,10 @@ class Applicant(models.Model):
     def getFullName(self):
         return '%s %s %s' % (self.first_name, self.last_name, self.middle_name)
 
+    def getAge(self):
+        today = datetime.now()
+        return today.year - self.birthday.year - ((today.month, today.day) < (self.birthday.month, self.birthday.day))
+
 
 
 class Phone(models.Model):

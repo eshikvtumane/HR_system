@@ -19,3 +19,5 @@ register = template.Library()
 @register.inclusion_tag('_tag_auth_form.html')
 def authentication_form():
     return {'form': AuthenticationForm(), 'action': '/some/url'}
+
+

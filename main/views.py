@@ -9,10 +9,15 @@ from django.utils.decorators import method_decorator
 import re
 from applicants.models import Applicant, Phone
 from applicants.views import PaginatorView
+from vacancies.models import Vacancy, ApplicantVacancy
+from django.db.models import Sum
 
 from main.models import Todo
 import json
 from django.http import HttpResponse
+
+from datetime import datetime
+
 
 # Create your views here.
 class MainPageView(View):
@@ -34,6 +39,33 @@ class MainPageView(View):
 
     def render(self, request, args={}):
         args['todo'] = Todo.objects.filter(user=request.user)
+        applicants = Applicant.objects.all()
+        users_count = applicants.count()
+        args['users_count'] = users_count
+
+        total_age = 0;
+        today = datetime.now()
+        for a in applicants:
+            total_age += today.year - a.birthday.year - ((today.month, today.day) < (a.birthday.month, a.birthday.day))
+
+        args['middle_age'] = total_age / users_count
+
+        vacancies = Vacancy.objects.all()
+        vacancies_count = vacancies.count()
+        total_salary = 0
+        for v in vacancies:
+            total_salary += v.salary
+
+        args['middle_salary'] = total_salary / vacancies_count
+
+        applicant_vacancy = ApplicantVacancy.objects.all()
+        vacancies_count = applicant_vacancy.count()
+        total_salary = 0
+        for v in applicant_vacancy:
+            total_salary += v.salary
+
+        args['middle_applicant_salary'] = total_salary / vacancies_count
+
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
 

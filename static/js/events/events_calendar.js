@@ -339,15 +339,54 @@ $('#open_notification').on('click',function(){
     dialog.dialog('close');
     var event_id = $("#event_id").val();
     var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id))[0];
+    var name = event.name.split(' ');
     $('#emailto').val(event.email);
     $('#subject').val(event.title);
-    $('#message').val("Уважаемый " + event.name + "! Вам назначено " + event.title + " на " + event.start.format
-    ('DD/MM/YYYY HH:mm'));
+    $('#message').val("Уважаемый " + name[1] + ' ' + name[2] + "! Вам назначено " + event.title.toLowerCase() + ". Ждём Вас " + event.start.format
+    ('DD.MM.YYYY в HH:mm. '));
     $('#email_modal').modal('show');
+});
 
+$('.add-info').click(function(){
+    var $message = $('#message');
+    $message.val($message.val() + $(this).attr('value'));
+});
 
+//
+$('#sendEmail').click(function(){
 
+    /*var link = 'mailto:' + $('#emailto').val();
+    link += '?cc=' + 'hr@riavs.ru'
+    link += '&subject=' + escape($('#subject').val());
+    link += '&body=' + escape($('#message').val());
+*/
+    console.log('Start');
+    $.ajax({
+        type: 'POST',
+        url: '/events/send_message/',
+        data: {
+            'message': $('#message').val(),
+            'email': $('#emailto').val(),
+            'title': $('#subject').val()
+        },
+        dataType: 'json',
+        success: function(data){
+            var code = data['code'];
+            if(code == '200'){
+                alert('Сообщение отправлено');
 
+            }
+            else{
+                alert('Произошла ошибка при отправке сообщения');
+                console.log(data['message']);
+            }
+        },
+        error: function(data){
+            alert('Произошла ошибка при отправке сообщения');
+            console.log(data);
+        }
+    });
+    //window.location.href = link;
 });
 
 

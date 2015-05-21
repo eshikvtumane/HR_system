@@ -20,8 +20,8 @@ urlpatterns = patterns('',
 
      url(r'^update_event/$','events.views.update_event_ajax'),
 
-     url(r'^delete_event/$','events.views.delete_event_ajax')
+     url(r'^delete_event/$','events.views.delete_event_ajax'),
 
-
+     url(r'^send_message/$','events.views.send_message_ajax')
 
 )

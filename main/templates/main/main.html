@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles  %}
 {% load humanize %}
+{% load date_format %}
 
 {% block title %}
  ИС АПП - главная
@@ -67,52 +68,52 @@
               <!-- small box -->
               <div class="small-box bg-aqua">
                 <div class="inner">
-                  <h3>150</h3>
-                  <p>New Orders</p>
+                  <h3><i class="fa fa-rub"></i> {{ middle_applicant_salary|floatformat|intcomma }}</h3>
+                  <p>средняя запрашиваемая зарплата</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-bag"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{% url 'reports:charts' %}" class="small-box-footer">больше информации <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div><!-- ./col -->
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
               <div class="small-box bg-green">
                 <div class="inner">
-                  <h3>53<sup style="font-size: 20px">%</sup></h3>
-                  <p>Bounce Rate</p>
+                  <h3>{{ middle_age }}<sup style="font-size: 20px">{{ middle_age|number_declention }}</sup></h3>
+                  <p>средний возраст кандидатов</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-stats-bars"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{% url 'reports:charts' %}" class="small-box-footer">больше информации <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div><!-- ./col -->
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
               <div class="small-box bg-yellow">
                 <div class="inner">
-                  <h3>44</h3>
-                  <p>User Registrations</p>
+                  <h3>{{ users_count }}</h3>
+                  <p>{{ users_count|applicant_declention }}</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-person-add"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{% url 'reports:charts' %}" class="small-box-footer">больше информации <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div><!-- ./col -->
             <div class="col-lg-3 col-xs-6">
               <!-- small box -->
               <div class="small-box bg-red">
                 <div class="inner">
-                  <h3>65</h3>
-                  <p>Unique Visitors</p>
+                  <h3><i class="fa fa-rub"></i> {{ middle_salary|floatformat|intcomma }}</h3>
+                  <p>средняя предлагаемая зарплата</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-pie-graph"></i>
                 </div>
-                <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                <a href="{% url 'reports:charts' %}" class="small-box-footer">больше информации <i class="fa fa-arrow-circle-right"></i></a>
               </div>
             </div><!-- ./col -->
           </div><!-- /.row -->

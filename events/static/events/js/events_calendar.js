@@ -88,7 +88,7 @@ function addEvent(event_type,event_start,event_end,app_vacancy_id)
         },
 
         error:function(data){
-             $.notify("Произошла ошибка во время добавления действия!",'success',{
+             $.notify("Произошла ошибка во время добавления действия!",'error',{
                     position : 'top center'
                 })
     }

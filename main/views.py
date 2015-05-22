@@ -2,6 +2,7 @@
 from django.shortcuts import render_to_response
 from django.views.generic import View
 from django.template import RequestContext
+from django.http import JsonResponse
 
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -29,13 +30,17 @@ class MainPageView(View):
         return self.render(request)
 
     def post(self, request):
-        args = {}
-        record = request.POST['record']
-        try:
-            Todo(task=record, user=request.user).save()
-        except:
-            pass
-        return self.render(request)
+        if request.is_ajax:
+            args = {}
+            record = request.POST['record']
+            try:
+                task = Todo(task=record, user=request.user)
+                task_id = task.save()
+                result = {'code': 200, 'result': task.id}
+            except Exception, e:
+                #result = json.dumps(['500', e.message])
+                result = {'code': 500, 'message': e.message}
+        return JsonResponse(result, content_type='applicant/json')
 
     def render(self, request, args={}):
         args['todo'] = Todo.objects.filter(user=request.user)
@@ -43,12 +48,14 @@ class MainPageView(View):
         users_count = applicants.count()
         args['users_count'] = users_count
 
+        zero = u'н/д'
+
         total_age = 0;
         today = datetime.now()
         for a in applicants:
             total_age += today.year - a.birthday.year - ((today.month, today.day) < (a.birthday.month, a.birthday.day))
 
-        args['middle_age'] = total_age / users_count
+        args['middle_age'] = self.__calculationMiddleValues(total_age, users_count, zero)
 
         vacancies = Vacancy.objects.all()
         vacancies_count = vacancies.count()
@@ -56,7 +63,7 @@ class MainPageView(View):
         for v in vacancies:
             total_salary += v.salary
 
-        args['middle_salary'] = total_salary / vacancies_count
+        args['middle_salary'] = self.__calculationMiddleValues(total_salary, users_count, zero)
 
         applicant_vacancy = ApplicantVacancy.objects.all()
         vacancies_count = applicant_vacancy.count()
@@ -64,10 +71,16 @@ class MainPageView(View):
         for v in applicant_vacancy:
             total_salary += v.salary
 
-        args['middle_applicant_salary'] = total_salary / vacancies_count
+        args['middle_applicant_salary'] = self.__calculationMiddleValues(total_salary, vacancies_count, zero)
 
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
+
+    def __calculationMiddleValues(self, total, count, zero):
+        try:
+            return total/count
+        except:
+            return zero
 
 class TodoDeleteAjax(View):
     '''

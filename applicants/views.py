@@ -43,9 +43,11 @@ class SavingModels():
             convert_id = int(source)
             return SourceInformation.objects.get(pk=convert_id)
         except:
-            source_obj = SourceInformation(source=source, author=self.author)
-            source_obj.save()
-            return source_obj
+            if source:
+                source_obj = SourceInformation(source=source, author=self.author)
+                source_obj.save()
+                return source_obj
+        return
 
     def createMajor(self, major):
         try:
@@ -116,8 +118,10 @@ class SavingModels():
                 edu_obj.append(ApplicantEducation(**educations[v]))
 
             ApplicantEducation.objects.bulk_create(edu_obj)
-        except:
-            return
+        except Exception, e:
+            print 'Error'
+            print e.message
+        return
 
     # добавление изменения анкеты кандидата
     def addHistoryChange(self, user, applicant, type):
@@ -157,7 +161,7 @@ class SavingModels():
 
             # сохранение данных в таблицу Applicant
             # сохраниение нового источника или получение id существующего источника
-            request.POST['source'] = self.sourceCreate(req['source'])
+            #request.POST['source'] = self.sourceCreate(req['source'])
 
             if req['icq']:
                 req['icq'] = int(req['icq'])
@@ -335,7 +339,7 @@ class ApplicantSearchView(PaginatorView):
             date_start = datetime.date(today.year - age_max - 1, today.month, today.day)
             date_end = datetime.date(today.year - age_min - 1, today.month, today.day)
 
-            print 'age', date_start, date_end
+            #print 'age', date_start, date_end
 
             query_list['applicant__birthday__gte'] = query_applicant_list['birthday__gte'] = date_start
             query_list['applicant__birthday__lte'] = query_applicant_list['birthday__lte'] = date_end
@@ -449,7 +453,10 @@ class ApplicantView(View, SavingModels):
             instance = get_object_or_404(Applicant, id=applicant_id)
             result = self.savingApplicantForm(request, 'Изменён', {'instance': instance})
 
-            json_res = json.dumps(['200',result])
+            if result:
+                json_res = json.dumps(['200',result])
+            else:
+                json_res = json.dumps(['500',result])
             #return HttpResponseRedirect(reverse('applicants:applicant_view', kwargs={'applicant_id':int(applicant_id)}))
             #url = reverse('applicant_view', kwargs={'applicant_id': int(applicant_id)})
             #return redirect('applicants:applicant_view', applicant_id=int(applicant_id))

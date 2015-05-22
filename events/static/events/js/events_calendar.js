@@ -425,9 +425,22 @@ $('#delete_event').button().on('click',function(){
     }).appendTo('#external-events');
 
 
+
+    if ($.cookie('app_vacancy_id') != undefined) {
+       $.notify("Для того, чтобы назначить кандидату действие, перетяните блок с событием на нужный день в календаре.",
+       'warn',{
+                    position : 'top center'
+                })
+    };
+
+
     //удаляем куку с id вакансии, чтобы исключить возможность назначения действия без перехода
     //со страницы кандидата
     $.cookie('app_vacancy_id',"nothing",{ path: '/',expires:-10000 });
 
 
 });
+
+
+
+

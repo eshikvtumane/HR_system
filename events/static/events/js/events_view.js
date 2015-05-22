@@ -12,7 +12,7 @@ $(function(){
         },
        success:function(data){
             //создаём массив для вывода полей из json-response-object в определённом порядке
-            var field_names =  ['event','start','end','author','happened','description'];
+            var field_names =  ['event','start','end','author','description'];
             $('#events_table').find('tbody').empty();
             for (i=0;i<data.length;i++){
                 var event = data[i];
@@ -21,36 +21,17 @@ $(function(){
                 {
                     if (field_names[j] == 'happened'){
 
-                        if (event[field_names[j]]){
-                            $("<td>",{
-
-                            }).appendTo($row).append("<input type='checkbox' checked='checked' disabled='disabled'>");
-
-
-
-                        }else{
-
-                             $("<td>",{
-
-                            }).appendTo($row).append($('<input>',{
-
-                                type:'checkbox',
-                                class : 'is_happened_chk',
-                                value: event['id']
-
-                            }));
-
-
-                        }
-
-                    }
-                    else{
-                    $('<td>',{
-                       text:event[field_names[j]]
-                    }).appendTo($row);
-                        }
+                        $('<td>',{
+                           text:event[field_names[j]]
+                        }).appendTo($row);
+                            }
 
                 }
+
+
+                $('<td>',{
+                           text:event[field_names[j]]
+                        }).appendTo($row);
 
 
               $('#events_table').find('tbody').append($row);

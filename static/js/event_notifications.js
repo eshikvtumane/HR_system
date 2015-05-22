@@ -20,11 +20,12 @@ swampdragon.ready(function(){
     //добавление оповещения к меню
     swampdragon.getList('notifications',{},function(context,data){
         data.forEach(function(notification){
-            var li = $("<li>");
-            var $messageContainer = $('<a>').attr('href','#');
+
+            var $li = $("<li>");
+            var $messageContainer = $('<a>').attr('href','/events/events_calendar');
             $messageContainer.html(notification.message);
-            $messageContainer.appendTo(li);
-            notificationsMenu.append(li);
+            $messageContainer.appendTo($li);
+            notificationsMenu.append($li);
         })
     });
 
@@ -51,11 +52,11 @@ function addNotification(notification) {
     }
     $('#notification_label').css("display", "block");
     // Добавление оповещения к меню
-    var li = $("<li>");
-    var $messageContainer = $('<a>').attr('href','#');
+    var $li = $("<li>");
+    var $messageContainer = $('<a>').attr('href','/events/events_calendar');
     $messageContainer.html(notification.message);
-    $messageContainer.appendTo(li);
-    notificationsMenu.prepend(li);
+    $messageContainer.appendTo($li);
+    notificationsMenu.prepend($li);
     playSound('notification');
 
     // Удаляем лишние оповещения

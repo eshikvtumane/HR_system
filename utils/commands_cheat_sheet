@@ -1,0 +1,3 @@
+celery -A HR_project worker -l info
+celery -A HR_project beat -l info
+redis-server

@@ -10,7 +10,7 @@ CELERY_TIMEZONE = 'Asia/Vladivostok'
 CELERYBEAT_SCHEDULE = {
     'check-events-every-30-minutes': {
         'task': 'events.tasks.check_events',
-        'schedule': timedelta(seconds=10)
+        'schedule': timedelta(minutes=1)
 
     },
 }

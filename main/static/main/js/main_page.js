@@ -1,15 +1,48 @@
 
 $(document).ready(function () {
-   $('.remove-todo').click(function(){
-   console.log(111)
-        var $record_id = $(this).attr('id');
+    $('#add_task').click(function(){
+        var record = $('[name="record"').val();
+        if(record){
+            $.ajax({
+                type: 'POST',
+                url: '/',
+                data: {
+                    'record': record
+                },
+                dataType: 'json',
+                success: function(data){
+                    var code = data['code']
+                    if(code == 200){
+                    // вставка в DOM добавленного задания
+                        var id = data['result']
+                        var todo = '<li id="todo-' + id + '">';
+                        todo += '<span class="text">' + record + '</span>';
+                        todo += '<small class="label label-success"><i class="fa fa-clock-o"></i> сегодня</small>'
+                        todo += '<div class="tools"><i class="fa fa-trash-o remove-todo" id="' + id + '"></i></div></li>'
+                        $('.todo-list').append(todo).fadeIn('slow');
+
+                        $(document).on('click', '.remove-todo', removeTask);
+                    }
+                    else{
+                        alert('Произошла ошибка при добавлении');
+                        console.log(data['message']);
+                    }
+                },
+                error: function(data){
+                    //alert('Произошла ошибка на сервере');
+                }
+            });
+        }
+    });
+
+   $('.remove-todo').click(removeTask);
+
+    function removeTask(){
+         var $record_id = $(this).attr('id');
         if($record_id){
             $.ajax({
                 type: 'GET',
                 url: '/todo_delete/' + $record_id,
-                /*data: {
-                    'record_id': $record_id
-                },*/
                 dataType: 'json',
                 success: function(data){
                     var code = data[0]
@@ -20,10 +53,13 @@ $(document).ready(function () {
                         alert('Произошла ошибка при удалении');
                         console.log(data[1]);
                     }
+                },
+                error: function(data){
+                    alert('Произошла ошибка на сервере')
                 }
             });
         }
-    });
+    }
 
 /*
   //Activate the iCheck Plugin

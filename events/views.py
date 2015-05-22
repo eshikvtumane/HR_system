@@ -223,7 +223,6 @@ def send_message_ajax(request):
         except Exception, e:
             return httpresposejson('500', 'Преданы не все параметры (сообщение, тема, кому отправить)')
 
-        print message[0]
         sender = EmailSender()
         result = sender.send(message, recipients, title)
         if result:

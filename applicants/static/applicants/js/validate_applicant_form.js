@@ -76,6 +76,22 @@ function validateForm(send_fn, url, success_fn){
           errorMessageKey: 'badEvenNumber'
         });
 
+        // валидация текстовых полей
+        $.formUtils.addValidator({
+          name : 'text',
+          validatorFunction : function(value, $el, config, language, $form) {
+            email_len = value.length;
+            if(email_len != 0){
+                var reg = new RegExp('^([0-9А-Яа-яЁё- ]+)$');
+                result = reg.test(value);
+                return result;
+            }
+            return true;
+          },
+          errorMessage : 'Присутствуют недопустимые символы',
+          errorMessageKey: 'badEvenNumber'
+        });
+
         $.validate({
         form: '#applicant_form',
         language : myLanguage,

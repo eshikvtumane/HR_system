@@ -215,7 +215,7 @@ WorkWithTable.prototype.addRecords = function(values){
 
     // кнопка удаления записи
         var btn = document.createElement('button');
-        btn.innerHTML = 'Удалить';
+        btn.innerHTML = '<i class="fa fa-close"></i>';
         btn.setAttribute('class', 'btn btn-danger');
         btn.setAttribute('onclick', this.del_fn + '('+ this.count_id +');');
 

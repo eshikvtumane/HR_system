@@ -23,8 +23,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 
-#from chartit import DataPool,Chart
-
 import pprint
 
 # Create your views here.
@@ -531,8 +529,11 @@ class SummaryStatementRecruitmentGenerateAjax(View):
                                                       date_created__year=period[1]
                 )'''
                 # общее количество заявок по вакансии из данного источника ()
-                #total_count = result_status.distinct('applicant_vacancy__applicant').count()
-                total_count = result_status.count()
+                try:
+                    total_count = result_status.distinct('applicant_vacancy__applicant').count()
+                except:
+                    # для sqlite3
+                    total_count = result_status.count()
 
                 # если нет заявок, то дальнейшую выборку не производим
                 #if total_count != 0:

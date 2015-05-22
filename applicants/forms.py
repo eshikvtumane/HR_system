@@ -48,16 +48,12 @@ class ApplicantForm(forms.ModelForm):
                                             }),
             'city': forms.TextInput(attrs={
                 'class': "form-control",
-                'data-validation': "custom",
-                'data-validation-regexp': "^([А-Яа-яЁё -]+)$",
-                'data-validation-error-msg': "Название города должно состоять из кириллических символов",
+                'data-validation': "text",
                 'autocomplete': 'off'
             }),
             'street': forms.TextInput(attrs={
                 'class': "form-control",
-                'data-validation': "custom",
-                'data-validation-regexp': "^([А-Яа-яЁё0-9 -]+)$",
-                'data-validation-error-msg': "Название улицы должно состоять из кириллических символов",
+                'data-validation': "text",
                 'autocomplete': 'off'
             }),
 

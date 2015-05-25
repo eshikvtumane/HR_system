@@ -14,6 +14,8 @@
     <!-- Стили для datepicker -->
     <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
     <link rel="stylesheet" type="text/css" href="{% static 'vacancies/css/style.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'vacancies/css/vacancy_view.css' %}" >
+
 {% endblock %}
 
 
@@ -21,6 +23,8 @@
 {% block scripts %}
 <script src="{% static 'js/csrf_ajax.js' %}"></script>
 <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
+<script src="{% static 'js/paging.js' %}"></script>
+<script src="{% static 'vacancies/js/vacancy_view.js' %}"></script>
 {% endblock %}
 
 
@@ -131,19 +135,29 @@
 
               </div>
 
-               <div class="box box-success">
+                <div class="box box-success">
                     <div class="box-header" style="max-height:800px;overflow:scroll;">
                         <h4>Кандидаты на данную вакансию</h4>
                         <div class="well">
+                            <table id="candidates_table" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Кандидат</th>
+                                        <th>Статус</th>
 
-                            <ul id='applicant_list'>
-                            {% for applicant in applicants  %}
-                               <a href="/applicants/view/{{applicant.applicant.id}}"> <li> {{applicant.applicant.first_name}} {{applicant.applicant.last_name}} {{applicant.applicant.middle_name}}
-                               ({{ applicant.status }})
-                                   </a></li>
-                            {% endfor %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for applicant in applicants %}
+                                <tr>
+                                    <td>{{applicant.applicant}}</td>
+                                    <td>{{applicant.status}}</td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
 
-                            </ul>
+
 
                         </div>
 

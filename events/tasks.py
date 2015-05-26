@@ -19,7 +19,7 @@ def check_events():
     current_time = timezone.make_aware(current_time,timezone.get_default_timezone())
     for event in today_events:
         #если событие назначено на время в интервале 30 минут(от текущего момента), то создаём оповещение
-        if abs(fromUTCtoLocal(event.start) - current_time) <= datetime.timedelta(minutes=30):
+        if abs(fromUTCtoLocal(event.start) - current_time) <= datetime.timedelta(minutes=60):
              message = "На " + str(fromUTCtoLocal(event.start).time()) + " назначено " + str(event.event)
 
              Notification.objects.create(message=message)

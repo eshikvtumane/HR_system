@@ -126,7 +126,7 @@ class VacancyEdit(View):
                             VacancyBenefit.objects.create(vacancy=Vacancy.objects.get(id=vacancy.id) ,
                                                           benefit=Benefit.objects.get(id=int( benefit)))
                 VacancyStatusHistory.objects.create(vacancy=vacancy,status=VacancyStatus.objects.get(pk=request.POST['status']))
-                return JsonResponse(status='200')
+                return JsonResponse(data = {},status='200')
             return JsonResponse(vacancy_form.errors,status = '400')
 
 

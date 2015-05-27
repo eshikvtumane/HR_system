@@ -156,9 +156,11 @@ def add_event(request):
         form = ApplicantVacancyEventForm({
             'event':event,'start':start,'end':end})
 
+
         if form.is_valid():
             form.instance.applicant_vacancy = applicant_vacancy
             form.instance.author = request.user
+
             form.save()
             return HttpResponse ("200")
 
@@ -206,7 +208,7 @@ def delete_event_ajax(request):
             return  HttpResponse('400')
 
 
-def httpresposejson(code, message):
+def httpresponsejson(code, message):
     #result = json.dumps([code, message])
     return JsonResponse({'code': code, 'messages': message})
     #return HttpResponse(result, content_type='application/json')
@@ -221,12 +223,12 @@ def send_message_ajax(request):
             recipients = [method['email']]
             title = method['title']
         except Exception, e:
-            return httpresposejson('500', 'Преданы не все параметры (сообщение, тема, кому отправить)')
+            return httpresponsejson('500', 'Преданы не все параметры (сообщение, тема, кому отправить)')
 
         sender = EmailSender()
         result = sender.send(message, recipients, title)
         if result:
-            return httpresposejson('200', 'Success')
-        return httpresposejson('500', 'Error send')
+            return httpresponsejson('200', 'Success')
+        return httpresponsejson('500', 'Error send')
 
 

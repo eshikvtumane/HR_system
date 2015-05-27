@@ -5,6 +5,6 @@ $(function(){
         format: 'd-m-Y'
     });
 
-
+    $('#vacancy_table').tablesorter();
 
 });

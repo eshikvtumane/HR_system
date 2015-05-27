@@ -123,7 +123,7 @@
                         <div class="well">
 
 
-                               <a href="/applicants/view/{{applicant_hired.id}}"> {{applicant_hired.first_name}} {{applicant_hired.last_name}} {{applicant_hired.middle_name}}
+                               <a href="/applicants/view/{{applicant_hired.id}}"> {{applicant_hired.applicant}}
                                    </a>
 
 
@@ -136,7 +136,7 @@
               </div>
 
                 <div class="box box-success">
-                    <div class="box-header" style="max-height:800px;overflow:scroll;">
+                    <div class="box-header">
                         <h4>Кандидаты на данную вакансию</h4>
                         <div class="well">
                             <table id="candidates_table" class="table">
@@ -150,7 +150,7 @@
                                 <tbody>
                                 {% for applicant in applicants %}
                                 <tr>
-                                    <td>{{applicant.applicant}}</td>
+                                    <td><a href= "/applicants/view/{{ applicant.applicant.id }}">{{applicant.applicant}}</a></td>
                                     <td>{{applicant.status}}</td>
                                 </tr>
                                 {% endfor %}

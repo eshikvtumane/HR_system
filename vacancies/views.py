@@ -134,7 +134,10 @@ class VacancyEdit(View):
 
 class VacancySearch(View):
     template = 'vacancies/vacancy_search.html'
+
     def get(self,request):
+
+        vacancies_per_page = 10
 
         try:
             page = request.GET.get('page', 1)
@@ -193,7 +196,7 @@ class VacancySearch(View):
 
 
 
-        p = Paginator(vacancies_list,2,request=request)
+        p = Paginator(vacancies_list,vacancies_per_page,request=request)
         vacancies_list = p.page(page)
         c = RequestContext(request,{'vacancy_form':vacancy_form,'vacancies_list':vacancies_list})
         return render_to_response(self.template,c)

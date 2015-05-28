@@ -5,13 +5,14 @@ $(function () {
     drawVacanciesDistributionChart();
     drawPositionAvgSalaryChart();
 
-    var hiredToTotalChart = drawHiredToTotalApplicantsRate(HiredToTotalApplicantsGetData(currentYear));
+    drawHiredToTotalApplicantsRate(HiredToTotalApplicantsGetData(currentYear));
 
     $("#slct_change_year").on("change",function(){
                var selected_year = $(this).val();
-               data = HiredToTotalApplicantsGetData(selected_year)
-               hiredToTotalChart.series[0].setData(data['total'])
-               hiredToTotalChart.series[1].setData(data['hired'])
+               data = HiredToTotalApplicantsGetData(selected_year);
+               var chart = $('#hired_to_total_rate').highcharts();
+               chart.series[0].setData(data['total']);
+               chart.series[1].setData(data['hired']);
 
         })
 
@@ -163,49 +164,45 @@ function HiredToTotalApplicantsGetData(year){
             }
         });
 
-     console.log("dsds"+chart_data);
+
      return chart_data;
 }
 
 function drawHiredToTotalApplicantsRate(data){
 
 
-    var chart = $('#hired_to_total_rate').highcharts({
-                        chart: {
-                            type: 'line'
-                        },
-                        title: {
-                            text: 'Monthly Average Temperature'
-                        },
-                        subtitle: {
-                            text: 'Source: WorldClimate.com'
-                        },
-                        xAxis: {
-                            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-                        },
-                        yAxis: {
-                            title: {
-                                text: 'Temperature (°C)'
-                            }
-                        },
-                        plotOptions: {
-                            line: {
-                                dataLabels: {
-                                    enabled: true
-                                },
-                                enableMouseTracking: false
-                            }
-                        },
-                        series: [{
-                            name: 'Всего кандидатов',
-                            data: data['total']
-                        }, {
-                            name: 'Принятно на работу',
-                            data:  data['hired']
-                        }]
-                    });
+    $('#hired_to_total_rate').highcharts({
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Поступление кандидатов'
+                },
 
+                xAxis: {
+                    categories: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
+                },
+                yAxis: {
+                    title: {
+                        text: 'Количество человек'
+                    }
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: true
+                        },
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    name: 'Всего кандидатов',
+                    data: data['total']
+                }, {
+                    name: 'Принятно на работу',
+                    data:  data['hired']
+                }]
+            });
 
-    return chart;
 
 }

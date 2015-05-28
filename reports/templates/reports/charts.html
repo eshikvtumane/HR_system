@@ -37,7 +37,7 @@
             <div class="row">
                 <!-- Left col -->
                 <section class="col-lg-4 connectedSortable">
-                    <div class="box box-success">
+                    <div class="box box-primary">
 
 
                         <div id="vacancies_distribution"></div>
@@ -47,7 +47,7 @@
                 </section>
 
                 <section class="col-lg-4 connectedSortable">
-                    <div class="box box-success">
+                    <div class="box box-primary">
 
 
                         <div id="position_avg_salary"></div>
@@ -57,7 +57,7 @@
                 </section>
 
                 <section class="col-lg-4 connectedSortable">
-                    <div class="box box-success">
+                    <div class="box box-primary">
 
 
                         <div id=""></div>
@@ -70,9 +70,9 @@
             </div>
             <div class="row">
                      <section class="col-lg-12 connectedSortable">
-                    <div class="box box-success">
-
-                        <select id="slct_change_year">
+                    <div class="box box-primary">
+                        <h4>Выберите год:</h4>
+                        <select id="slct_change_year" class="form-control">
                             {% for year in years %}
                                 <option value="{{ year }}">{{year}}</option>
                             {% endfor %}

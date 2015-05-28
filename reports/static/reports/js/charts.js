@@ -1,13 +1,8 @@
 $(function () {
 
-    $('#tabs').tabs();
-
     drawVacanciesDistributionChart();
 
-    $('#tab_position_avg_salary').on('click',function(){
-         drawPositionAvgSalaryChart();
-    })
-
+    drawPositionAvgSalaryChart();
 
 });
 
@@ -28,7 +23,7 @@ function drawVacanciesDistributionChart(){
                             plotShadow: false
                         },
                         title: {
-                            text: ''
+                            text: 'Распределение вакансий по должностям'
                         },
                         tooltip: {
                             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -77,7 +72,7 @@ function drawPositionAvgSalaryChart(){
                         type: 'column'
                     },
                     title: {
-                        text: ''
+                        text: 'Средняя запрашиваемая зарплата'
                     },
                     subtitle: {
 

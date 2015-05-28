@@ -25,8 +25,9 @@
             </h1>
             <ol class="breadcrumb">
                 <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
-                <li><a href="{% url 'reports:main_reports' %}"><i class="fa fa-pie-chart"></i> Статистика</a></li>
-                <li class="active">Инфографика</li>
+                <li><a href="{% url 'reports:main_reports' %}"><i class="fa fa-pie-chart"></i> Статистика и
+                    отчёты</a></li>
+                <li class="active">Статистика</li>
             </ol>
         </section>
 
@@ -65,6 +66,23 @@
                     </div>
                 </section>
 
+
+            </div>
+            <div class="row">
+                     <section class="col-lg-12 connectedSortable">
+                    <div class="box box-success">
+
+                        <select id="slct_change_year">
+                            {% for year in years %}
+                                <option value="{{ year }}">{{year}}</option>
+                            {% endfor %}
+                        </select>
+
+                        <div id="hired_to_total_rate"></div>
+
+
+                    </div>
+                </section>
 
             </div>
         </section>

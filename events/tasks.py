@@ -5,7 +5,7 @@ from django.utils import timezone
 from celery import shared_task
 from .models import ApplicantVacancyEvent
 from notifications.models import Notification
-from vacancies.models import  ApplicantVacancyApplicantVacancyStatus
+from vacancies.models import  CurrentApplicantVacancyStatus
 from utils.functions import fromUTCtoLocal,fromLocaltoUTC
 
 
@@ -24,7 +24,7 @@ def check_events():
 
              Notification.objects.create(message=message)
         #выбираем последний присвоенный статус по данной вакансии
-        last_vacancy_status = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy = event.applicant_vacancy).order_by('-pk')[0]
+        last_vacancy_status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy = event.applicant_vacancy).order_by('-pk')[0]
         #если событие произошло, а статус после этого не был изменён то, создаём оповещение
         if fromUTCtoLocal(last_vacancy_status.date) < fromUTCtoLocal(event.end) < current_time :
             message = 'Измените статус кандидата' + str(event.applicant_vacancy.applicant) + ' по вакансии ' + str(event.applicant_vacancy.vacancy.position)

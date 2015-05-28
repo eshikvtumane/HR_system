@@ -10,7 +10,7 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from forms import ApplicantForm, CandidateSearchForm, ApplicantEducationForm, VacancyForm
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation, HistoryChangeApplicantInfo
 from vacancies.models import Vacancy, ApplicantVacancy, \
-    ApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatus, VacancyStatusHistory
+    ApplicantVacancyStatus, CurrentApplicantVacancyStatus, VacancyStatusHistory
 
 from events.models import ApplicantVacancyEvent
 from vacancies.forms import ApplicantVacancyEventForm
@@ -79,7 +79,7 @@ class SavingModels():
                 vacancies[v]['applicant'] = user
                 vacancies[v]['source'] = self.sourceCreate(vacancies[v]['source'])
 
-                #ApplicantVacancyApplicantVacancyStatus(applicant_vacancy=)
+                #CurrentApplicantVacancyStatus(applicant_vacancy=)
                 vacancy_obj.append(ApplicantVacancy(**vacancies[v]))
 
             ApplicantVacancy.objects.bulk_create(vacancy_obj)
@@ -88,13 +88,13 @@ class SavingModels():
 
             # добавление статуса по умолчанию
             for a in new_applicant_vacancies:
-                new_applicant_vacancy_statuses.append(ApplicantVacancyApplicantVacancyStatus(
+                new_applicant_vacancy_statuses.append(CurrentApplicantVacancyStatus(
                                                     applicant_vacancy=a,\
                                                     applicant_vacancy_status=ApplicantVacancyStatus.objects.get(name__contains='Новый кандидат'),\
                                                     date = datetime.datetime.now(),
                                                     author=req_user))
 
-                ApplicantVacancyApplicantVacancyStatus(
+                CurrentApplicantVacancyStatus(
                                                     applicant_vacancy=a,\
                                                     applicant_vacancy_status=ApplicantVacancyStatus.objects.get(name__contains='Новый кандидат'),\
                                                     author=req_user,\
@@ -373,7 +373,7 @@ class ApplicantSearchView(PaginatorView):
                     # перебираем
                     for av in applicant_vacancy:
                         try:
-                            s = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
+                            s = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
                             # получаем последний статус
                             last_status = s[s.count()-1]
                             status = last_status.applicant_vacancy_status
@@ -392,7 +392,7 @@ class ApplicantSearchView(PaginatorView):
                     # перебираем
                     for av in applicant_vacancy:
                         try:
-                            s = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
+                            s = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
                             # получаем последний статус
                             last_status = s[s.count()-1]
                             status = last_status.applicant_vacancy_status
@@ -473,7 +473,7 @@ class ApplicantVacancyStatusAjax(View):
         if request.is_ajax:
             request = request.GET
 
-            result_obj = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=request['applicant_vacancy']).values('date', 'applicant_vacancy_status__name', 'note')
+            result_obj = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=request['applicant_vacancy']).values('date', 'applicant_vacancy_status__name', 'note')
             result = [
                 {
                     'date': i['date'].strftime('%d-%m-%Y'),
@@ -496,7 +496,7 @@ class ApplicantVacancyStatusAjax(View):
     def post(self, request):
         if request.is_ajax:
             request = request.POST
-            obj = ApplicantVacancyApplicantVacancyStatus(
+            obj = CurrentApplicantVacancyStatus(
                 applicant_vacancy=ApplicantVacancy.objects.get(pk=request['applicant_vacancy']),
                 applicant_vacancy_status = ApplicantVacancyStatus.objects.get(pk=request['status']),
                 author = User.objects.get(pk=request['user_id']),

@@ -7,7 +7,7 @@ from django.core.context_processors import csrf
 from django.conf import settings
 
 from forms import EmailPositionForm
-from vacancies.models import ApplicantVacancy, ApplicantVacancyApplicantVacancyStatus, ApplicantVacancyStatus
+from vacancies.models import ApplicantVacancy, CurrentApplicantVacancyStatus, ApplicantVacancyStatus
 
 from datetime import datetime
 import json
@@ -195,7 +195,7 @@ class EmailSender(View):
         emails = []
         for av in applicant_vacancy:
             try:
-                s = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
+                s = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
                 # получаем последний статус
                 last_status = s[s.count()-1]
                 status = last_status.applicant_vacancy_status

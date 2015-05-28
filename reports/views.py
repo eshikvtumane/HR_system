@@ -6,8 +6,9 @@ from django.views.generic import View
 
 
 
-from vacancies.models import ApplicantVacancy, Vacancy, ApplicantVacancyApplicantVacancyStatus, VacancyStatusHistory, Position, Department
-from applicants.models import SourceInformation,Position
+from vacancies.models import ApplicantVacancy, Vacancy, CurrentApplicantVacancyStatus, VacancyStatusHistory,\
+    Position, Department
+from applicants.models import SourceInformation,Position, Applicant
 
 
 
@@ -516,7 +517,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
                 result_counter.append([source_name, style])
 
                 # выборка статусов по вакансию
-                result_status = ApplicantVacancyApplicantVacancyStatus.objects.filter(
+                result_status = CurrentApplicantVacancyStatus.objects.filter(
                                                         applicant_vacancy__vacancy = vacancy,
                                                         applicant_vacancy__source=source_obj,
                                                         date__month=period[0],
@@ -708,7 +709,7 @@ class PositionStatement(View, DateRange):
         gp.autoResizeRowHeight(sheet, row_start, 2)
         gp.autoResizeColumnWidth(sheet, 1, 30)
 
-        statuses = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy__vacancy=position_obj,
+        statuses = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy__vacancy=position_obj,
                                                                             date__year = year)
 
         applicants = statuses.filter(applicant_vacancy_status__name__contains='Принят на работу')\
@@ -743,7 +744,7 @@ class PositionStatement(View, DateRange):
                 dismissal = '-'
 
 
-            if isinstance(result, ApplicantVacancyApplicantVacancyStatus) and result.note.rstrip():
+            if isinstance(result, CurrentApplicantVacancyStatus) and result.note.rstrip():
                 characteristics = 'да'
             else:
                 characteristics = ''
@@ -923,7 +924,7 @@ class VacancyReportGenerateAjax(View, DateRange):
                             total_vacancies += 1
 
                             # принятые кандидаты
-                            applicants = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy__vacancy=close_vac.vacancy,applicant_vacancy_status__name__contains='Принят на работу')
+                            applicants = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy__vacancy=close_vac.vacancy,applicant_vacancy_status__name__contains='Принят на работу')
 
                             applicant_name = []
                             for applicant in applicants:
@@ -933,7 +934,7 @@ class VacancyReportGenerateAjax(View, DateRange):
                                     name += a.middle_name[0] + '.'
 
                                 # уволенные кандидаты
-                                fired = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy__applicant=a,applicant_vacancy__vacancy=close_vac.vacancy,applicant_vacancy_status__name__contains='Уволен').count()
+                                fired = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy__applicant=a,applicant_vacancy__vacancy=close_vac.vacancy,applicant_vacancy_status__name__contains='Уволен').count()
                                 if fired:
                                     applicant_name.append([name, style_horiz + color_cell])
                                 else:
@@ -981,7 +982,14 @@ class VacancyReportGenerateAjax(View, DateRange):
 class ChartsView(View):
     def get(self,request):
         self.template = 'reports/charts.html'
-        c = RequestContext(request)
+        #вычисляем временной интервал для отображения графика с поступившими и принятыми на работу кандидатами
+        years = []
+        current_year = datetime.now().year
+        start_year = current_year - 10
+        end_year = current_year + 10
+        for year in range (start_year,end_year):
+            years.append(year)
+        c = RequestContext(request,{'years':years})
         return render_to_response(self.template,c)
 
 
@@ -1011,4 +1019,25 @@ def get_requested_salary_avg(request):
             positions_with_avg_salary_list.append(position_with_avg)
        result = json.dumps(positions_with_avg_salary_list)
        return HttpResponse(result,content_type='application/json')
+
+
+def get_hired_to_total_applicants_rate(request):
+    if request.is_ajax:
+        total_applicants = [0 for n in range(12)]
+        hired_applicants = [0 for n in range(12)]
+        year = request.GET["year"]
+        applicants = Applicant.objects.filter(date_created__year=year)
+        for applicant in applicants:
+            total_applicants[applicant.date_created.month - 1] += 1
+
+        for app_vac in CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy_status__name = "Принят на "
+                                                                                                     "работу"):
+            hired_applicants[app_vac.applicant_vacancy_status.date_created.month - 1] += 1
+
+        return JsonResponse(data={'total':total_applicants,'hired':hired_applicants},status=200)
+
+
+
+
+
 

@@ -5,7 +5,7 @@ from django.contrib import admin
 from .models import Head, Department, VacancyStatus, Vacancy,VacancyStatusHistory, \
     ApplicantVacancy, \
     ApplicantVacancyStatus,\
-    ApplicantVacancyApplicantVacancyStatus
+    CurrentApplicantVacancyStatus
 
 
 # Register your models here.
@@ -65,6 +65,6 @@ admin.site.register(VacancyStatus, VacancyStatusAdmin)
 admin.site.register(Vacancy, VacancyAdmin)
 admin.site.register(ApplicantVacancy,ApplicantVacancyAdmin)
 admin.site.register(ApplicantVacancyStatus,ApplicantVacancyStatusAdmin)
-admin.site.register(ApplicantVacancyApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatusAdmin)
+admin.site.register(CurrentApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatusAdmin)
 admin.site.register(VacancyStatusHistory, VacancyStatusHistoryAdmin)
 

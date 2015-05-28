@@ -12,7 +12,7 @@ from forms import AddVacancyForm, EditVacancyForm, SearchVacancyForm
 from events.models import ApplicantVacancyEvent
 from applicants.models import Applicant
 from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory, ApplicantVacancy, \
-    Benefit,VacancyBenefit,ApplicantVacancyApplicantVacancyStatus
+    Benefit,VacancyBenefit,CurrentApplicantVacancyStatus
 from events.models import ApplicantVacancyEvent
 
 
@@ -67,7 +67,7 @@ class VacancyView(View):
 
         for app_vacancy in app_vacancies:
             #выбираем последний статус в объектах Applicant-Vacancy по данной вакансии
-            last_status = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
+            last_status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
                 '-id')[0]
 
             #добавляем кандидата в массив кандидатов с его текущим статусом по данной вакансии

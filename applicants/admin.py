@@ -1,7 +1,7 @@
 #-*- coding:utf8 -*-
 from django.contrib import admin
 from models import Education, Major, SourceInformation, Applicant, Resume, Portfolio, Position, Phone, ApplicantEducation
-from vacancies.models import Vacancy, ApplicantVacancy, ApplicantVacancyApplicantVacancyStatus
+from vacancies.models import Vacancy, ApplicantVacancy, CurrentApplicantVacancyStatus
 from datetime import datetime, date, timedelta
 
 # Register your models here.
@@ -156,7 +156,7 @@ class ApplicantAdmin(admin.ModelAdmin):
         result_statuses = ''
         status = '<div><a target="_blank" href="/admin/vacancies/vacancy/%s">%s %s, %s</a> - %s</div><hr>'
 
-        vacancy_statuses = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy__applicant=obj).values(
+        vacancy_statuses = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy__applicant=obj).values(
                                                                             'applicant_vacancy__vacancy__id',
                                                                             'applicant_vacancy__vacancy__position__name',
                                                                             'applicant_vacancy__vacancy__head__name',

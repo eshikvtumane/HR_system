@@ -143,9 +143,9 @@ class ApplicantVacancy(models.Model):
 
 
 #Текущий статус кандидата по вакансии
-class ApplicantVacancyApplicantVacancyStatus(models.Model):
+class CurrentApplicantVacancyStatus(models.Model):
     class Meta:
-        db_table = "ApplicantVacancyApplicantVacancyStatus"
+        db_table = "CurrentApplicantVacancyStatus"
         verbose_name = 'Текущий статус кандидата по вакансии'
         verbose_name_plural = 'Текущий статус кандидата по вакансии'
 

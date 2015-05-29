@@ -38,7 +38,7 @@ function updateEvent(event_id,event_start,event_end){
 
         //если форма с редактированием события была открыта,то закрываем её
         if ($("#edit_event").attr('display') !== 'none'){
-                dialog.dialog('close');
+                edit_event_dialog.dialog('close');
         }
 
         $.notify("Событие успешно обновлено! Возможно, вам стоит отправить кандидату оповещение об изменённом событии.",
@@ -113,7 +113,7 @@ function deleteEvent(event_id)
         },
         success:function(data){
            if ($("#edit_event").attr('display') !== 'none'){
-                dialog.dialog('close');
+                edit_event_dialog.dialog('close');
 
           }
 
@@ -158,7 +158,7 @@ function editEventData(calEvent, jsEvent, view){
       });
 
 
-    dialog.dialog( "open" );
+    edit_event_dialog.dialog( "open" );
 
 }
 
@@ -168,20 +168,37 @@ function editEventData(calEvent, jsEvent, view){
 
 //при загрузке страницы...
 $(function(){
-//список праздничных дней
+
+
+    //список праздничных дней
     var holidays = new Array();
     var date_now = new Date();
     var date_now = date_now.getDate() + '-' + date_now.getMonth() + '-' + date_now.getFullYear();
 
 
       //Инициализируем диалоговое окно с редактированием события
-        dialog = $( "#edit_event" ).dialog({
+        edit_event_dialog = $( "#frm_edit_event" ).dialog({
         autoOpen: false,
         height: 350,
         width: 600,
         modal: true
 
     });
+        //Инициализируем диалоговое окно с добавлением действия
+        add_action_dialog = $( "#frm_add_action" ).dialog({
+        autoOpen: false,
+        height: 350,
+        width: 400,
+        modal: true
+
+    });
+
+
+
+    $("#btn_add_action").click(function(){
+            add_action_dialog.dialog("open")
+
+        })
 
     // Получаем список праздничных и предпразничных дней
     $.ajax({
@@ -218,14 +235,14 @@ $(function(){
     });
 
 
-    //инициализируем jqueryui datepicker плагин на форме редактирования события
-    $("#start,#end").datetimepicker($.extend($.datepicker.regional['ru'], {
+    //инициализируем jqueryui datepicker плагин на формах редактирования и добавления действий
+    $("#start,#end,#action_start,#action_end").datetimepicker($.extend($.datepicker.regional['ru'], {
         dateFormat: 'dd-mm-yy',
         stepMinute: 15
     }));
 
 
-    form = dialog.find( "form" ).on( "submit", function( e ) {
+    form = edit_event_dialog.find( "form" ).on( "submit", function( e ) {
       e.preventDefault();
     });
 
@@ -426,8 +443,10 @@ $('#delete_event').button().on('click',function(){
 
 
 
+    //если добавление действия доступно, то выводим пользователю подсказку по добавлению
     if ($.cookie('app_vacancy_id') != undefined) {
-       $.notify("Для того, чтобы назначить кандидату действие, перетяните блок с событием на нужный день в календаре.",
+       $.notify("Для того, чтобы назначить кандидату действие,либо перетяните блок с событием на нужный день в"
+       +"календаре, либо воспользуйтесь соответствующей кнопкой",
        'warn',{
                     position : 'top center'
                 })
@@ -436,7 +455,7 @@ $('#delete_event').button().on('click',function(){
 
     //удаляем куку с id вакансии, чтобы исключить возможность назначения действия без перехода
     //со страницы кандидата
-    $.cookie('app_vacancy_id',"nothing",{ path: '/',expires:-10000 });
+    //$.cookie('app_vacancy_id',"nothing",{ path: '/',expires:-10000 });
 
 
 });

@@ -114,7 +114,7 @@
                 <!--
                     Форма отображения информации о пользователе
                 -->
-              <div class="box box-success">
+              <div class="box box-primary">
                   <div class="box-header" class='col-sm-12'>
                       <input type="hidden" id="id" name="id" value="{{ applicant_id }}">
                       <input type="hidden" id="user_id" name="user_id" value="{{ user.id }}">
@@ -150,7 +150,7 @@
 
 
                 <!-- Добавление вакансии -->
-              <div class="box box-success">
+              <div class="box box-primary">
                 <div class="box-header form-horizontal">
                     <h2>Вакансии</h2>
                     <table class="table">
@@ -234,7 +234,7 @@
               </div>
 
                 <!-- Контакты -->
-                <div class="box box-success">
+                <div class="box box-primary">
                     <div class="box-header form-horizontal">
                         {% include 'applicants/includes/contacts.html' %}
                     </div>
@@ -242,7 +242,7 @@
                 <!-- ./Контакты -->
 
                 <!-- Место жительства -->
-              <div class="box box-solid bg-green-gradient">
+              <div class="box box-primary bg-green-gradient">
                 <div class="box-footer text-black">
                     {% include 'applicants/includes/address.html' %}
                 </div>
@@ -252,7 +252,7 @@
             <!-- right col (We are only adding the ID to make the widgets sortable)-->
             <section class="col-lg-5 connectedSortable">
 
-                <div class="box box-solid">
+                <div class="box box-primary">
 
                     <div class="box-body">
                         {% include 'applicants/includes/photo.html' %}
@@ -261,7 +261,7 @@
 
 
               <!-- Форма ввода образования -->
-              <div class="box box-solid">
+              <div class="box box-primary">
                 <div class="box-header">
                     <h2>Образования кандидата</h2>
                     <table class="table">

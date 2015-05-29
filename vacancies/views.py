@@ -120,9 +120,10 @@ class VacancyEdit(View):
             if vacancy_form.is_valid():
                 vacancy_form.save()
 
-                benefits = post_data.get('benfits' or None)
+                benefits = post_data.getlist('benefits' or None)
+
                 if benefits:
-                        for benefit in post_data.getlist('benefits'):
+                        for benefit in benefits:
                             VacancyBenefit.objects.create(vacancy=Vacancy.objects.get(id=vacancy.id) ,
                                                           benefit=Benefit.objects.get(id=int( benefit)))
                 VacancyStatusHistory.objects.create(vacancy=vacancy,status=VacancyStatus.objects.get(pk=request.POST['status']))

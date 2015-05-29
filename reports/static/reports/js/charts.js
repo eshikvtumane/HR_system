@@ -183,24 +183,32 @@ function drawHiredToTotalApplicantsRate(data){
                     categories: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
                 },
                 yAxis: {
+                    allowDecimals: false,
+                    min:0,
                     title: {
                         text: 'Количество человек'
+
+
                     }
+
                 },
                 plotOptions: {
                     line: {
                         dataLabels: {
-                            enabled: true
+                            enabled: true,
+
                         },
                         enableMouseTracking: false
                     }
                 },
                 series: [{
                     name: 'Всего кандидатов',
-                    data: data['total']
+                    data: data['total'],
+                    color:'#666699'
                 }, {
                     name: 'Принятно на работу',
-                    data:  data['hired']
+                    data:  data['hired'],
+                    color:'#0099FF'
                 }]
             });
 

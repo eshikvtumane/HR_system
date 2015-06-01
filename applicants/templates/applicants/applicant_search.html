@@ -32,7 +32,7 @@
 <!-- кастомизация select -->
     <script src="{% static 'js/selectize/selectize.js' %}"></script>
 
-
+<script src="{% static 'applicants/js/search.js' %}"></script>
 <script src="{% static 'js/enter_override.js' %}"></script>
 
 {% endblock scripts %}
@@ -124,11 +124,25 @@
 
                         </div>
 
+                        <div class="col-sm-2">
+                            <div>
+                                {{ form_search.reserve }} <label for="id_reserve">Резерв</label>
+                            </div>
+                            <div>
+                                {{ form_search.employee }} <label for="id_employee">Сотрудник предприятия</label>
+                            </div>
+                        </div>
+                        <!--<div class="col-sm-3">
+                            {{ form_search.employee }} <label for="id_employee">Сотрудник предприятия</label>
+                        </div>-->
+
+
                           <div class="col-sm-12">
-                              <div class="form-group" style="margin-top:2ex;">
-                                  <div>
-                                      <label>Возраст:</label>
-                                  </div>
+                              <div>
+                                  {{ form_search.age_add }}
+                                  <label for="id_age_add">Возраст</label>
+                              </div>
+                              <div class="form-group" id="select_age" style="margin-top:2ex;">
 
                                     <div class="col-sm-12" style="margin-top:1ex;">
                                           <input id="age" type="text">
@@ -140,19 +154,13 @@
                           </div>
 
 
-
-                        <div class="col-sm-2">
-                            {{ form_search.reserve }} <label for="id_reserve">Резерв</label>
-                        </div>
-                        <div class="col-sm-6">
-                            {{ form_search.employee }} <label for="id_employee">Сотрудник предприятия</label>
-                        </div>
-
                           <div class="col-sm-12">
-                              <div class="form-group" style="margin-top:2ex;">
-                                  <div>
-                                      <label>Заработная плата:</label>
-                                  </div>
+                              <div>
+                                  {{ form_search.salary_add }}
+                                  <label for="id_salary_add">Заработная плата</label>
+                              </div>
+
+                              <div class="form-group" id="select_salary" style="margin-top:2ex;">
 
                                     <div class="col-sm-12" style="margin-top:1ex;">
                                           <input id="salary" type="text">

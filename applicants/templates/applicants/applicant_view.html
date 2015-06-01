@@ -70,6 +70,7 @@
           <h1>
             Страница кандидата <a href="#" title="История изменений анкеты" data-toggle="modal" data-target="#myModal"><i class="fa fa-history"></i></a>
           </h1>
+
             <div id='update_info' class="">
 
                     <div class="box-body" align="center">
@@ -80,7 +81,7 @@
 
                         </div>
                         <div style="padding-top: 1ex;">
-                            <input type="submit" value="Обновить анкету" class="btn btn-success">
+                            <input type="submit" value="Обновить анкету" class="btn btn-danger">
                         </div>
                     </div>
                 </div>
@@ -155,7 +156,7 @@
                     <h2>Вакансии</h2>
                     <table class="table">
                         <tr>
-                            <th class="col-sm-4">Предполагаемая должность</th>
+                            <th class="col-sm-2">Предполагаемая должность</th>
                             <th class="col-sm-5">Вакансия</th>
                             <th class="col-sm-5">Уровень зарплаты в анкете</th>
                             <th class="col-sm-5">Предлагаемая зарплата</th>
@@ -331,6 +332,17 @@
               </div><!-- /.box -->
 
 
+                <!-- Note -->
+              <div class="box box-solid">
+                  <div class="box-header" align="center">
+
+                    <div class="col-sm-12" style="margin-top: 2ex;">
+                        <label>{{ applicant_form.note.label_tag }}</label>
+                            {{ applicant_form.note }}
+                    </div>
+                  </div>
+              </div><!-- /.box -->
+
 
             </section><!-- right col -->
 
@@ -413,7 +425,7 @@
                               <h4>Добавить статус</h4>
                                   <div id="divStatus">
 
-                                      <select id="applicant_vacancy_status" class="select col-sm-7" placeholder="Выбор статуса">
+                                      <select id="applicant_vacancy_status" class="select-add col-sm-7" placeholder="Выбор статуса">
                                           <option value>-----</option>
                                           {% for acs in applicant_vacancy_status %}
                                             <option value="{{ acs.id }}">{{ acs.name }}</option>

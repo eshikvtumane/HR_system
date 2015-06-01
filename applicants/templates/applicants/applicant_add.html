@@ -122,6 +122,15 @@
                 </div>
                 <!-- ./Контакты -->
 
+                <!-- Место жительства -->
+              <div class="box box-solid bg-green-gradient">
+                <div class="box-footer text-black">
+                    {% include 'applicants/includes/address.html' %}
+                </div>
+              </div><!-- /.box -->
+
+
+
                 <div class="box box-solid">
 
                     <div class="box-body" align="center">
@@ -175,14 +184,18 @@
                   </div>
               </div><!-- /.box -->
 
+                <!-- Note -->
+              <div class="box box-solid">
+                  <div class="box-header" align="center">
 
-
-              <!-- Место жительства -->
-              <div class="box box-solid bg-green-gradient">
-                <div class="box-footer text-black">
-{% include 'applicants/includes/address.html' %}
-                </div>
+                    <div class="col-sm-12" style="margin-top: 2ex;">
+                        <label>{{ applicant_form.note.label_tag }}</label>
+                            {{ applicant_form.note }}
+                    </div>
+                  </div>
               </div><!-- /.box -->
+
+
 
             </section><!-- right col -->
           </div><!-- /.row (main row) -->

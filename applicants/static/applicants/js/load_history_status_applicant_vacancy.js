@@ -86,14 +86,13 @@ function saveStatus(obj){
      var $note = $('#textarea_note');
 
      var control = $(select_status)[0].selectize;
-
     if(status_id){
         $.ajax({
             type: 'POST',
             url: '/applicants/status_add/',
             data: {
                 'applicant_vacancy': obj.value,
-                'status': status_id,
+                'status': control.getValue(),
                 'user_id': user_id,
                 'note': $note.val()
             },

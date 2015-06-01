@@ -110,7 +110,7 @@ class SavingModels():
         try:
             educations = json.loads(json_educations)
             edu_obj = []
-
+            print educations
             for k, v in enumerate(educations):
                 educations[v]['education'] = Education.objects.get(pk=educations[v]['education'])
                 educations[v]['major'] = Major.objects.get(pk=self.createMajor(educations[v]['major']))
@@ -308,10 +308,9 @@ class ApplicantSearchView(PaginatorView):
 
 
             position = req['position']
-            try:
-                employee = request.GET['employee']
-            except:
-                employee = False
+            age_add = req.get('age_add', False)
+            salary_add = req.get('salary_add', False)
+            employee = req.get('employee', False)
 
             applicant_fields = [
                 'first_name',
@@ -330,32 +329,34 @@ class ApplicantSearchView(PaginatorView):
                     query_applicant_list[field + '__contains'] = req[field]
                     query_list['applicant__' + field + '__contains'] = req[field]
 
+            if age_add:
+                today = datetime.date.today()
+                age_min = int(req['age_start'])
+                age_max = int(req['age_end'])
 
-            today = datetime.date.today()
-            age_min = int(req['age_start'])
-            age_max = int(req['age_end'])
 
+                date_start = datetime.date(today.year - age_max - 1, today.month, today.day)
+                date_end = datetime.date(today.year - age_min - 1, today.month, today.day)
 
-            date_start = datetime.date(today.year - age_max - 1, today.month, today.day)
-            date_end = datetime.date(today.year - age_min - 1, today.month, today.day)
+                #print 'age', date_start, date_end
 
-            #print 'age', date_start, date_end
-
-            query_list['applicant__birthday__gte'] = query_applicant_list['birthday__gte'] = date_start
-            query_list['applicant__birthday__lte'] = query_applicant_list['birthday__lte'] = date_end
+                query_list['applicant__birthday__gte'] = query_applicant_list['birthday__gte'] = date_start
+                query_list['applicant__birthday__lte'] = query_applicant_list['birthday__lte'] = date_end
 
             applicant_vacancy_list = []
             if position:
                 query_list['vacancy__position'] = position
-                salary_start = int(req['salary_start'].replace(' ', ''))
-                salary_end   = int(req['salary_end'].replace(' ', ''))
-                if salary_start == salary_end:
-                    range_salary = float(salary_start * 5) / 100.0
-                    salary_start = float(salary_start) - range_salary
-                    salary_end = float(salary_end + range_salary)
 
-                query_list['salary__gte'] = salary_start
-                query_list['salary__lte'] = salary_end
+                if salary_add:
+                    salary_start = int(req['salary_start'].replace(' ', ''))
+                    salary_end   = int(req['salary_end'].replace(' ', ''))
+                    if salary_start == salary_end:
+                        range_salary = float(salary_start * 5) / 100.0
+                        salary_start = float(salary_start) - range_salary
+                        salary_end = float(salary_end + range_salary)
+
+                    query_list['salary__gte'] = salary_start
+                    query_list['salary__lte'] = salary_end
 
                 try:
                     reserve = request.GET['reserve']
@@ -496,10 +497,20 @@ class ApplicantVacancyStatusAjax(View):
     def post(self, request):
         if request.is_ajax:
             request = request.POST
+            user = User.objects.get(pk=request['user_id'])
+            print 'tttt', request['applicant_vacancy']
+            print 'tttt', request['status']
+            try:
+                applicant_vacancy_status = ApplicantVacancyStatus.objects.get(pk=request['status'])
+            except:
+                applicant_vacancy_status = ApplicantVacancyStatus(name=request['status'], author=user)
+                applicant_vacancy_status.save()
+
+            print 'tttt', applicant_vacancy_status
             obj = ApplicantVacancyApplicantVacancyStatus(
-                applicant_vacancy=ApplicantVacancy.objects.get(pk=request['applicant_vacancy']),
-                applicant_vacancy_status = ApplicantVacancyStatus.objects.get(pk=request['status']),
-                author = User.objects.get(pk=request['user_id']),
+                applicant_vacancy= ApplicantVacancy.objects.get(pk=request['applicant_vacancy']),
+                applicant_vacancy_status = applicant_vacancy_status,
+                author = user,
                 note = bleach.clean(request['note'])
             )
             obj.save()

@@ -205,9 +205,17 @@ class CandidateSearchForm(forms.Form):
                                 )
                             )
 
+    # включить возраст в поиск
+    age_add = forms.BooleanField(widget=forms.CheckboxInput(attrs={
+                                       })
+            )
     age_start = forms.Field(widget=forms.HiddenInput())
     age_end = forms.Field(widget=forms.HiddenInput())
 
+    # включить зарплату в поиск
+    salary_add = forms.BooleanField(widget=forms.CheckboxInput(attrs={
+                                       })
+            )
     salary_start = forms.Field(widget=forms.HiddenInput())
     salary_end = forms.Field(widget=forms.HiddenInput())
 

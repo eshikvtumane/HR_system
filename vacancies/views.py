@@ -12,7 +12,7 @@ from forms import AddVacancyForm, EditVacancyForm, SearchVacancyForm
 from events.models import ApplicantVacancyEvent
 from applicants.models import Applicant
 from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory, ApplicantVacancy, \
-    Benefit,VacancyBenefit,ApplicantVacancyApplicantVacancyStatus
+    Benefit,VacancyBenefit,CurrentApplicantVacancyStatus
 from events.models import ApplicantVacancyEvent
 
 
@@ -67,7 +67,7 @@ class VacancyView(View):
 
         for app_vacancy in app_vacancies:
             #выбираем последний статус в объектах Applicant-Vacancy по данной вакансии
-            last_status = ApplicantVacancyApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
+            last_status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
                 '-id')[0]
 
             #добавляем кандидата в массив кандидатов с его текущим статусом по данной вакансии
@@ -120,13 +120,14 @@ class VacancyEdit(View):
             if vacancy_form.is_valid():
                 vacancy_form.save()
 
-                benefits = post_data.get('benfits' or None)
+                benefits = post_data.getlist('benefits' or None)
+
                 if benefits:
-                        for benefit in post_data.getlist('benefits'):
+                        for benefit in benefits:
                             VacancyBenefit.objects.create(vacancy=Vacancy.objects.get(id=vacancy.id) ,
                                                           benefit=Benefit.objects.get(id=int( benefit)))
                 VacancyStatusHistory.objects.create(vacancy=vacancy,status=VacancyStatus.objects.get(pk=request.POST['status']))
-                return JsonResponse(status='200')
+                return JsonResponse(data = {},status='200')
             return JsonResponse(vacancy_form.errors,status = '400')
 
 
@@ -134,7 +135,10 @@ class VacancyEdit(View):
 
 class VacancySearch(View):
     template = 'vacancies/vacancy_search.html'
+
     def get(self,request):
+
+        vacancies_per_page = 10
 
         try:
             page = request.GET.get('page', 1)
@@ -193,7 +197,7 @@ class VacancySearch(View):
 
 
 
-        p = Paginator(vacancies_list,2,request=request)
+        p = Paginator(vacancies_list,vacancies_per_page,request=request)
         vacancies_list = p.page(page)
         c = RequestContext(request,{'vacancy_form':vacancy_form,'vacancies_list':vacancies_list})
         return render_to_response(self.template,c)

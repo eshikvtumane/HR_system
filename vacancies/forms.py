@@ -26,7 +26,7 @@ class VacancyForm(ModelForm):
                 'data-validation-error-msg':"В поле зарплаты должно быть указано число!"
             }),
 
-            'end_date': forms.DateInput(attrs={
+            'end_date': forms.DateInput(format="%d-%m-%Y",attrs={
                 'id':'end_date',
                 'class': "form-control",
                 'name':'end_date',
@@ -117,7 +117,7 @@ class AddVacancyForm(VacancyForm):
 
 class EditVacancyForm(VacancyForm):
    status = forms.ModelChoiceField(queryset=VacancyStatus.objects.all(),
-                                   label='Статус',
+                                   label=_(u'Статус'),
                                    widget=forms.Select(attrs={
                                      'class':'select' })
 

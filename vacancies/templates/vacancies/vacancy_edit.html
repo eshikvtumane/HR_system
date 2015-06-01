@@ -51,39 +51,23 @@
                     Форма редактирования вакансии
                 -->
 
-              <div class="box box-success">
+              <div class="box box-primary">
                 <div class="box-header">
 
-                    {% load bootstrap %}
-                    {{ vacancy_form|bootstrap}}
-
-
-                        <input id="vacancy_id" type="hidden"
-                               value="{{vacancy.id}}">
-                    <button id="update_vacancy" class="btn btn-primary">Сохранить
-                        данные</button>
-
-
-                </div>
-              <div id="error_list">
-
-              </div>
-              </div><!-- /.форма добавления вакансии -->
-
-
-            </section><!-- /.Left col -->
-
-              <!-- right col (We are only adding the ID to make the widgets sortable)-->
-            <section class="col-lg-6 connectedSortable">
-                 <div class="box box-success">
-                    <div class="box-header">
-
-                        <strong>Должность</strong>
-                        <h5>{{ vacancy.position }}</h5>
-                        <strong>Дата публикации</strong>
-                        <h5>{{vacancy.published_at}}</h5>
-                        <strong>Руководитель</strong>
-                        <h5>{{vacancy.head}}</h5>
+                    {{ vacancy_form.status.label_tag}}
+                    {{ vacancy_form.status}}
+                    {{ vacancy_form.salary.label_tag}}
+                    {{ vacancy_form.salary}}
+                    {{ vacancy_form.education.label_tag}}
+                    {{ vacancy_form.education}}
+                    {{ vacancy_form.end_date.label_tag}}
+                    {{ vacancy_form.end_date}}
+                    {{ vacancy_form.sex.label_tag}}
+                    {{ vacancy_form.sex}}
+                    {{ vacancy_form.marriage_status.label_tag}}
+                    {{ vacancy_form.marriage_status}}
+                    {{ vacancy_form.paid_vacation.label_tag}}
+                    {{ vacancy_form.paid_vacation}}
 
                         <div class="form-group">
                         <strong>Льготы:</strong>
@@ -110,14 +94,75 @@
                                         <option value="{{  benefit.id}}">{{ benefit.name }}</option>
                                     {% endfor %}
                                 </select>
+                     </div>
 
+                    {{ vacancy_form.duties.label_tag}}
+                    {{ vacancy_form.duties}}
+                    {{ vacancy_form.skills.label_tag}}
+                    {{ vacancy_form.skills}}
+                    {{ vacancy_form.additional_info.label_tag}}
+                    {{ vacancy_form.additional_info}}
+
+
+
+                        <input id="vacancy_id" type="hidden"
+                               value="{{vacancy.id}}">
+                    </br>
+
+                    <button id="update_vacancy" class="btn btn-primary">Сохранить
+                        данные</button>
 
 
                 </div>
 
+
+              </div><!-- /.форма добавления вакансии -->
+
+
+            </section><!-- /.Left col -->
+
+              <!-- right col (We are only adding the ID to make the widgets sortable)-->
+            <section class="col-lg-6 connectedSortable">
+                <div class="row">
+                 <div class="box box-primary">
+                    <div class="box-header">
+
+                        <strong>Должность</strong>
+                        <h5>{{ vacancy.position }}</h5>
+                        <strong>Дата публикации</strong>
+                        <h5>{{vacancy.published_at}}</h5>
+                        <strong>Руководитель</strong>
+                        <h5>{{vacancy.head}}</h5>
+
+
+
+                     </div>
+
+                    </div>
                 </div>
 
-              </div>
+                <div class="row">
+                    <div class="box box-primary">
+                    <div class="box-header">
+
+
+                        {{ vacancy_form.creation_reason.label_tag}}
+                        {{ vacancy_form.creation_reason}}
+                        {{ vacancy_form.further_education.label_tag}}
+                        {{ vacancy_form.further_education}}
+                        {{ vacancy_form.advancement.label_tag}}
+                        {{ vacancy_form.advancement}}
+
+                        </br>
+
+                        <div id="error_list"></div>
+
+
+
+                     </div>
+
+                    </div>
+                </div>
             </section><!-- right col -->
 
         </form>

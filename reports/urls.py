@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^position_charts/$',ChartsView.as_view() , name='charts'),
     url(r'^get_vacancies_to_position_distribution/$','reports.views.get_vacancies_to_position_distribution'),
     url(r'^get_position_salary_avg/$','reports.views.get_requested_salary_avg'),
+    url(r'^hired_to_total_rate/$','reports.views.get_hired_to_total_applicants_rate'),
 
 
 )

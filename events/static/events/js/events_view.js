@@ -1,4 +1,6 @@
 $(function(){
+
+    var $comment_block = "";
     //при выборе вакансии, делаем запрос на сервер и выводим все события назначенные кандидату по выбранной вакансии
     $('#vacancy_slct').on('change',function(){
        var vacancy_id = $(this).val();
@@ -19,35 +21,37 @@ $(function(){
                 var $row =  $('<tr>');
                 for(j=0; j < field_names.length; j++)
                 {
-                    if (field_names[j] == 'happened'){
 
-                        $('<td>',{
+                       $('<td>',{
                            text:event[field_names[j]]
                         }).appendTo($row);
-                            }
+
 
                 }
 
+                var $btn_cmnt =  $("<button class='btn_comment'>",{
+
+                }).html("<i class='fa fa-pencil'></i> Комментировать").val(vacancy_id);
 
                 $('<td>',{
                            text:event[field_names[j]]
-                        }).appendTo($row);
+                        }).append($btn_cmnt).appendTo($row);
 
 
               $('#events_table').find('tbody').append($row);
             };
 
-              $('.is_happened_chk').change(function(){
+              $('.btn_comment').click(function(){
                 //создаём указатель на чекбокс, чтобы в дальнейшем обратиться к нему
-                var chkbox = this;
+                var $btn = $(this);
+                $comment_block = $btn.parent().prev();
+                var comment = $comment_block.html();
+                $('#event_description_txt').html(comment);
                 $('#event_description_box').dialog('open');
+
                 //если пользователь решил не изменять состояние события и закрыл диалоговое окно
-                $('.ui-dialog-titlebar-close').on('click',function(){
-                    chkbox.checked = false;
-                })
 
-
-                $('#save_event_btn').val($(this).val());
+                $('#save_event_btn').val($btn.val());
 
                  });
 
@@ -62,7 +66,7 @@ $(function(){
 
       })
 
-      })
+      });
 
     //активириуем диалоговое окно для добавления описания к событию
     $('#event_description_box').dialog({
@@ -77,11 +81,15 @@ $(function(){
         var event_description = $("#event_description_txt").val();
         $.ajax({
             type:'POST',
-            url: '/events/change_event_status',
+            url: '/events/add_event_comment',
             dataType:'json',
             data:{'event_description': event_description, 'event_id':event_id},
             success:function(data){
-                alert('Описание успешно добавлено')
+                $comment_block.html(event_description);
+                $('#event_description_box').dialog('close');
+                 $.notify("Комментарий успешно добавлен!",'success',{
+                    position : 'top center'
+                })
             },
             error:function(){
                 alert('Произошла ошибка');

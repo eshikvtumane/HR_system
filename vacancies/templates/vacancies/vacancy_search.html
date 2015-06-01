@@ -7,9 +7,10 @@
 {% block styles %}
       <link href="{% static 'css/icons.css'%}" rel="stylesheet" type="text/css" />
 
-      <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
     <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
-        <link rel="stylesheet" type="text/css" href="{% static 'vacancies/css/style.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'vacancies/css/style.css' %}" >
+    <link rel="stylesheet" type="text/css" href="{% static 'js/tablesorter/tablesorter.css' %}" >
 {% endblock %}
 
 
@@ -18,6 +19,7 @@
     <script src="{% static 'js/lazyload_init.js' %}"></script>
     <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
     <script src="{% static 'vacancies/js/vacancy_search.js' %}"></script>
+    <script src="{% static 'js/tablesorter/jquery.tablesorter.min.js' %}"></script>
 
     <script src="{% static 'js/selectize/selectize.js' %}"></script>
 
@@ -83,8 +85,8 @@
                 <h2>Результаты поиска</h2>
 
                     <div id="search_results">
-                        <table id="vacancy_table" class="table">
-                            <thead>
+                        <table id="vacancy_table" class="table tablesorter">
+                            <thead >
                                 <tr>
                                     <th>Должность</th>
                                     <th>Зарплата</th>

@@ -1,13 +1,20 @@
 $(function () {
 
-    $('#tabs').tabs();
+    var currentYear = new Date().getFullYear();
 
     drawVacanciesDistributionChart();
+    drawPositionAvgSalaryChart();
 
-    $('#tab_position_avg_salary').on('click',function(){
-         drawPositionAvgSalaryChart();
-    })
+    drawHiredToTotalApplicantsRate(HiredToTotalApplicantsGetData(currentYear));
 
+    $("#slct_change_year").on("change",function(){
+               var selected_year = $(this).val();
+               data = HiredToTotalApplicantsGetData(selected_year);
+               var chart = $('#hired_to_total_rate').highcharts();
+               chart.series[0].setData(data['total']);
+               chart.series[1].setData(data['hired']);
+
+        })
 
 });
 
@@ -28,7 +35,7 @@ function drawVacanciesDistributionChart(){
                             plotShadow: false
                         },
                         title: {
-                            text: ''
+                            text: 'Распределение вакансий по должностям'
                         },
                         tooltip: {
                             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -77,7 +84,7 @@ function drawPositionAvgSalaryChart(){
                         type: 'column'
                     },
                     title: {
-                        text: ''
+                        text: 'Средняя запрашиваемая зарплата'
                     },
                     subtitle: {
 
@@ -128,5 +135,82 @@ function drawPositionAvgSalaryChart(){
                console.log("Ошибка при пострении графика!")
             }
         });
+
+}
+
+
+
+
+
+function HiredToTotalApplicantsGetData(year){
+     var chart_data;
+     $.ajax({
+            type: 'GET',
+            url: '/reports/hired_to_total_rate',
+            dataType: 'json',
+            contentType: 'application/json',
+            async: false,
+            data:{
+                'year':year
+            },
+            success: function (data) {
+                    console.log(data);
+                    chart_data = data;
+
+
+            },
+            error: function(data) {
+
+            }
+        });
+
+
+     return chart_data;
+}
+
+function drawHiredToTotalApplicantsRate(data){
+
+
+    $('#hired_to_total_rate').highcharts({
+                chart: {
+                    type: 'line'
+                },
+                title: {
+                    text: 'Поступление кандидатов'
+                },
+
+                xAxis: {
+                    categories: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
+                },
+                yAxis: {
+                    allowDecimals: false,
+                    min:0,
+                    title: {
+                        text: 'Количество человек'
+
+
+                    }
+
+                },
+                plotOptions: {
+                    line: {
+                        dataLabels: {
+                            enabled: true,
+
+                        },
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    name: 'Всего кандидатов',
+                    data: data['total'],
+                    color:'#666699'
+                }, {
+                    name: 'Принятно на работу',
+                    data:  data['hired'],
+                    color:'#0099FF'
+                }]
+            });
+
 
 }

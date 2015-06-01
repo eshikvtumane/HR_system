@@ -78,7 +78,7 @@ def get_vacancy_events_ajax(request):
     app_vacancy_id = request.GET["app_vacancy_id"]
     events = ApplicantVacancyEvent.objects.filter(
         applicant_vacancy=app_vacancy_id).values('event__name','start','end',
-                                                 'author__username','happened','description','id')
+                                                 'author__username','description','id')
 
     response = [
         {
@@ -86,7 +86,6 @@ def get_vacancy_events_ajax(request):
             'start':str(event['start'].strftime('%d-%m-%Y %H:%M')),
             'end': str(event['end'].strftime('%d-%m-%Y %H:%M')),
             'author':event['author__username'],
-            'happened':event['happened'],
             'description':event['description'],
             'id': event['id']
 
@@ -98,18 +97,16 @@ def get_vacancy_events_ajax(request):
     return HttpResponse(response,content_type='application/json')
 
 
-def change_event_status_ajax(request):
+def add_event_comment_ajax(request):
     app_vacancy_event = ApplicantVacancyEvent.objects.get(applicant_vacancy=request.POST['event_id'])
-    app_vacancy_event.happened = True
     app_vacancy_event.description = request.POST['event_description']
     response = []
     try:
         app_vacancy_event.save()
-        response.append({'status':'200'})
-        return HttpResponse(response,content_type='application/json')
+        return JsonResponse(data={},status='200')
     except:
-        response.append({'status':'400'})
-    return HttpResponse(response,content_type='application/json')
+
+        return JsonResponse(data={},status='400')
 
 
 
@@ -159,9 +156,11 @@ def add_event(request):
         form = ApplicantVacancyEventForm({
             'event':event,'start':start,'end':end})
 
+
         if form.is_valid():
             form.instance.applicant_vacancy = applicant_vacancy
             form.instance.author = request.user
+
             form.save()
             return HttpResponse ("200")
 
@@ -209,7 +208,7 @@ def delete_event_ajax(request):
             return  HttpResponse('400')
 
 
-def httpresposejson(code, message):
+def httpresponsejson(code, message):
     #result = json.dumps([code, message])
     return JsonResponse({'code': code, 'messages': message})
     #return HttpResponse(result, content_type='application/json')
@@ -224,12 +223,12 @@ def send_message_ajax(request):
             recipients = [method['email']]
             title = method['title']
         except Exception, e:
-            return httpresposejson('500', 'Преданы не все параметры (сообщение, тема, кому отправить)')
+            return httpresponsejson('500', 'Преданы не все параметры (сообщение, тема, кому отправить)')
 
         sender = EmailSender()
         result = sender.send(message, recipients, title)
         if result:
-            return httpresposejson('200', 'Success')
-        return httpresposejson('500', 'Error send')
+            return httpresponsejson('200', 'Success')
+        return httpresponsejson('500', 'Error send')
 
 

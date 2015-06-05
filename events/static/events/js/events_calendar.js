@@ -198,7 +198,7 @@ $(function(){
     $("#btn_add_action").click(function(){
             add_action_dialog.dialog("open")
 
-        })
+        });
 
     // Получаем список праздничных и предпразничных дней
     $.ajax({
@@ -246,6 +246,9 @@ $(function(){
       e.preventDefault();
     });
 
+     form = add_action_dialog.find( "form" ).on( "submit", function( e ) {
+      e.preventDefault();
+    });
 /* инициализируем внешние события
 		-----------------------------------------------------------------*/
 
@@ -428,6 +431,15 @@ $('#delete_event').button().on('click',function(){
 
 });
 
+//добавление события с помощью формы
+$('#add_action').button().on('click',function(){
+    var event_type = $("#action_type").val();
+    var start_time = stringToMomentDate($("#action_start").val());
+    var end_time = stringToMomentDate($('#action_end').val());
+    var app_vacancy_id = $('#app_vacancy_id').val();
+    addEvent(event_type,start_time.format(),end_time.format(),app_vacancy_id);
+
+});
 
 
 
@@ -445,7 +457,7 @@ $('#delete_event').button().on('click',function(){
 
     //если добавление действия доступно, то выводим пользователю подсказку по добавлению
     if ($.cookie('app_vacancy_id') != undefined) {
-       $.notify("Для того, чтобы назначить кандидату действие,либо перетяните блок с событием на нужный день в"
+       $.notify("Для того, чтобы назначить кандидату действие, либо перетяните блок с событием на нужный день в"
        +"календаре, либо воспользуйтесь соответствующей кнопкой",
        'warn',{
                     position : 'top center'

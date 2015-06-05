@@ -24,7 +24,7 @@ import celeryconfig
 SECRET_KEY = '_ed%n*nd*r17zmx(76ii5a1%xda4z7l5%)j$4-h%b)h@szek@&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 DEBUG404 = False
 
 TEMPLATE_DEBUG = True
@@ -146,7 +146,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_ROOT = 'static'
+STATIC_ROOT = os.path.join(BASE_DIR,'/collectstatic')
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (

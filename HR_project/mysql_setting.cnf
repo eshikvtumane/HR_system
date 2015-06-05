@@ -1,0 +1,6 @@
+[client]
+database = 'hr_db'
+user = 'root'
+password = 'root'
+port = 3306
+default-character-set = utf8

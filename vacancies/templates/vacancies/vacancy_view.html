@@ -63,7 +63,7 @@
                     <h5><strong>{% get_verbose_field_name vacancy 'position'  %}:</strong></h5>
                     {{vacancy.position}}
                     <h5><strong>{% get_verbose_field_name vacancy 'salary'  %}:</strong></h5>
-                    <<i class="fa fa-rub"></i> {{vacancy.salary|intcomma}}
+                    <i class="fa fa-rub"></i> {{vacancy.salary|intcomma}}
                     <h5><strong>{% get_verbose_field_name vacancy 'end_date'  %}:</strong></h5>
                     {{vacancy.end_date|default:"Нет данных"}}
                     <h5><strong>{% get_verbose_field_name vacancy 'published_at'  %}:</strong></h5>

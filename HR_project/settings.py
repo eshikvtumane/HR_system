@@ -27,7 +27,7 @@ SECRET_KEY = '_ed%n*nd*r17zmx(76ii5a1%xda4z7l5%)j$4-h%b)h@szek@&'
 DEBUG = False
 DEBUG404 = False
 
-TEMPLATE_DEBUG = True
+TEMPLATE_DEBUG = False
 THUMBNAIL_DEBUG = True
 DEBUG_TOOLBAR_CONFIG = {
     'JQUERY_URL': os.path.join(BASE_DIR, '/static/js/jquery/jquery-2.1.3.min.js')

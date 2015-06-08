@@ -12,13 +12,16 @@ from forms import AddVacancyForm, EditVacancyForm, SearchVacancyForm
 from events.models import ApplicantVacancyEvent
 from applicants.models import Applicant
 from .models import Department, Head, Vacancy, Position, VacancyStatus, VacancyStatusHistory, ApplicantVacancy, \
-    Benefit,VacancyBenefit,CurrentApplicantVacancyStatus
+    Benefit,VacancyBenefit,CurrentApplicantVacancyStatus, Education
 from events.models import ApplicantVacancyEvent
+
+from django.db.models.query import QuerySet
 
 
 class AddVacancy(View):
     template = 'vacancies/vacancy_add.html'
     def get(self,request):
+
         vacancy_form = AddVacancyForm()
         departments  = Department.objects.all()
         benefits = Benefit.objects.all()
@@ -30,17 +33,39 @@ class AddVacancy(View):
 
 
     def post(self,request):
-        if request.is_ajax:
-            post_data = request.POST.copy()
-            post_data['end_date'] = datetime.datetime.strptime(post_data['end_date'],
-                                                     '%d-%m-%Y').date()
-            post_data['author'] = request.user.id
-            last_status = VacancyStatus.objects.get(name='Открыта')
-            post_data['last_status'] = last_status.id
-            vacancy_form = AddVacancyForm(post_data)
+        try:
+            if request.is_ajax:
+                post_data = request.POST.copy()
 
-            if vacancy_form.is_valid():
+                post_data['end_date'] = datetime.datetime.strptime(post_data['end_date'],
+                                                         '%d-%m-%Y').date()
+                print request.user
+                #post_data['author_id'] = request.user.id
+                last_status = VacancyStatus.objects.get_or_create(name=u'Открыта', icon_class='green')
+
+                if not last_status[1]:
+                    print last_status
+                    post_data['last_status'] = last_status[0].id
+                #post_data['last_status'] = last_status.id
+                vacancy_form = AddVacancyForm(post_data)
+
+                if not post_data['position'].isdigit():
+                    position = Position(name=post_data['position'], author=request.user)
+                    position.save()
+                    post_data['position'] = position.id
+
+                if not post_data['education'].isdigit():
+                    education = Education(type=post_data['education'], author=request.user)
+                    education.save()
+                    post_data['education'] = education.id
+
+
+                if vacancy_form.is_valid():
+                    instance = vacancy_form.save(commit=False)
+                    instance.author = request.user
+                    instance.last_status = VacancyStatus.objects.get(name='Открыта')
                     vacancy_form.save()
+
                     VacancyStatusHistory.objects.create(vacancy=vacancy_form.instance)
                     vacancy_id = vacancy_form.instance.id
                     #сохраняем льготы
@@ -52,9 +77,12 @@ class AddVacancy(View):
 
                     response = {'vacancy_id':vacancy_id}
                     return JsonResponse(response, status = 200)
-            else:
-
+                else:
+                    print 4
                     return JsonResponse(vacancy_form.errors,status=400)
+        except Exception, e:
+            print e.message
+
 
 
 class VacancyView(View):

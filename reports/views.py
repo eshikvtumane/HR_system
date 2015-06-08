@@ -985,10 +985,11 @@ class ChartsView(View):
         #вычисляем временной интервал для отображения графика с поступившими и принятыми на работу кандидатами
         years = []
         current_year = datetime.now().year
-        start_year = current_year - 10
-        end_year = current_year + 10
+        start_year = current_year - 9
+        end_year = current_year
         for year in range (start_year,end_year):
             years.append(year)
+        years.reverse()
         c = RequestContext(request,{'years':years})
         return render_to_response(self.template,c)
 

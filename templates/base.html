@@ -400,6 +400,13 @@
               </a>
             </li>
 
+              {% if request.user.is_staff %}
+                  <li>
+                    <a href="/admin">
+                        <i class="fa fa-wrench"></i> <span>Административная панель</span>
+                    </a>
+                  </li>
+              {% endif %}
 
             <li class="header">Доп. функции</li>
               <li><a target="_blank" href="{% url 'applicants:applicant_add' %}"><i class="fa fa-fire"></i> Добавление кандидата</a></li>

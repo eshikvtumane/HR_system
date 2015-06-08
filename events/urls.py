@@ -1,14 +1,15 @@
 #-*- coding:utf-8 -*-
 from django.conf.urls import patterns, include, url
 from views import EventsView,EventsAdd,EventsCalendar
+from django.contrib.admin.views.decorators import staff_member_required
 
 urlpatterns = patterns('',
 
-     url(r'^(?P<applicant_id>[0-9]+)/$', EventsView.as_view(), name='events_view'),
+     url(r'^(?P<applicant_id>[0-9]+)/$', staff_member_required(EventsView.as_view()), name='events_view'),
 
-     url(r'^(?P<applicant_id>[0-9]+)/add_event/$',EventsAdd.as_view(), name='add_event'),
+     url(r'^(?P<applicant_id>[0-9]+)/add_event/$',staff_member_required(EventsAdd.as_view()), name='add_event'),
 
-    url(r'^events_calendar/$',EventsCalendar.as_view(),name='events_calendar'),
+    url(r'^events_calendar/$',staff_member_required(EventsCalendar.as_view()),name='events_calendar'),
 
      url(r'^get_events/$','events.views.get_events_ajax'),
 

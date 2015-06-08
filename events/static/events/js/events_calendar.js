@@ -10,13 +10,18 @@ function stringToMomentDate(str){
 }
 
 
+
+
+
 //изменение события (посредством resize или drop)
 function changeEvent(event, delta, revertFunction){
     updateEvent(event.id,event.start.format(),event.end.format());
 
-
-
 }
+
+
+
+
 
 //отправка изменённых данных события на сервер
 function updateEvent(event_id,event_start,event_end){
@@ -62,6 +67,11 @@ function updateEvent(event_id,event_start,event_end){
 
 }
 
+
+
+
+
+
 //добавление нового события через календарь
 function addEvent(event_type,event_start,event_end,app_vacancy_id)
 {
@@ -85,6 +95,10 @@ function addEvent(event_type,event_start,event_end,app_vacancy_id)
             $('#scheduler').fullCalendar('removeEvents',event_type);
             $('#scheduler').fullCalendar('refetchEvents');
 
+            if ($("#add_action_dialog").attr('display') !== 'none'){
+                edit_event_dialog.dialog('close');
+        }       add_action_dialog.dialog('close');
+
         },
 
         error:function(data){
@@ -99,6 +113,9 @@ function addEvent(event_type,event_start,event_end,app_vacancy_id)
 
 
 }
+
+
+
 
 
 //удаление действия через диалогвоое окно
@@ -135,6 +152,9 @@ function deleteEvent(event_id)
 
     })
 }
+
+
+
 
 
 //открытие диалоговой формы редактирования события
@@ -200,6 +220,9 @@ $(function(){
 
         });
 
+
+
+
     // Получаем список праздничных и предпразничных дней
     $.ajax({
         url: '/static/cal.json',
@@ -238,7 +261,9 @@ $(function(){
     //инициализируем jqueryui datepicker плагин на формах редактирования и добавления действий
     $("#start,#end,#action_start,#action_end").datetimepicker($.extend($.datepicker.regional['ru'], {
         dateFormat: 'dd-mm-yy',
-        stepMinute: 15
+        stepMinute: 15,
+        hourMin: 9,
+        hourMax: 18
     }));
 
 
@@ -361,7 +386,7 @@ $(function(){
 $('#open_notification').on('click',function(){
     //закрываем окно с редактированием события(иначе при открытии формы с отправлением оповещения и при последующем
     //клике по инпутам получим ошибку с рекурсией)
-    dialog.dialog('close');
+    edit_event_dialog.dialog('close');
     var event_id = $("#event_id").val();
     var event = $('#scheduler').fullCalendar('clientEvents',parseInt(event_id))[0];
     var name = event.name.split(' ');
@@ -421,7 +446,18 @@ $('#save_event').button().on('click',function(){
     var event_id = $("#event_id").val();
     var new_start_time = stringToMomentDate($("#start").val());
     var new_end_time = stringToMomentDate($('#end').val());
-    updateEvent(event_id,new_start_time.format(),new_end_time.format());
+    if (new_start_time >= new_end_time){
+
+       $.notify("Дата начала действия должна быть раньше даты его окончания!",'error',{
+                    position : 'top center'
+                })
+
+    }
+
+    else{
+        updateEvent(event_id,new_start_time.format(),new_end_time.format());
+    }
+
 });
 
 //удаление события
@@ -437,7 +473,20 @@ $('#add_action').button().on('click',function(){
     var start_time = stringToMomentDate($("#action_start").val());
     var end_time = stringToMomentDate($('#action_end').val());
     var app_vacancy_id = $('#app_vacancy_id').val();
-    addEvent(event_type,start_time.format(),end_time.format(),app_vacancy_id);
+
+    if (start_time >= end_time){
+
+       $.notify("Дата начала действия должна быть раньше даты его окончания!",'error',{
+                    position : 'top center'
+                })
+
+    }
+
+    else{
+
+        addEvent(event_type,start_time.format(),end_time.format(),app_vacancy_id);
+    }
+
 
 });
 

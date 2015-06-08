@@ -73,6 +73,7 @@
                     <div class="box box-primary">
                         <h4>Выберите год:</h4>
                         <select id="slct_change_year" class="form-control">
+                            <option selected value="{% now 'Y' %}">{% now "Y" %}</option>
                             {% for year in years %}
                                 <option value="{{ year }}">{{year}}</option>
                             {% endfor %}

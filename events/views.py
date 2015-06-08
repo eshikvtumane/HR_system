@@ -143,15 +143,27 @@ def get_events_ajax(request):
 
 def add_event(request):
     if request.is_ajax:
+
         app_vacancy_id = request.POST['app_vacancy_id']
         applicant_vacancy = ApplicantVacancy.objects.get(
             id=app_vacancy_id)
         event = request.POST["event_type"]
 
-        start = datetime.datetime.strptime(request.POST['start'],
+        start = request.POST['start']
+
+
+        end = request.POST['end']
+
+
+        #обрезаем часть строки с time zone данными
+        if len(start)>19:
+            start = start[:19]
+            end =  end[:19]
+
+        start = datetime.datetime.strptime(start,
                                            "%Y-%m-%dT%H:%M:%S")
 
-        end = datetime.datetime.strptime(request.POST['end'],"%Y-%m-%dT%H:%M:%S")
+        end = datetime.datetime.strptime(end,"%Y-%m-%dT%H:%M:%S")
 
         form = ApplicantVacancyEventForm({
             'event':event,'start':start,'end':end})
@@ -168,14 +180,10 @@ def add_event(request):
 
 
 
-
-
-
 def update_event_ajax(request):
     if request.is_ajax():
         start = request.POST['start']
         end = request.POST['end']
-
         #обрезаем часть строки с time zone данными
         if len(start)>19:
             start = start[:19]
@@ -188,6 +196,7 @@ def update_event_ajax(request):
 
         new_end = datetime.datetime.strptime(end,
                                            "%Y-%m-%dT%H:%M:%S")
+
         try:
             event.start = new_start
             event.end = new_end
@@ -205,13 +214,9 @@ def delete_event_ajax(request):
             event.delete()
             return HttpResponse('200')
         except:
-            return  HttpResponse('400')
+            return HttpResponse('400')
 
 
-def httpresponsejson(code, message):
-    #result = json.dumps([code, message])
-    return JsonResponse({'code': code, 'messages': message})
-    #return HttpResponse(result, content_type='application/json')
 
 # send email
 def send_message_ajax(request):
@@ -223,12 +228,12 @@ def send_message_ajax(request):
             recipients = [method['email']]
             title = method['title']
         except Exception, e:
-            return httpresponsejson('500', 'Преданы не все параметры (сообщение, тема, кому отправить)')
+            return JsonResponse({'code':500, 'messages':'Преданы не все параметры (сообщение, тема, кому отправить)'})
 
         sender = EmailSender()
         result = sender.send(message, recipients, title)
         if result:
-            return httpresponsejson('200', 'Success')
-        return httpresponsejson('500', 'Error send')
+            return JsonResponse({'code':200, 'messages':'Success'})
+        return JsonResponse({'code':500, 'messages':'Error'})
 
 

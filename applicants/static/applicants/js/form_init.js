@@ -35,16 +35,7 @@ $('#id_study_start').change(function(){
 
 
 
-       //инициализируем selectize.js на необходимых select элементах
-    $('.select-add').each(function(){
-       $(this).selectize({
 
-                 create: true,
-                 createOnBlur: true
-
-             });
-
-    });
 
 
      $('#applicant_vacancy_status').selectize();

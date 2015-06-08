@@ -37,14 +37,14 @@ class VacancyForm(ModelForm):
             }),
 
             'position':forms.Select(attrs={
-                'class':'select',
+                'class':'select-add',
                 'id':'position',
                 'data-validation':'required',
                 'data-validation-error-msg':"Это поле обязательно для заполнения!"
             }),
 
             'education':forms.Select(attrs={
-                'class':'select',
+                'class':'select-add',
                 'id':'education',
             }),
 
@@ -107,11 +107,11 @@ class VacancyForm(ModelForm):
 
 
         }
-        
+
 class AddVacancyForm(VacancyForm):
 
     class Meta(VacancyForm.Meta):
-        exclude = ['published_at']
+        exclude = ['published_at', 'author']
 
 
 

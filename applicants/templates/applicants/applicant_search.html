@@ -17,6 +17,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'js/ion.rangeSlider/css/normalize.css' %}" >
     <link rel="stylesheet" type="text/css" href="{% static 'js/ion.rangeSlider/css/ion.rangeSlider.css' %}" >
     <link rel="stylesheet" type="text/css" href="{% static 'js/ion.rangeSlider/css/ion.rangeSlider.skinHTML5.css' %}" >
+
+<link rel="stylesheet" type="text/css" href="{% static 'js/tablesorter/tablesorter.css' %}" >
+
 {% endblock styles %}
 
 {% block scripts %}
@@ -34,7 +37,11 @@
 
 <script src="{% static 'applicants/js/search.js' %}"></script>
 <script src="{% static 'js/enter_override.js' %}"></script>
+<script src="{% static 'js/tablesorter/jquery.tablesorter.min.js' %}"></script>
 
+<script>
+    $('#result_search').tablesorter();
+</script>
 {% endblock scripts %}
 
 {% block content %}
@@ -185,7 +192,7 @@
                     <h2>Результаты поиска</h2>
 
                     <div>
-                        <table class="table table-hover">
+                        <table class="table tablesorter table-hover" id="result_search">
                             <thead>
                                 <tr>
                                     <th></th>

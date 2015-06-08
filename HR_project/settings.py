@@ -87,6 +87,10 @@ TEMPLATE_CONTEXT_PROCESSORS=(
     'django.contrib.auth.context_processors.auth'
 )
 
+
+
+
+
 ROOT_URLCONF = 'HR_project.urls'
 
 WSGI_APPLICATION = 'HR_project.wsgi.application'
@@ -146,7 +150,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR,'/collectstatic')
+STATIC_ROOT = os.path.join(BASE_DIR,'../collectstatic')
 STATIC_URL = '/static/'
 
 TEMPLATE_DIRS = (

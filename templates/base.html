@@ -60,13 +60,13 @@
             <ul class="nav navbar-nav">
 
                 <!-- Часы -->
-                <li style="vertical-align: middle; color: white; size: 10ex;">
+                <!--<li style="vertical-align: middle; color: white; size: 10ex;">
                     <div class="pull-left" >
                          До защиты осталось:
                         <div id="clock"></div>
                     </div>
 
-                </li>
+                </li>-->
 
                 <li style="vertical-align: middle; color: white; size: 10ex;">
                     <div class="pull-left" >
@@ -400,6 +400,13 @@
               </a>
             </li>
 
+              {% if request.user.is_staff %}
+                  <li>
+                    <a href="/admin">
+                        <i class="fa fa-wrench"></i> <span>Административная панель</span>
+                    </a>
+                  </li>
+              {% endif %}
 
             <li class="header">Доп. функции</li>
               <li><a target="_blank" href="{% url 'applicants:applicant_add' %}"><i class="fa fa-fire"></i> Добавление кандидата</a></li>
@@ -447,7 +454,7 @@
     <script src="{% static 'js/jquery.cookie.js'%}" type="text/javascript"></script>
 
     <!-- Часы на странице -->
-    <script src="{% static 'js/jquery.countdown/jquery.countdown.js' %}"></script>
+    <!--<script src="{% static 'js/jquery.countdown/jquery.countdown.js' %}"></script>-->
     <script src="{% static 'js/digital_clock.js' %}"></script>
 
     <!-- Переопределение события кнопки enter -->

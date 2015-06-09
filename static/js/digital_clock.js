@@ -1,13 +1,4 @@
 $('document').ready(function(){
-    $('div#clock').countdown('2015/06/14', function(event) {
-       var $this = $(this).html(event.strftime(''
-         + '<span>%w</span> weeks '
-         + '<span>%d</span> days '
-         + '<span>%H</span> hr '
-         + '<span>%M</span> min '
-         + '<span>%S</span> sec'));
-     });
-     console.log('count');
     showTheTime();
 });
 
@@ -26,7 +17,6 @@ function showTheTime() {
 }
 
 function showTheDay(today){
-
     // словарь с названиями месяцев года
     var mounth_dict = [
         'января',

@@ -90,15 +90,21 @@ class VacancyView(View):
 
         for app_vacancy in app_vacancies:
             #выбираем последний статус в объектах Applicant-Vacancy по данной вакансии
-            last_status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
-                '-id')[0]
+            try:
+                last_status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
+                    '-id')[0]
 
-            #добавляем кандидата в массив кандидатов с его текущим статусом по данной вакансии
-            applicants.append({'applicant':app_vacancy.applicant,'status':last_status.applicant_vacancy_status.name})
+                #добавляем кандидата в массив кандидатов с его текущим статусом по данной вакансии
+                applicants.append({'applicant':app_vacancy.applicant,'status':last_status.applicant_vacancy_status.name})
 
-            #если кандидат был принят на работу по данной вакансии, то выводим его данные на страницу
-            if last_status.applicant_vacancy_status.name.encode('utf-8').strip() == 'Принят на работу':
-                applicant_hired = app_vacancy.applicant
+                #если кандидат был принят на работу по данной вакансии, то выводим его данные на страницу
+                if last_status.applicant_vacancy_status.name.encode('utf-8').strip() == 'Принят на работу':
+                    applicant_hired = app_vacancy.applicant
+            except Exception, e:
+                print e.message
+                applicants.append({'applicant':app_vacancy.applicant,'status':u'Ошибка получения статуса'})
+
+
 
         #руководитель отдела, подавший заявку на вакансию
         head = vacancy.head

@@ -381,7 +381,11 @@
                               <tbody>
                                 {% for h in history_action %}
                                     <tr>
-                                        <td>{{ h.user.first_name }} {{ h.user.last_name }}</td>
+                                        {% if h.user.first_name|length == 0 and h.user.last_name|length == 0 %}
+                                            <td>{{ h.user.username }}</td>
+                                        {% else %}
+                                            <td>{{ h.user.username }} ({{ h.user.first_name }} {{ h.user.last_name }})</td>
+                                        {% endif %}
                                         <td>{{ h.type_change }}</td>
                                         <td>{{ h.date_change }}</td>
                                     </tr>

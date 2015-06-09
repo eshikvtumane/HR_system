@@ -54,30 +54,39 @@
                   <div class="box-header">
                        <form id='frm_add_vacancy' class="form">{% csrf_token %}
 
-                        <div class="form-group">
-                        {{ vacancy_form.position.label_tag}}
-                        {{ vacancy_form.position}}
-                        </div>
-                        <div class="form-group">
-                        {{ vacancy_form.status.label_tag}}
-                        {{ vacancy_form.status}}
-                       </div>
-                        <div class="form-group">
-                           {{ vacancy_form.head.label_tag}}
-                        {{ vacancy_form.head}}
-                         </div>
-                        <div class="form-group">
-                           <fieldset>
-                                <legend>Поиск по дате публикации</legend>
-                                {{ vacancy_form.search_start.label_tag }}
-                                {{ vacancy_form.search_start}}
-                                {{ vacancy_form.search_end.label_tag }}
-                                {{ vacancy_form.search_end}}
-                         </fieldset>
+                           <div class="col-sm-12">
+                               <div class="col-sm-4 form-group">
+                                    {{ vacancy_form.position.label_tag}}
+                                    {{ vacancy_form.position}}
+                                    </div>
+                                    <div class="col-sm-4 form-group">
+                                    {{ vacancy_form.status.label_tag}}
+                                    {{ vacancy_form.status}}
+                                   </div>
+                                    <div class="col-sm-4 form-group">
+                                       {{ vacancy_form.head.label_tag}}
+                                    {{ vacancy_form.head}}
+                                </div>
                            </div>
-                        <div class="control-group" style="margin-top: 2em" >
-                       <button class="btn btn-success">Поиск</button>
-                         </div>
+
+                            <div class="col-sm-12 form-group">
+                               <fieldset>
+                                    <legend>Поиск по дате публикации</legend>
+                                   <div class="col-sm-4">
+                                       {{ vacancy_form.search_start.label_tag }}
+                                       {{ vacancy_form.search_start}}
+                                   </div>
+                                   <div class="col-sm-4">
+                                       {{ vacancy_form.search_end.label_tag }}
+                                       {{ vacancy_form.search_end}}
+                                   </div>
+
+
+                               </fieldset>
+                           </div>
+                            <div class="col-sm-12 text-center" style="margin-top: 2em;" >
+                                <button class="btn btn-success"><i class="fa fa-search"></i> Поиск</button>
+                            </div>
                        </form>
                   </div>
 

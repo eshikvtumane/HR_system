@@ -1,4 +1,4 @@
-$('document').ready(function(){
+/*$('document').ready(function(){
     $('div#clock').countdown('2015/06/14', function(event) {
        var $this = $(this).html(event.strftime(''
          + '<span>%w</span> weeks '
@@ -9,7 +9,7 @@ $('document').ready(function(){
      });
      console.log('count');
     showTheTime();
-});
+});*/
 
 function showTheTime() {
     now = new Date;

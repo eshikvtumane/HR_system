@@ -42,18 +42,20 @@ window.onload = function(){
             dataType: 'json',
             data: datastring,
             success: function (data) {
-               /* var errors = data[0]['errors'];
-                for (var key in errors){
-                    if(errors.hasOwnProperty(key)){
-                        $("<span/>",{
-                            text:key+":"+errors[key]
-                        }).appendTo("#error_list");
-                        console.log(key + "- >" + errors[key]);
-                    }
-                }*/
+                if(!data['errors']){
                 $.notify("Данные вакансии успешно обновлены",'success',{
                     position : 'top center'
                 })
+                 }
+
+                else{
+                     $.notify('Проверьте правильность заполненных полей!','error',{
+                    position : 'top center'
+                })
+                    $('#error_box').html(data['errors'])
+
+                }
+
             },
             error: function(xhr,errmsg,err) {
                $.notify("Произошла ошибка при обновлении данных!Попробуйте ещё раз!",'error',{

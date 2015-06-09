@@ -41,11 +41,18 @@ $('#benefits').selectize({
             dataType: 'json',
             data: datastring,
             success: function (data) {
+               if (data['vacancy_id']){
                var vacancy_id = data["vacancy_id"];
                window.location.href = '/vacancies/' + vacancy_id;
+                }
+
+                else {
+                        $('#error_box').html(data['errors']);
+                    }
 
 
             },
+
             error: function(xhr,errmsg,err) {
                    $.notify("Произошла ошибка при добавлении вакансии!Попробуйте ещё раз!",'error',{
                     position : 'top center'

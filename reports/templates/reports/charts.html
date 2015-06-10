@@ -70,22 +70,25 @@
             </div>
             <div class="row">
                      <section class="col-lg-12 connectedSortable">
-                    <div class="col-sm-6 box box-primary">
-                        <h4>Выберите год:</h4>
-                        <div class="col-sm-2" id="year">
-                            <select id="slct_change_year" class="form-control">
-                            <option selected value="{% now 'Y' %}">{% now "Y" %}</option>
-                            {% for year in years %}
-                                <option value="{{ year }}">{{year}}</option>
-                            {% endfor %}
-                        </select>
+                    <div class="col-sm-12 box box-primary">
+                        <div class="col-sm-12">
+
+                            <div class="col-sm-2" id="year">
+                                <h4>Выберите год:</h4>
+                                <select id="slct_change_year" class="form-control">
+                                    <option selected value="{% now 'Y' %}">{% now "Y" %}</option>
+                                    {% for year in years %}
+                                        <option value="{{ year }}">{{year}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
                         </div>
 
-
-                        <div id="hired_to_total_rate"></div>
-
-
+                        <div class="col-sm-12">
+                            <div id="hired_to_total_rate"></div>
+                        </div>
                     </div>
+
                 </section>
 
             </div>

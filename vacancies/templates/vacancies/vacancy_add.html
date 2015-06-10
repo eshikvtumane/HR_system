@@ -49,25 +49,25 @@
              <form id='frm_add_vacancy'>{% csrf_token %}
 
               <section class="col-lg-6 connectedSortable">
-                <!--
+                <!--</b>
                     Форма добавления вакансии
                 -->
 
               <div class="box box-primary">
                 <div class="box-header">
-                        {{ vacancy_form.position.label_tag}}
+                        <b>{{ vacancy_form.position.label}} *:</b>
                         {{ vacancy_form.position}}
-                        {{ vacancy_form.salary.label_tag}}
+                        <b>{{ vacancy_form.salary.label}} *:</b>
                         {{ vacancy_form.salary}}
                         {{ vacancy_form.education.label_tag}}
                         {{ vacancy_form.education}}
-                        {{ vacancy_form.end_date.label_tag}}
+                        <b>{{ vacancy_form.end_date.label}}</b> *:
                         {{ vacancy_form.end_date}}
                         {{ vacancy_form.sex.label_tag}}
                         {{ vacancy_form.sex}}
                         {{ vacancy_form.marriage_status.label_tag}}
                         {{ vacancy_form.marriage_status}}
-                        {{ vacancy_form.paid_vacation.label_tag}}
+                        <b>{{ vacancy_form.paid_vacation.label}} * : </b>
                         {{ vacancy_form.paid_vacation}}
                         {{ vacancy_form.skills.label_tag}}
                         {{ vacancy_form.skills}}
@@ -75,7 +75,7 @@
                         {{ vacancy_form.additional_info}}
                  <div class="form-group">
 
-                     <label for='benefits'>Льготы</label>
+                     <label for='benefits'>Льготы:</label>
 
                                 <select id="benefits" class="form-control" name="benefits" multiple="multiple">
                                     <option value=""></option>
@@ -88,9 +88,9 @@
 
 
                     <div class="form-group">
-                    <label for='department'>Отдел</label>
+                    <label for='department'>Отдел * :</label>
                     <select id="department" name="department"
-                            class="select"  data-validation='required' data-validation-error-msg="Это поле обязательно для заполнения!">
+                            class="select"  data-validati</b>on='required' data-validation-error-msg="Это поле обязательно для заполнения!">
                         <option selected="'selected" value=""></option>
                         {% for department in departments %}
                             <option value="{{department.id}}">

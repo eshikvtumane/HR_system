@@ -1,12 +1,28 @@
 window.onload = function(){
     //валидация формы
 
+     /*$.formUtils.addValidator({
+          name : 'end_date',
+          validatorFunction : function(value, $el, config, language, $form) {
+            if(value.length != 0){
+                var reg = new RegExp('^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$');
+                result = reg.test(value);
+                return result;
+            }
+            return true;
+          },
+          errorMessage : 'В поле с предполагаемым сроком закрытия должно быть указано число!',
+          errorMessageKey: 'badDate'
+        });
+*/
+
+
     $.validate({
 
 
         form:'#frm_add_vacancy',
         onError : function() {
-
+               
     },
         onSuccess:function(){
 
@@ -41,11 +57,18 @@ $('#benefits').selectize({
             dataType: 'json',
             data: datastring,
             success: function (data) {
+               if (data['vacancy_id']){
                var vacancy_id = data["vacancy_id"];
                window.location.href = '/vacancies/' + vacancy_id;
+                }
+
+                else {
+                        $('#error_box').html(data['errors']);
+                    }
 
 
             },
+
             error: function(xhr,errmsg,err) {
                    $.notify("Произошла ошибка при добавлении вакансии!Попробуйте ещё раз!",'error',{
                     position : 'top center'
@@ -84,7 +107,7 @@ $('#benefits').selectize({
                 });
                 $heads_div = $('#heads_div');
                 $heads_div.empty();
-                $("<label for='heads'>Руководитель</label>").appendTo($heads_div);
+                $("<label for='heads'>Руководитель:</label>").appendTo($heads_div);
                 $select.appendTo(heads_div)
             },
             error: function(xhr,errmsg,err) {

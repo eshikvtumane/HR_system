@@ -1054,6 +1054,18 @@ def get_vacancy_status_distribution(request):
 
 
 
+def get_vacancies_to_applicants_rate(request):
+    if request.is_ajax:
+        positions = [position.name for position in Position.objects.all()]
+        vacancy_applicants_list = []
+        vacancies_quantity_object = {'name':'Количество вакансий','data':[]}
+        applicants_quantity_object = {'name':'Количество кандидатов','data':[]}
+        for position in positions:
+            vacancies_quantity_object['data'].append(Vacancy.objects.filter(position__name = position).count())
+            applicants_quantity_object['data'].append(ApplicantVacancy.objects.filter(vacancy__position__name = position).count())
+        vacancy_applicants_list.append(vacancies_quantity_object)
+        vacancy_applicants_list.append(applicants_quantity_object)
+        return JsonResponse(data={'positions':positions,'vacancies_applicants_rate': vacancy_applicants_list},status=200)
 
 
 

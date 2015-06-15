@@ -4,7 +4,8 @@ $(function () {
 
     drawVacanciesDistributionChart();
     drawPositionAvgSalaryChart();
-    drawVacanciesDistributionChart();
+    drawVacancyStatusDistribution();
+    drawVacanciesToApplicantsRate();
 
     drawHiredToTotalApplicantsRate(HiredToTotalApplicantsGetData(currentYear));
 
@@ -219,7 +220,7 @@ function drawHiredToTotalApplicantsRate(data){
 
 
 
-function drawVacanciesDistributionChart(){
+function drawVacancyStatusDistribution(){
 
      $.ajax({
             type: 'GET',
@@ -281,6 +282,58 @@ function drawVacanciesDistributionChart(){
                 },
                 series: data['status_distribution_list']
                     });
+            },
+            error: function(data) {
+               console.log("Ошибка при пострении графика!")
+            }
+        });
+
+}
+
+
+
+function drawVacanciesToApplicantsRate(){
+
+     $.ajax({
+            type: 'GET',
+            url: '/reports/get_vacancies_to_applicants_rate/',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                          console.log(data);
+
+            $('#vacancies_to_applicants_rate').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Отношение кол-ва вакансий к кол-ву кандидатов'
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories: data['positions'],
+                crosshair: true
+            },
+            yAxis: {
+                allowDecimals: false,
+                min: 0,
+                title: {
+                    text: 'Кол-во ед.'
+                }
+            },
+            tooltip: {
+
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: data['vacancies_applicants_rate']
+             });
             },
             error: function(data) {
                console.log("Ошибка при пострении графика!")

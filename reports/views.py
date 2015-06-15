@@ -7,7 +7,7 @@ from django.views.generic import View
 
 
 from vacancies.models import ApplicantVacancy, Vacancy, CurrentApplicantVacancyStatus, VacancyStatusHistory,\
-    Position, Department
+    Position, Department, VacancyStatus
 from applicants.models import SourceInformation,Position, Applicant
 
 
@@ -1036,6 +1036,26 @@ def get_hired_to_total_applicants_rate(request):
             hired_applicants[app_vac.applicant_vacancy_status.date_created.month - 1] += 1
 
         return JsonResponse(data={'total':total_applicants,'hired':hired_applicants},status=200)
+
+
+
+def get_vacancy_status_distribution(request):
+    if request.is_ajax:
+        positions = [position.name for position in Position.objects.all()]
+        status_dist_list = []
+        for status in VacancyStatus.objects.all():
+            status_info = {'name':status.name,'data':[]}
+            for position in positions:
+                 quantity = status.vacancy_set.filter(position__name = position).count()
+                 status_info['data'].append(quantity)
+            status_dist_list.append(status_info)
+
+        return JsonResponse(data={'positions':positions,'status_distribution_list':status_dist_list},status=200)
+
+
+
+
+
 
 
 

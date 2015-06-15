@@ -4,6 +4,7 @@ $(function () {
 
     drawVacanciesDistributionChart();
     drawPositionAvgSalaryChart();
+    drawVacanciesDistributionChart();
 
     drawHiredToTotalApplicantsRate(HiredToTotalApplicantsGetData(currentYear));
 
@@ -212,5 +213,78 @@ function drawHiredToTotalApplicantsRate(data){
                 }]
             });
 
+
+}
+
+
+
+
+function drawVacanciesDistributionChart(){
+
+     $.ajax({
+            type: 'GET',
+            url: '/reports/get_vacancy_status_distribution/',
+            dataType: 'json',
+            contentType: 'application/json',
+            success: function (data) {
+                          console.log(data);
+             $('#vacancy_status_distribution').highcharts({
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Количество вакансий в зависимости от статуса'
+                },
+                subtitle: {
+                    text: ''
+                },
+                xAxis: {
+                    categories: data['positions'],
+                    title: {
+                        text: null
+                    }
+                },
+                yAxis: {
+                    allowDecimals: false,
+                    min: 0,
+                    title: {
+                        text: 'Количество вакансий',
+                        align: 'high'
+                    },
+                    labels: {
+                        overflow: 'justify'
+                    }
+                },
+                tooltip: {
+                    valueSuffix: 'шт.'
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                legend: {
+                    layout: 'vertical',
+                    align: 'right',
+                    verticalAlign: 'top',
+                    x: -40,
+                    y: 100,
+                    floating: true,
+                    borderWidth: 1,
+                    backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                    shadow: true
+                },
+                credits: {
+                    enabled: false
+                },
+                series: data['status_distribution_list']
+                    });
+            },
+            error: function(data) {
+               console.log("Ошибка при пострении графика!")
+            }
+        });
 
 }

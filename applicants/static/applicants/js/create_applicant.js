@@ -1,5 +1,7 @@
 $(document).ready(function(){
     var url = '/applicants/add/';
+
+    // validate_applicant_form.js
     validateForm(sendApplicantForm, url, fn);
 });
 

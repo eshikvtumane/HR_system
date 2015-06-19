@@ -96,6 +96,7 @@ function validateForm(send_fn, url, success_fn){
         form: '#applicant_form',
         language : myLanguage,
         onSuccess : function() {
+        //функция находится в send_candidate_form.js
           send_fn(url, success_fn);
           return false; // Will stop the submission of the form
         }

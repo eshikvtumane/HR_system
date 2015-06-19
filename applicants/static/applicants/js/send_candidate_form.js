@@ -30,7 +30,6 @@ function sendApplicantForm(url, fn){
 
 
         //var url = '/applicants/add/';
-
         $.ajax({
             type:'POST',
             url: url,

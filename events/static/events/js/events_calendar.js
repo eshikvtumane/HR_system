@@ -516,7 +516,7 @@ $('#add_action').button().on('click',function(){
 
     //удаляем куку с id вакансии, чтобы исключить возможность назначения действия без перехода
     //со страницы кандидата
-    //$.cookie('app_vacancy_id',"nothing",{ path: '/',expires:-10000 });
+    $.cookie('app_vacancy_id',"nothing",{ path: '/',expires:-10000 });
 
 
 });

@@ -1,6 +1,8 @@
 $(document).ready(function(){
     var id = document.getElementById('id').value;
     var url = '/applicants/view/' + id + '/';
+
+// validate_applicant_form.js
     validateForm(sendApplicantForm, url, fn);
 });
 
@@ -8,7 +10,7 @@ $(document).ready(function(){
 
 var fn = function(data){
     var div_result = document.getElementById('create_applicant_message');
-
+alert('fff')
     if(data[0] == '200'){
         var url = '/applicants/view/' + data[1] + '/';
         window.location.href = url;

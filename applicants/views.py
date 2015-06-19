@@ -102,13 +102,14 @@ class SavingModels():
 
             return
         except Exception, e:
-            print 'Error'
+            print 'Error 2'
             print e.message
-            return
+        return
 
     def savingEducations(self, json_educations, user):
+        print '111', json_educations
         try:
-            educations = json.loads(json_educations)
+            educations = json.loads(json_educations['educations'])
             edu_obj = []
             print educations
             for k, v in enumerate(educations):
@@ -119,7 +120,7 @@ class SavingModels():
 
             ApplicantEducation.objects.bulk_create(edu_obj)
         except Exception, e:
-            print 'Error'
+            print 'Error 1'
             print e.message
         return
 
@@ -146,68 +147,74 @@ class SavingModels():
         return args
 
     def savingApplicantForm(self, request, type_change, applicant_instance={}):
-        try:
-            req = request.POST
-            self.author = request.user
-            # создание объекта класса сохранения файлов
-            sf = SavingFiles()
+        #try:
+        req = request.POST
+        self.author = request.user
+        # создание объекта класса сохранения файлов
+        sf = SavingFiles()
 
-            # конвертирование даты в формат, понятный БД
+        # конвертирование даты в формат, понятный БД
+        if req['birthday'] != '__-__-____':
             try:
                 if req['birthday']:
                     req['birthday'] = datetime.datetime.strptime(req['birthday'], "%d-%m-%Y").date()
             except:
                 req['birthday'] = datetime.datetime.strptime(req['birthday'], "%Y-%m-%d").date()
 
-            # сохранение данных в таблицу Applicant
-            # сохраниение нового источника или получение id существующего источника
-            #request.POST['source'] = self.sourceCreate(req['source'])
+        # сохранение данных в таблицу Applicant
+        # сохраниение нового источника или получение id существующего источника
+        #request.POST['source'] = self.sourceCreate(req['source'])
 
-            if req['icq']:
-                req['icq'] = int(req['icq'])
-            else:
-                req['icq'] = None
+        if req['icq']:
+            req['icq'] = int(req['icq'])
+        else:
+            req['icq'] = None
 
 
-            applicant_form = ApplicantForm(request.POST, request.FILES, **applicant_instance)
-            if applicant_form.is_valid():
-                new_applicant = applicant_form.save()
-            else:
-                print applicant_form.errors
-                return False
-
-            self.savingPhone(req.getlist('phone'), new_applicant)
-            self.savingVacancies(req['vacancies'], new_applicant, request.user)
-            self.savingEducations(req['educations'], new_applicant)
-
-            full_name = new_applicant.getFullName()
-
-            resume = sf.saveFiles(request.FILES.getlist('resume[]'),
-                                  dir='resume',
-                                  filename=full_name)
-            portfolio = sf.saveFiles(request.FILES.getlist('portfolio[]'),
-                                     dir='portfolio',
-                                     filename=full_name)
-
-            # сохранение текстовых файлов с резюме и запись ссылки в БД
-            if resume:
-                # запись файлов на сервер
-                resume_list = [Resume(applicant = new_applicant, resume_file = r) for r in resume]
-                # сохранение ссылок на файлы в таблицу
-                Resume.objects.bulk_create(resume_list)
-            # сохранение архивов с работами кандидата и запись ссылки в БД
-            if portfolio:
-                # запись файлов на сервер
-                portfolio_list = [Portfolio(applicant = new_applicant, portfolio_file = p) for p in portfolio]
-                # сохранение ссылок на файлы в таблицу
-                Portfolio.objects.bulk_create(portfolio_list)
-
-            # добавление изменения в историю
-            self.addHistoryChange(request.user, new_applicant, type_change)
-            return new_applicant.id
-        except Exception, e:
-            print e.message
+        applicant_form = ApplicantForm(request.POST, request.FILES, **applicant_instance)
+        if applicant_form.is_valid():
+            new_applicant = applicant_form.save()
+        else:
+            print applicant_form.errors
             return False
+
+        self.savingPhone(req.getlist('phone'), new_applicant)
+        self.savingVacancies(req['vacancies'], new_applicant, request.user)
+        print '555'
+        #req['educations'] = req.get('educations' or None)
+        #if req['educations']:
+        self.savingEducations(req, new_applicant)
+
+
+        full_name = new_applicant.getFullName()
+
+        resume = sf.saveFiles(request.FILES.getlist('resume[]'),
+                              dir='resume',
+                              filename=full_name)
+        portfolio = sf.saveFiles(request.FILES.getlist('portfolio[]'),
+                                 dir='portfolio',
+                                 filename=full_name)
+
+        # сохранение текстовых файлов с резюме и запись ссылки в БД
+        if resume:
+            # запись файлов на сервер
+            resume_list = [Resume(applicant = new_applicant, resume_file = r) for r in resume]
+            # сохранение ссылок на файлы в таблицу
+            Resume.objects.bulk_create(resume_list)
+        # сохранение архивов с работами кандидата и запись ссылки в БД
+        if portfolio:
+            # запись файлов на сервер
+            portfolio_list = [Portfolio(applicant = new_applicant, portfolio_file = p) for p in portfolio]
+            # сохранение ссылок на файлы в таблицу
+            Portfolio.objects.bulk_create(portfolio_list)
+
+        # добавление изменения в историю
+        self.addHistoryChange(request.user, new_applicant, type_change)
+        return new_applicant.id
+        '''except Exception, e:
+            print 't'
+            print e.message
+            return False'''
 
 
 
@@ -456,6 +463,7 @@ class ApplicantView(View, SavingModels):
 
             if result:
                 json_res = json.dumps(['200',result])
+                print 1
             else:
                 json_res = json.dumps(['500',result])
             #return HttpResponseRedirect(reverse('applicants:applicant_view', kwargs={'applicant_id':int(applicant_id)}))

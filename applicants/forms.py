@@ -48,12 +48,12 @@ class ApplicantForm(forms.ModelForm):
                                             }),
             'city': forms.TextInput(attrs={
                 'class': "form-control",
-                'data-validation': "text",
+                #'data-validation': "text",
                 'autocomplete': 'off'
             }),
             'street': forms.TextInput(attrs={
                 'class': "form-control",
-                'data-validation': "text",
+                #'data-validation': "text",
                 'autocomplete': 'off'
             }),
 

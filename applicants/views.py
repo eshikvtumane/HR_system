@@ -219,8 +219,11 @@ class SavingModels():
 
 
 
-# Добавление кандидата
+
 class ApplicantAddView(View, SavingModels):
+    '''
+        Добавление кандидата
+    '''
     template = 'applicants/applicant_add.html'
 
     @method_decorator(login_required)
@@ -242,8 +245,9 @@ class ApplicantAddView(View, SavingModels):
 
 
 class SavingFiles():
-    '''def saveFile(self, file, dir='', path=settings.MEDIA_URL):
-        return self.__save(file, dir, path)'''
+    '''
+        сохранение файлов
+    '''
 
     def saveFiles(self, files, dir='', path=settings.MEDIA_URL, filename=''):
         arr_path = []
@@ -259,8 +263,10 @@ class SavingFiles():
         file_url = os.path.join(path, save_path)
         return file_url
 
-# выборка вакансий
 class VacancySearchAjax(View):
+    '''
+        выборка вакансий
+    '''
     def get(self, request):
         if request.is_ajax:
             position = request.GET.get('position')
@@ -282,7 +288,11 @@ class VacancySearchAjax(View):
             j = json.dumps(result)
             return HttpResponse(j, content_type='application/json')
 
+
 class PaginatorView(View):
+    '''
+        разбивка результата поиска по страницам
+    '''
     def paginator(self, request, obj_list):
         try:
             page = request.GET.get('page', 1)
@@ -305,11 +315,12 @@ class ApplicantSearchView(PaginatorView):
 
     @method_decorator(login_required)
     def get(self, request):
+        # выбираем случайных кандидатов, если нет данных в запросе
         if not request.GET:
             applicant_vacancy_list = Applicant.objects.all()\
                                         .values('id', 'last_name',
                                                 'first_name', 'middle_name',
-                                                'email', 'photo', 'birthday').reverse()[:10]
+                                                'email', 'photo', 'birthday').order_by('?').reverse()[:10]
         else:
             req = request.GET.copy()
 
@@ -336,6 +347,7 @@ class ApplicantSearchView(PaginatorView):
                     query_applicant_list[field + '__contains'] = req[field]
                     query_list['applicant__' + field + '__contains'] = req[field]
 
+            # добавляем минимальную и максимальную дату рождения кандидата
             if age_add:
                 today = datetime.date.today()
                 age_min = int(req['age_start'])
@@ -345,18 +357,18 @@ class ApplicantSearchView(PaginatorView):
                 date_start = datetime.date(today.year - age_max - 1, today.month, today.day)
                 date_end = datetime.date(today.year - age_min - 1, today.month, today.day)
 
-                #print 'age', date_start, date_end
-
                 query_list['applicant__birthday__gte'] = query_applicant_list['birthday__gte'] = date_start
                 query_list['applicant__birthday__lte'] = query_applicant_list['birthday__lte'] = date_end
 
             applicant_vacancy_list = []
+            # ищем кандидатов по выбранной должности
             if position:
                 query_list['vacancy__position'] = position
 
                 if salary_add:
                     salary_start = int(req['salary_start'].replace(' ', ''))
-                    salary_end   = int(req['salary_end'].replace(' ', ''))
+                    salary_end = int(req['salary_end'].replace(' ', ''))
+                    # если минимальная и максимальная запрашиваемые суммы одинаковы, то вычисляем +-5% от заданной суммы.
                     if salary_start == salary_end:
                         range_salary = float(salary_start * 5) / 100.0
                         salary_start = float(salary_start) - range_salary
@@ -365,13 +377,9 @@ class ApplicantSearchView(PaginatorView):
                     query_list['salary__gte'] = salary_start
                     query_list['salary__lte'] = salary_end
 
-                try:
-                    reserve = request.GET['reserve']
-                except:
-                    reserve = False
-
+                # кандидаты из резерва
+                reserve = request.GET.get('reserve' or None)
                 # если установлена галочка резерв
-
                 if reserve:
                     # получаем объект статуса
                     reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Резерв')
@@ -463,7 +471,6 @@ class ApplicantView(View, SavingModels):
 
             if result:
                 json_res = json.dumps(['200',result])
-                print 1
             else:
                 json_res = json.dumps(['500',result])
             #return HttpResponseRedirect(reverse('applicants:applicant_view', kwargs={'applicant_id':int(applicant_id)}))
@@ -478,6 +485,10 @@ class ApplicantView(View, SavingModels):
 
 
 class ApplicantVacancyStatusAjax(View):
+    '''
+        Выборка статусов вакансий для
+        определённого кандидата
+    '''
     def get(self, request):
         if request.is_ajax:
             request = request.GET
@@ -492,7 +503,6 @@ class ApplicantVacancyStatusAjax(View):
                 for i in result_obj
             ]
 
-
             if result:
                 json_res = json.dumps(['200', result])
             else:
@@ -506,15 +516,13 @@ class ApplicantVacancyStatusAjax(View):
         if request.is_ajax:
             request = request.POST
             user = User.objects.get(pk=request['user_id'])
-            print 'tttt', request['applicant_vacancy']
-            print 'tttt', request['status']
+
             try:
                 applicant_vacancy_status = ApplicantVacancyStatus.objects.get(pk=request['status'])
             except:
                 applicant_vacancy_status = ApplicantVacancyStatus(name=request['status'], author=user)
                 applicant_vacancy_status.save()
 
-            print 'tttt', applicant_vacancy_status
             obj = CurrentApplicantVacancyStatus(
                 applicant_vacancy= ApplicantVacancy.objects.get(pk=request['applicant_vacancy']),
                 applicant_vacancy_status = applicant_vacancy_status,
@@ -531,6 +539,9 @@ class ApplicantVacancyStatusAjax(View):
         return HttpResponse(json_res, content_type='application/text')
 
 class PositionSourceGetAjax(View):
+    '''
+        Получение всех истоников и всех должностей
+    '''
     def get(self, request):
         try:
             positions = Position.objects.all().values('id', 'name')

@@ -260,46 +260,7 @@
                         </table>
                     </div>
 
-                    {% load i18n %}
-                    <div align="center">
-                        <ul class="pagination pagination-lg">
-                            {% if applicants.has_previous %}
-                                <li>
-                                    <a href="?{{ applicants.previous_page_number.querystring }}" class="prev">&lsaquo;&lsaquo; {% trans "Предыдущая" %}</a>
-                                </li>
-                            {% else %}
-                                <li>
-                                    <span class="disabled prev">&lsaquo;&lsaquo; {% trans "Предыдущая" %}</span>
-                                </li>
-                            {% endif %}
-                            {% for page in applicants.pages %}
-                                {% if page %}
-                                    {% ifequal page applicants.number %}
-                                        <li>
-                                            <span class="current page">{{ page }}</span>
-                                        </li>
-                                    {% else %}
-                                        <li>
-                                            <a href="?{{ page.querystring }}" class="page">{{ page }}</a>
-                                        </li>
-                                    {% endifequal %}
-                                {% else %}
-                                    ...
-                                {% endif %}
-                            {% empty %}
-                                <h2>Нет данных</h2>
-                            {% endfor %}
-                            {% if applicants.has_next %}
-                                <li>
-                                    <a href="?{{ applicants.next_page_number.querystring }}" class="next">{% trans "Следующая" %} &rsaquo;&rsaquo;</a>
-                                </li>
-                            {% else %}
-                                <li>
-                                    <span class="disabled next">{% trans "Следующая" %} &rsaquo;&rsaquo;</span>
-                                </li>
-                            {% endif %}
-                        </ul>
-                    </div>
+                    {% include 'applicants/includes/paginator.html' %}
                 </div>
             </section><!-- /.Left col -->
 

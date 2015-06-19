@@ -55,6 +55,7 @@ class MainPageView(View):
         for a in applicants:
             total_age += today.year - a.birthday.year - ((today.month, today.day) < (a.birthday.month, a.birthday.day))
 
+        # вычисляем средний возраст кандидатов
         args['middle_age'] = self.__calculationMiddleValues(total_age, users_count, zero)
 
         vacancies = Vacancy.objects.all()
@@ -63,6 +64,7 @@ class MainPageView(View):
         for v in vacancies:
             total_salary += v.salary
 
+        # вычисляем среднюю зарплату
         args['middle_salary'] = self.__calculationMiddleValues(total_salary, users_count, zero)
 
         applicant_vacancy = ApplicantVacancy.objects.all()
@@ -71,6 +73,7 @@ class MainPageView(View):
         for v in applicant_vacancy:
             total_salary += v.salary
 
+        # вычисляем среднюю запрашиваемую зарплату
         args['middle_applicant_salary'] = self.__calculationMiddleValues(total_salary, vacancies_count, zero)
 
         rc = RequestContext(request, args)
@@ -96,10 +99,10 @@ class TodoDeleteAjax(View):
         return HttpResponse(result, content_type='applicant/json')
 
 class GlobalSearchView(PaginatorView):
-    template = 'applicants/applicant_search.html'#'applicants/applicant_global_search.html'
+    template = 'applicants/applicant_global_search.html'#'applicants/applicant_global_search.html'
     @method_decorator(login_required)
     def get(self, request):
-        query = request.GET['q']
+        query = request.GET.get('q' or None)
 
         # Проверка на существование запроса
         if query:

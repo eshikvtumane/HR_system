@@ -35,6 +35,7 @@ DEBUG_TOOLBAR_CONFIG = {
 
 # ссылка на производственный календарь
 PRODUCTION_CALENDAR = 'http://basicdata.ru/api/json/calend/'
+
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 LOGIN_URL = 'users:login'

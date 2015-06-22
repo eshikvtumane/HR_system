@@ -311,6 +311,9 @@ class PaginatorView(View):
 
 
 class ApplicantSearchView(PaginatorView):
+    '''
+        Расширенный поиск кандидатов
+    '''
     template = 'applicants/applicant_search.html'
 
     @method_decorator(login_required)
@@ -320,7 +323,7 @@ class ApplicantSearchView(PaginatorView):
             applicant_vacancy_list = Applicant.objects.all()\
                                         .values('id', 'last_name',
                                                 'first_name', 'middle_name',
-                                                'email', 'photo', 'birthday').order_by('?').reverse()[:10]
+                                                'email', 'photo', 'birthday').order_by('?')[:10]
         else:
             req = request.GET.copy()
 
@@ -450,6 +453,7 @@ class ApplicantView(View, SavingModels):
         args = self.addForms(applicant_instance)
 
         args['vacancies'] = applicant.applicantvacancy_set.all()
+
         args['educations'] = applicant.applicanteducation_set.all()
         args['phones'] = Phone.objects.filter(applicant=applicant).values('phone')
         args['resume'] = Resume.objects.filter(applicant=applicant).values('resume_file', 'date_upload')
@@ -513,6 +517,9 @@ class ApplicantVacancyStatusAjax(View):
         return HttpResponse(json_res, content_type='application/text')
 
     def post(self, request):
+        '''
+            Добавление статуса кандидидату
+        '''
         if request.is_ajax:
             request = request.POST
             user = User.objects.get(pk=request['user_id'])

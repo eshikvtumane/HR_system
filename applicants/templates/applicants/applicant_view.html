@@ -132,15 +132,17 @@
                                 <div>
 
                                     <label >{{ applicant_form.birthday.value }}</label>
-                                    <div>
+                                    <!--<div>
                                         <label>
                                             Изменить дату рождения:
                                         </label>
                                         {{ applicant_form.birthday }}
                                     </div>
-                                    <!--
                                     <input type="hidden" name="birthday" value="{{ applicant_form.birthday.value|date_format }}">
                                     -->
+                                    <input type="text" class="form-control" id="birthday_change">
+                                    <input type="hidden" name="birthday" id="birthday_hidden" value="{{ applicant_form.birthday.value|date_format }}">
+
                                 </div>
                             </div>
 

@@ -2,6 +2,25 @@ $(document).ready(function(){
     var id = document.getElementById('id').value;
     var url = '/applicants/view/' + id + '/';
 
+    // инициализация datepicker
+    $('#birthday_change').datetimepicker({
+        lang: 'ru',
+        timepicker: false,
+        format: 'd-m-Y',
+        mask: true
+    });
+
+    $('#birthday_change').change(function(){
+        var val = $(this).val();
+        if(val != '__-__-____'){
+            $('#birthday_hidden').val(val);
+        }
+
+
+    });
+
+
+
 // validate_applicant_form.js
     validateForm(sendApplicantForm, url, fn);
 });

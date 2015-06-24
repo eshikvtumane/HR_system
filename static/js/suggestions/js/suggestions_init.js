@@ -11,5 +11,7 @@ $("#fullname").suggestions({
             $('[name="city"]').val(suggestion['data']['city']);
             $('[name="street"]').val(suggestion['data']['street']);
             $('[name="building"]').val(suggestion['data']['house']);
+            $('#fullname').val('');
+
         }
     });

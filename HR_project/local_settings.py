@@ -3,7 +3,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'hr_db',
         'USER': 'root',
-        'PASSWORD': 'vserver',
+        'PASSWORD': 'root',
         'TEST_CHARSET': "utf8",
 
     }

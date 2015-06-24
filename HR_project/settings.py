@@ -15,7 +15,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 #импортируем модуль с настройками для celery
 import celeryconfig
-
+os.environ['PYTHON_EGG_CACHE'] = '/home/vserver/.python-eggs'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -36,7 +36,7 @@ DEBUG_TOOLBAR_CONFIG = {
 # ссылка на производственный календарь
 PRODUCTION_CALENDAR = 'http://basicdata.ru/api/json/calend/'
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['192.168.3.111', '127.0.0.1', 'localhost']
 
 LOGIN_URL = 'users:login'
 LOGOUT_URL = 'users:logout'
@@ -122,17 +122,6 @@ GRAPPELLI_ADMIN_TITLE = 'ИС АПП - административная пане
         }
     }
 else:'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'hr_db',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -170,14 +159,5 @@ STATICFILES_DIRS = (
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-
-
-# email connect settings
-EMAIL_SENDER = 'hr@riavs.ru'
-EMAIL_HOST = ''
-EMAIL_HOST_PORT = ''
-EMAIL_LOGIN = ''
-EMAIL_PASSWORD = ''
-
 
 

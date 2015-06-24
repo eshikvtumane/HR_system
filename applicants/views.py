@@ -182,6 +182,10 @@ class SavingModels():
             print applicant_form.errors
             return False
 
+        del req['street']
+        del req['city']
+        del req['building']
+
         self.savingPhone(req.getlist('phone'), new_applicant)
         self.savingVacancies(req['vacancies'], new_applicant, request.user)
         print '555'

@@ -12,3 +12,4 @@ media/photo_applicants/
 media/email_images/
 media/tmp/
 HR_project/local_settings.py
+dump.rdb

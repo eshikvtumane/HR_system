@@ -182,9 +182,12 @@ class SavingModels():
             print applicant_form.errors
             return False
 
-        del req['street']
-        del req['city']
-        del req['building']
+        try:
+            del req['street']
+            del req['city']
+            del req['building']
+        except Exception, e:
+            print 'Error on delete key: ' + e.message;
 
         self.savingPhone(req.getlist('phone'), new_applicant)
         self.savingVacancies(req['vacancies'], new_applicant, request.user)

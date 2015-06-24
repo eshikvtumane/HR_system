@@ -65,7 +65,8 @@ class SavingModels():
                 Phone.objects.bulk_create(phone_obj)
 
             return
-        except:
+        except Exception, e:
+            print '%s %s' % ('Save phone number error', e.message)
             return
 
     def savingVacancies(self, json_vacancies, user, req_user):

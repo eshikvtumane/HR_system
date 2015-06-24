@@ -153,7 +153,7 @@ function createEduDict(edu, tbl_edu){
 
     message = document.getElementById('messageEdu');
 
-    if(edu_id != '' && major_name != '' && study_start != '' && study_end != ''){
+    if(edu_id != '' && major_name != '' && study_start != ''){
         var arr = [
             edu_name,
             major_name,
@@ -163,14 +163,26 @@ function createEduDict(edu, tbl_edu){
 
         tbl_edu.addRecords(arr);
 
+
         var dict = {};
-        dict[tbl_edu.count_id.toString()] = {
+        if(study_end != ''){
+            dict[tbl_edu.count_id.toString()] = {
                 'education': edu_id,
                 //'major_name': major_name,
                 'major': major_id,
                 'study_start': study_start,
                 'study_end': study_end
-        };
+            };
+        }
+        else{
+            dict[tbl_edu.count_id.toString()] = {
+                'education': edu_id,
+                //'major_name': major_name,
+                'major': major_id,
+                'study_start': study_start
+            };
+        }
+
 
         study_start.value = '';
         study_end.value = '';

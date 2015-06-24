@@ -146,8 +146,13 @@
                                     </div>
                                     <input type="hidden" name="birthday" value="{{ applicant_form.birthday.value|date_format }}">
                                     -->
-                                    <input type="text" class="form-control" id="birthday_change">
-                                    <input type="hidden" name="birthday" id="birthday_hidden" value="{{ applicant_form.birthday.value|date_format }}">
+                                    <div>
+                                        <label>
+                                            Изменить дату рождения:
+                                        </label>
+                                        <input type="text" class="form-control" id="birthday_change">
+                                        <input type="hidden" name="birthday" id="birthday_hidden" value="{{ applicant_form.birthday.value|date_format }}">
+                                    </div>
 
 
                                 </div>
@@ -174,7 +179,7 @@
                     <h2>Вакансии</h2>
                     <table class="table">
                         <tr>
-                            <th class="col-sm-2">Предполагаемая должность</th>
+                            <th class="col-sm-2"></th>
                             <th class="col-sm-5">Вакансия</th>
                             <th class="col-sm-5">Уровень зарплаты в анкете</th>
                             <th class="col-sm-5">Предлагаемая зарплата</th>
@@ -294,7 +299,7 @@
                             <tr>
                                 <td>{{ e.education.type }}</td>
                                 <td>{{ e.major.name }}</td>
-                                <td>{{ e.study_start }} ‒ {{ e.study_end }}</td>
+                                <td>{{ e.study_start }} ‒ {{ e.study_end|default:'...' }}</td>
                             </tr>
                         </tbody>
                         {% endfor %}

@@ -131,7 +131,7 @@ class ApplicantEducation(models.Model):
     # Год начала учёбы
     study_start = models.IntegerField(max_length=4, verbose_name='Начало учёбы')
     # Год окончания учёбы
-    study_end = models.IntegerField(max_length=4, verbose_name='Окончание учёбы')
+    study_end = models.IntegerField(max_length=4, verbose_name='Окончание учёбы', null=True, blank=True)
 
 
 

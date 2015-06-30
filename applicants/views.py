@@ -317,8 +317,12 @@ class PaginatorView(View):
         applicants = p.page(page)
 
         args['applicants'] = applicants
-        args['total_applicants_count'] = obj_list.count()
+        try:
+            args['total_applicants_count'] = obj_list.count()
+        except:
+            args['total_applicants_count'] = len(obj_list)
         rc = RequestContext(request, args)
+        print 'RC', rc
         return render_to_response(self.template, rc)
 
 
@@ -350,6 +354,7 @@ class ApplicantSearchView(PaginatorView):
             age_add = req.get('age_add', False)
             salary_add = req.get('salary_add', False)
             employee = req.get('employee', False)
+            phone = req.get('phone', False)
 
             applicant_fields = [
                 'first_name',
@@ -359,112 +364,150 @@ class ApplicantSearchView(PaginatorView):
                 'sex'
             ]
 
+            if phone:
+                # удаление ненужных символов
+                chars_to_remove = ['(', ')', ' ', '‒'.decode('unicode_escape').encode('ascii','ignore'), '-']
+                phone = self.replaceLetters(phone, chars_to_remove)
+                applicant_obj = Phone.objects.filter(phone=phone).values('applicant')
 
-            query_list = {}
-            # ключи для поиска в Applicants
-            query_applicant_list = {}
-            for field in applicant_fields:
-                if req[field]:
-                    query_applicant_list[field + '__contains'] = req[field]
-                    query_list['applicant__' + field + '__contains'] = req[field]
-
-            # добавляем минимальную и максимальную дату рождения кандидата
-            if age_add:
-                today = datetime.date.today()
-                age_min = int(req['age_start'])
-                age_max = int(req['age_end'])
-
-
-                date_start = datetime.date(today.year - age_max - 1, today.month, today.day)
-                date_end = datetime.date(today.year - age_min - 1, today.month, today.day)
-
-                query_list['applicant__birthday__gte'] = query_applicant_list['birthday__gte'] = date_start
-                query_list['applicant__birthday__lte'] = query_applicant_list['birthday__lte'] = date_end
-
-            applicant_vacancy_list = []
-            # ищем кандидатов по выбранной должности
-            if position:
-                query_list['vacancy__position'] = position
-
-                if salary_add:
-                    salary_start = int(req['salary_start'].replace(' ', ''))
-                    salary_end = int(req['salary_end'].replace(' ', ''))
-                    # если минимальная и максимальная запрашиваемые суммы одинаковы, то вычисляем +-5% от заданной суммы.
-                    if salary_start == salary_end:
-                        range_salary = float(salary_start * 5) / 100.0
-                        salary_start = float(salary_start) - range_salary
-                        salary_end = float(salary_end + range_salary)
-
-                    query_list['salary__gte'] = salary_start
-                    query_list['salary__lte'] = salary_end
-
-                # кандидаты из резерва
-                reserve = request.GET.get('reserve' or None)
-                # если установлена галочка резерв
-                if reserve:
-                    # получаем объект статуса
-                    reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Резерв')
-                    # получаем объекты вакансий кандидатов
-                    applicant_vacancy = ApplicantVacancy.objects.filter(**query_list)
-
-                    # перебираем
-                    for av in applicant_vacancy:
-                        try:
-                            s = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
-                            # получаем последний статус
-                            last_status = s[s.count()-1]
-                            status = last_status.applicant_vacancy_status
-                            if status == reserve_object:
-                                applicant_vacancy_list.append(last_status.applicant_vacancy.applicant)
-                        except:
-                            pass
-                elif employee:
-                    del query_list['salary__gte']
-                    del query_list['salary__lte']
-                    # получаем объект статуса
-                    reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Принят на работу')
-                    # получаем объекты вакансий кандидатов
-                    applicant_vacancy = ApplicantVacancy.objects.filter(**query_list)
-
-                    # перебираем
-                    for av in applicant_vacancy:
-                        try:
-                            s = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
-                            # получаем последний статус
-                            last_status = s[s.count()-1]
-                            status = last_status.applicant_vacancy_status
-                            if status == reserve_object:
-                                applicant_vacancy_list.append(last_status.applicant_vacancy.applicant)
-                        except:
-                            pass
-                else:
-                    applicant_vacancy_list = ApplicantVacancy.objects.filter(**query_list)\
-                        .order_by('salary')\
-                        .values('applicant', 'applicant__last_name',
-                            'applicant__first_name', 'applicant__middle_name',
-                            'applicant__email', 'applicant__photo', 'salary', 'applicant__birthday')
+                applicant_vacancy_list = Applicant.objects.filter(id=applicant_obj[0]['applicant'])\
+                                            .values('id', 'last_name',
+                                                    'first_name', 'middle_name',
+                                                    'email', 'photo', 'birthday')
 
             else:
-                applicant_vacancy_list = Applicant.objects.filter(**query_applicant_list)\
-                                        .values('id', 'last_name',
-                                                'first_name', 'middle_name',
-                                                'email', 'photo', 'birthday')
+                query_list = {}
+                # ключи для поиска в Applicants
+                query_applicant_list = {}
+                for field in applicant_fields:
+                    if req[field]:
+                        query_applicant_list[field + '__contains'] = req[field]
+                        query_list['applicant__' + field + '__contains'] = req[field]
+
+                # добавляем минимальную и максимальную дату рождения кандидата
+                if age_add:
+                    today = datetime.date.today()
+                    age_min = int(req['age_start'])
+                    age_max = int(req['age_end'])
+
+
+                    date_start = datetime.date(today.year - age_max - 1, today.month, today.day)
+                    date_end = datetime.date(today.year - age_min - 1, today.month, today.day)
+
+                    query_list['applicant__birthday__gte'] = query_applicant_list['birthday__gte'] = date_start
+                    query_list['applicant__birthday__lte'] = query_applicant_list['birthday__lte'] = date_end
+
+                applicant_vacancy_list = []
+                # ищем кандидатов по выбранной должности
+                if position:
+                    query_list['vacancy__position'] = position
+
+                    if salary_add:
+                        salary_start = int(req['salary_start'].replace(' ', ''))
+                        salary_end = int(req['salary_end'].replace(' ', ''))
+                        # если минимальная и максимальная запрашиваемые суммы одинаковы, то вычисляем +-5% от заданной суммы.
+                        if salary_start == salary_end:
+                            range_salary = float(salary_start * 5) / 100.0
+                            salary_start = float(salary_start) - range_salary
+                            salary_end = float(salary_end + range_salary)
+
+                        query_list['salary__gte'] = salary_start
+                        query_list['salary__lte'] = salary_end
+
+                    # кандидаты из резерва
+                    reserve = request.GET.get('reserve' or None)
+                    # если установлена галочка резерв
+                    if reserve:
+                        # получаем объект статуса
+                        reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Резерв')
+                        # получаем объекты вакансий кандидатов
+                        applicant_vacancy = ApplicantVacancy.objects.filter(**query_list)
+
+                        # перебираем
+                        for av in applicant_vacancy:
+                            try:
+                                s = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
+                                # получаем последний статус
+                                last_status = s[s.count()-1]
+                                status = last_status.applicant_vacancy_status
+                                if status == reserve_object:
+                                    applicant_vacancy_list.append(last_status.applicant_vacancy.applicant)
+                            except:
+                                pass
+                    elif employee:
+                        del query_list['salary__gte']
+                        del query_list['salary__lte']
+                        # получаем объект статуса
+                        reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Принят на работу')
+                        # получаем объекты вакансий кандидатов
+                        applicant_vacancy = ApplicantVacancy.objects.filter(**query_list)
+
+                        # перебираем
+                        for av in applicant_vacancy:
+                            try:
+                                s = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
+                                # получаем последний статус
+                                last_status = s[s.count()-1]
+                                status = last_status.applicant_vacancy_status
+                                if status == reserve_object:
+                                    applicant_vacancy_list.append(last_status.applicant_vacancy.applicant)
+                            except:
+                                pass
+                    else:
+                        buf_applicant_vacancy = ApplicantVacancy.objects.filter(**query_list)\
+                            .order_by('salary')\
+                            .values('applicant', 'applicant__last_name',
+                                'applicant__first_name', 'applicant__middle_name',
+                                'applicant__email', 'applicant__photo', 'salary', 'applicant__birthday')
+
+                        applicant_vacancy_list = []
+                        for av in buf_applicant_vacancy:
+                            applicant_vacancy_list.append({
+                                'id': av['applicant'],
+                                'last_name': av['applicant__last_name'],
+                                'first_name': av['applicant__first_name'],
+                                'middle_name': av['applicant__middle_name'],
+                                'email': av['applicant__email'],
+                                'photo': av['applicant__photo'],
+                                'birthday': av['applicant__birthday']
+                            })
+
+                else:
+                    applicant_vacancy_list = Applicant.objects.filter(**query_applicant_list)\
+                                            .values('id', 'last_name',
+                                                    'first_name', 'middle_name',
+                                                    'email', 'photo', 'birthday')
 
 
         # получение телефонов  и последнего статуса кандидата
         for applicant in applicant_vacancy_list:
-            applicant_object = Applicant.objects.get(pk=applicant['id'])
+            print applicant
+            try:
+                applicant_object = Applicant.objects.get(pk=applicant['id'])
+            except:
+                applicant_object = Applicant.objects.get(pk=applicant['applicant'])
             phones = Phone.objects.filter(applicant=applicant_object).values('phone')
             applicant['phones'] = phones
 
+
+
             try:
-                status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy__applicant=applicant_object).reverse()[0]
+                status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy__applicant=applicant_object).last()
             except:
                 status = None
 
             applicant['status'] = status
 
         return self.render(request, applicant_vacancy_list)
+
+    # удаление ненужных символов
+    def replaceLetters(self, word, letters):
+        word = word.encode('utf8')
+        result = ''
+        for letter in word:
+            if letter not in letters:
+                result += letter.decode('unicode_escape').encode('ascii','ignore')
+        return result
 
     def render(self, request, result_list, total_count=0):
         return self.paginator(request, result_list)

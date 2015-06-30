@@ -181,6 +181,11 @@ class CandidateSearchForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(attrs={
                                          'class':'form-control',
                                      }))
+    # телефон
+    phone = forms.CharField(widget=forms.TextInput(attrs={
+                                         'class':'form-control',
+                                     }))
+
     # пол
     sex = forms.ChoiceField(choices=GENDER_LIST,
                                  widget=forms.Select(attrs={

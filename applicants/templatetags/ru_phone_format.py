@@ -11,7 +11,7 @@ def phone_format(value):
     code_khv = '4212'
 
     if phone_len == 4:
-        return '(гор) - (%s) %s %s‒%s' % (value[:2],value[2:]) % (code_khv)
+        return '(гор) - (%s) %s %s‒%s' % (code_khv, value[:2],value[2:])
     if phone_len == 5:
         return '(гор) - (%s) %s‒%s‒%s' % (code_khv, value[:1],value[1:3], value[3:])
     if phone_len == 6:

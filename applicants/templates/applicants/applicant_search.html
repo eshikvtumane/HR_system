@@ -2,6 +2,7 @@
 {% load thumbnail %}
 {% load staticfiles  %}
 {% load humanize %}
+{% load ru_phone_format %}
 {% load date_format %}
 
 {% block title %}
@@ -193,55 +194,87 @@
                     <h2>Результаты поиска</h2>
 
                     <div>
+                        <div>
+                            <label>Найдено кандидатов: {{ total_applicants_count }} чел.</label>
+                        </div>
+                    </div>
+
+                    <div>
                         <table class="table tablesorter table-hover" id="result_search">
                             <thead>
                                 <tr>
                                     <th></th>
                                     <th style="text-align:center;">ФИО</th>
                                     <th>Возраст</th>
-                                    <th style="text-align:center;">Запрашиваемая зарплата</th>
+                                    <th style="text-align:center;">Телефоны</th>
                                     <th style="text-align:center;">Email</th>
-                                    <th style="text-align:center;">Ссылка на страницу кандидата</th>
+                                    <th style="text-align:center;">Статус</th>
+                                    <!--<th style="text-align:center;">Ссылка на страницу кандидата</th>-->
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for a in applicants.object_list %}
                                     <tr>
                                         <td align="center">
-                                            {% if a.applicant__photo %}
-                                                {% thumbnail a.applicant__photo "100x100" crop="center" as im %}
-                                                    <img class="lazy" data-original="{{ im.url }}">
-                                                {% endthumbnail %}
-                                            {% else %}
-                                                {% thumbnail a.photo "100x100" crop="center" as im %}
+                                            <a href="{% url 'applicants:applicant_view' a.id %}" target="_blank">
+                                                {% if a.applicant__photo %}
+                                                    {% thumbnail a.applicant__photo "100x100" crop="center" as im %}
+                                                        <img class="lazy" data-original="{{ im.url }}">
+                                                    {% endthumbnail %}
+                                                {% else %}
+                                                    {% thumbnail a.photo "100x100" crop="center" as im %}
 
-                                                    <img class="lazy" data-original="{{ im.url }}">
-                                                {% endthumbnail %}
-                                            {% endif %}
+                                                        <img class="lazy" data-original="{{ im.url }}">
+                                                    {% endthumbnail %}
+                                                {% endif %}
+                                            </a>
 
                                         </td>
                                         <td style="vertical-align: middle;">
-                                            <h3><b>{{ a.applicant__first_name }}</b></h3></label>
-                                            {{ a.applicant__last_name }} {{ a.applicant__middle_name }}
-                                            <h3><b>{{ a.first_name }}</b></h3></label>
-                                            {{ a.last_name }} {{ a.middle_name }}
+                                            <a href="{% url 'applicants:applicant_view' a.id %}" target="_blank">
+                                                <h3><b>{{ a.applicant__first_name }}</b></h3></label>
+                                                {{ a.applicant__last_name }} {{ a.applicant__middle_name }}
+                                                <h3><b>{{ a.first_name }}</b></h3></label>
+                                                {{ a.last_name }} {{ a.middle_name }}
+                                            </a>
                                         </td>
                                         <td style="vertical-align: middle;">
                                             <b>{{ a.applicant__birthday|age }}</b>
                                             <b>{{ a.birthday|age}}</b>
                                         </td>
                                         <td align="center" style="vertical-align: middle;">
-                                            {% if a.salary %}
-                                                <i class="fa fa-rub" style="font-size:3ex;"> {{ a.salary|intcomma}}</i>
-                                            {% else %}
-                                                <label>Отображается при выборе должности</label>
-                                            {% endif %}
+                                            {{ phones }}
+                                            {% for p in a.phones %}
+                                                <label style="font-size:3ex;"> {{ p.phone|phone_format }}</label><br>
+                                            {% empty %}
+                                                <label>Нет номера</label>
+                                            {% endfor %}
+
+
                                         </td>
+
                                         <td align="center" style="vertical-align: middle;">
                                             {{ a.applicant__email }}
                                             {{ a.email }}
                                         </td>
 
+
+                                        <td align="center" style="vertical-align: middle;">
+
+                                            <a href="/vacancies/{{a.status.applicant_vacancy.vacancy.id}}" target="_blank">
+                                                <div>
+                                                    {{ a.status.applicant_vacancy.vacancy.position.name }}
+                                                </div>
+                                                <div>
+                                                    {{ a.status.applicant_vacancy_status.name }}
+
+                                                </div>
+                                            </a>
+                                        </td>
+
+
+
+                                        <!--
                                         <td align="center" style="vertical-align: middle;">
                                             {% if a.applicant %}
                                             <a target="_blank" href="{% url 'applicants:applicant_view' a.applicant %}" class="btn btn-success">
@@ -253,7 +286,7 @@
                                             </a>
                                             {% endif %}
                                         </td>
-
+                                        -->
                                     </tr>
                                 {% endfor %}
                             </tbody>

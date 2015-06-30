@@ -317,6 +317,7 @@ class PaginatorView(View):
         applicants = p.page(page)
 
         args['applicants'] = applicants
+        args['total_applicants_count'] = obj_list.count()
         rc = RequestContext(request, args)
         return render_to_response(self.template, rc)
 
@@ -335,6 +336,12 @@ class ApplicantSearchView(PaginatorView):
                                         .values('id', 'last_name',
                                                 'first_name', 'middle_name',
                                                 'email', 'photo', 'birthday').order_by('?')[:10]
+            # получение телефонов кандидата
+            for applicant in applicant_vacancy_list:
+                print 'aaa', applicant
+                phones = Phone.objects.filter(applicant=Applicant.objects.get(pk=applicant['id'])).values('phone')
+                applicant['phones'] = phones
+
         else:
             req = request.GET.copy()
 
@@ -444,9 +451,22 @@ class ApplicantSearchView(PaginatorView):
                                                 'email', 'photo', 'birthday')
 
 
+        # получение телефонов  и последнего статуса кандидата
+        for applicant in applicant_vacancy_list:
+            applicant_object = Applicant.objects.get(pk=applicant['id'])
+            phones = Phone.objects.filter(applicant=applicant_object).values('phone')
+            applicant['phones'] = phones
+
+            try:
+                status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy__applicant=applicant_object).reverse()[0]
+            except:
+                status = None
+
+            applicant['status'] = status
+
         return self.render(request, applicant_vacancy_list)
 
-    def render(self, request, result_list):
+    def render(self, request, result_list, total_count=0):
         return self.paginator(request, result_list)
 
 

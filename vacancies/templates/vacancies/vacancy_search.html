@@ -108,11 +108,11 @@
                                 {% for vacancy_dict in vacancies_list.object_list %}
                                     <tr>
 
-                                        <td style="vertical-align: middle; font-size:3ex;">{{ vacancy_dict.vacancy.position}}</td>
-                                        <td style="vertical-align: middle; font-size:3ex;"><i class="fa fa-rub" style="font-size:2ex;"> {{ vacancy_dict.vacancy.salary}}</i></td>
-                                        <td style="vertical-align: middle; font-size:3ex;">{{ vacancy_dict.vacancy.published_at }}</td>
-                                        <td style="vertical-align: middle; font-size:3ex;">{{ vacancy_dict.vacancy.head }} </td>
-                                        <td style="vertical-align: middle; font-size:3ex;">
+                                        <td style="vertical-align: middle; font-size:2ex;">{{ vacancy_dict.vacancy.position}}</td>
+                                        <td style="vertical-align: middle; font-size:2ex;"><i class="fa fa-rub" style="font-size:2ex;"> {{ vacancy_dict.vacancy.salary}}</i></td>
+                                        <td style="vertical-align: middle; font-size:2ex;">{{ vacancy_dict.vacancy.published_at }}</td>
+                                        <td style="vertical-align: middle; font-size:2ex;">{{ vacancy_dict.vacancy.head }} </td>
+                                        <td style="vertical-align: middle; font-size:2ex;">
                                             <!--<div class="icon-vacancy icon-vacancy-{{ vacancy_dict.status_icon }}">{{ vacancy_dict.current_status }}</div>-->
                                             <div class="action-button {{ vacancy_dict.status_icon }}">{{ vacancy_dict.current_status }}</div>
                                         </td>

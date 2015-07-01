@@ -98,8 +98,12 @@ def get_vacancy_events_ajax(request):
 
 
 def add_event_comment_ajax(request):
-    app_vacancy_event = ApplicantVacancyEvent.objects.get(applicant_vacancy=request.POST['event_id'])
-    app_vacancy_event.description = request.POST['event_description']
+    #print 'add_event_comment_ajax', request.POST['event_id']
+    event_id = request.GET['event_id']
+    event_description = request.GET['event_description']
+
+    app_vacancy_event = ApplicantVacancyEvent.objects.get(pk=event_id)
+    app_vacancy_event.description = event_description
     response = []
     try:
         app_vacancy_event.save()

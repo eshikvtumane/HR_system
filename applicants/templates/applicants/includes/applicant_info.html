@@ -52,8 +52,8 @@
             <div class="col-sm-10" style="margin-top: 1ex;  font-size: 3ex;">
                 <div style="margin-bottom: 1ex;">
                     {% for p in phones %}
-                        <div>
-                            <div class="col-sm-5">
+                        <div class="col-sm-12">
+                            <div class="col-sm-8">
                                 {{ p.phone|phone_format }}
                             </div>
                              <div class="col-sm-2 phone-delete" id="{{ p.id }}">

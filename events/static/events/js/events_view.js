@@ -79,11 +79,16 @@ $(function(){
     $('#save_event_btn').click(function(){
         var event_id = $(this).val();
         var event_description = $("#event_description_txt").val();
+
+        console.log(event_id)
         $.ajax({
-            type:'POST',
+            type:'GET',
             url: '/events/add_event_comment',
+            data:{
+                'event_description': event_description,
+                'event_id':event_id
+            },
             dataType:'json',
-            data:{'event_description': event_description, 'event_id':event_id},
             success:function(data){
                 $comment_block.html(event_description);
                 $('#event_description_box').dialog('close');

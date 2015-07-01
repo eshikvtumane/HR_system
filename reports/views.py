@@ -438,15 +438,18 @@ class SummaryStatementRecruitmentGenerateAjax(View):
         total_title_style = 'font: bold on;' + ' align: horiz right;'
         color_cell = 'pattern: pattern solid, fore_colour yellow;'
 
-
+        print 'REPORT', 1
         request = request.GET
         vacancies = json.loads(request['vacancies'])
-        period = request['period'].split('/')
+        #period = request['period'].split('/')
+        date_start = request['date_start']
+        date_end = request['date_end']
 
 
         # Заголовок отчёта
         title_style = 'align: horiz center;' + 'font: bold on;'
-        title_text = 'Сводная ведомость по набору персонала за {0} {1} г.'.format(MONTH[period[0]].lower().encode('utf-8'), period[1].encode('utf-8'))
+        title_text = 'Сводная ведомость по набору персонала за период с {0} по {1}.'.format(date_start, date_end)
+        #.format(MONTH[period[0]].lower().encode('utf-8'), period[1].encode('utf-8'))
         gp.writeMerge(sheet, 0, 0, 0, 14, title_text, title_style)
 
         # Сохранение причин отказов от работы
@@ -458,7 +461,7 @@ class SummaryStatementRecruitmentGenerateAjax(View):
         reserve_info_list = []
 
         total_sums = [[0, total_style] for i in xrange(12)]
-
+        print 'REPORT', 2
         count = 0
         # выбераем вакансии (присланные с клиента) из массива
         for key in vacancies:
@@ -473,185 +476,194 @@ class SummaryStatementRecruitmentGenerateAjax(View):
             sources = vacancies[key]['source']
 
             result_vacancy = []
+            try:
+                vacancy_statuses = VacancyStatusHistory.objects.filter(vacancy=vacancy_id).values('status__name', 'date_change')
+                print 'REPORT', 2.5
+                print vacancy_statuses
+                vacancy_open = vacancy_statuses[0]
+            except Exception, e:
+                print e.message
+                vacancy_open = None
+            print 'REPORT', 3
 
-
-            vacancy_statuses = VacancyStatusHistory.objects.filter(vacancy=vacancy_id).values('status__name', 'date_change')
-            vacancy_open = vacancy_statuses[0]
-
-            if vacancy_statuses.count() == 1:
-                vacancy_status_str =u'%s с \n %s' % (vacancy_open['status__name'], vacancy_open['date_change'].date())
-            else:
-                vacancy_change = vacancy_statuses.latest('status')
-                vacancy_status_str =u'%s с \n %s \ \n %s с \n %s' % (vacancy_open['status__name'], vacancy_open['date_change'].date(),
-                                                                    vacancy_change['status__name'], vacancy_change['date_change'].date()
-                                                                    )
-
-
-            # форматирование текста
-            position = vacancy.position.name.split(' ')
-            str_len = 23
-            result_position = ''
-            buf_position = ''
-
-            for pos in position:
-                if len(buf_position + pos) <= str_len:
-                    buf_position =  buf_position + ' ' + pos
-                    result_position += ' ' + pos
+            if vacancy_open:
+                if vacancy_statuses.count() == 1:
+                    vacancy_status_str =u'%s с \n %s' % (vacancy_open['status__name'], vacancy_open['date_change'].date())
                 else:
-                    result_position += '\n' + buf_position
-                    buf_position = ' ' + pos
-
-            sources_len = len(sources) - 1
-            gp.writeMerge(sheet, row_start, row_start+sources_len, column_start, column_start, result_position, style)
-            gp.writeMerge(sheet, row_start, row_start+sources_len, column_start + 1, column_start + 1, vacancy_status_str, style)
+                    vacancy_change = vacancy_statuses.latest('status')
+                    vacancy_status_str =u'%s с \n %s \ \n %s с \n %s' % (vacancy_open['status__name'], vacancy_open['date_change'].date(),
+                                                                        vacancy_change['status__name'], vacancy_change['date_change'].date()
+                                                                        )
 
 
-            # сбор статистики по источникам
-            for source in sources:
-                # хранение количества людей по всем позициям(например, приглашены, пришли, думают и др.)
-                result_counter = []
+                # форматирование текста
+                position = vacancy.position.name.split(' ')
+                str_len = 23
+                result_position = ''
+                buf_position = ''
 
-                # получение инофрмации об источнике
-                source_obj = SourceInformation.objects.get(pk=source)
-                source_name = source_obj.source
-                result_counter.append([source_name, style])
+                for pos in position:
+                    if len(buf_position + pos) <= str_len:
+                        buf_position =  buf_position + ' ' + pos
+                        result_position += ' ' + pos
+                    else:
+                        result_position += '\n' + buf_position
+                        buf_position = ' ' + pos
 
-                # выборка статусов по вакансию
-                result_status = CurrentApplicantVacancyStatus.objects.filter(
-                                                        applicant_vacancy__vacancy = vacancy,
-                                                        applicant_vacancy__source=source_obj,
-                                                        date__month=period[0],
-                                                        date__year=period[1]
-                )
-
-                # выборка всех статусов по вакансии с определённого источника за определённый период
-                '''vacancy_info = vacancy_sources.filter(source=source_obj,
-                                                      date_created__month=period[0],
-                                                      date_created__year=period[1]
-                )'''
-                # общее количество заявок по вакансии из данного источника ()
-                try:
-                    total_count = result_status.distinct('applicant_vacancy__applicant').count()
-                except:
-                    # для sqlite3
-                    total_count = result_status.count()
-
-                # если нет заявок, то дальнейшую выборку не производим
-                #if total_count != 0:
-                # Добавляем общее количество заявок с данного источника
-                result_counter.append([total_count, style])
-
-                # 1-е собеседование
-                # Приглашены
-                first_interview = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование запланировано').count()
-                result_counter.append([first_interview, style])
-                # Пришли
-                first_went = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование состоялось').count()
-                result_counter.append([first_went, style])
-
-                # 2-е собеседование
-                # Приглашены
-                second_interview = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование запланировано').count()
-                result_counter.append([second_interview, style])
-                # Пришли
-                second_went = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование состоялось').count()
-                result_counter.append([second_went, style])
-
-                # Дополнительное собеседование
-                # Приглашены
-                ext_interview = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование запланировано').count()
-                result_counter.append([ext_interview, style])
-                # Пришли
-                ext_went = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование состоялось').count()
-                result_counter.append([ext_went, style])
-                '''else:
-                    result_counter = [[source_name, style]] + [[0, style]] * 7'''
+                sources_len = len(sources) - 1
+                gp.writeMerge(sheet, row_start, row_start+sources_len, column_start, column_start, result_position, style)
+                gp.writeMerge(sheet, row_start, row_start+sources_len, column_start + 1, column_start + 1, vacancy_status_str, style)
 
 
-                # Приглашены
-                buf = result_status.filter(applicant_vacancy_status__name__contains='Предложение кандидату').count()
-                result_counter.append([buf, style])
+                # сбор статистики по источникам
+                for source in sources:
+                    # хранение количества людей по всем позициям(например, приглашены, пришли, думают и др.)
+                    result_counter = []
 
-                # Отказались/не вышли
-                rejection = result_status.filter(Q(applicant_vacancy_status__name__contains='Самоотказ') |
-                                                 Q(applicant_vacancy_status__name__contains='Предложение отклонено') |
-                                                 Q(applicant_vacancy_status__name__contains='Не вышли')
-                ).values('note')
+                    # получение инофрмации об источнике
+                    source_obj = SourceInformation.objects.get(pk=source)
+                    source_name = source_obj.source
+                    result_counter.append([source_name, style])
 
-                rejection_count = rejection.count()
-                result_counter.append([rejection_count, style])
+                    print 1
+                    # выборка статусов по вакансию
+                    result_status = CurrentApplicantVacancyStatus.objects.filter(
+                                                            applicant_vacancy__vacancy = vacancy,
+                                                            applicant_vacancy__source=source_obj,
+                                                            date__gte=datetime.strptime(date_start, "%d-%m-%Y").date(),
+                                                            date__lte=datetime.strptime(date_end, "%d-%m-%Y").date()
+                    )
 
-                # сохранение причин отказа от работы
-                for r in rejection:
-                    rejection_list.append([r['note']])
+                    print 2
 
-                # Думают
-                result_counter.append([
-                    result_status.filter(applicant_vacancy_status__name__contains='Сделано предложение').count(),
-                    style
-                ])
-                '''
-                    Вышли
-                '''
-                # люди, которые вышли на работу
-                went_to_work = result_status.filter(applicant_vacancy_status__name__contains='Вышел')
-                # выборка людей, которые вышли на работу с резерва
-                applicants = went_to_work.values('applicant_vacancy__applicant', 'applicant_vacancy__vacancy')
-                reserve = []
-                for i in applicants:
-                    reserve = result_status.filter(applicant_vacancy__applicant=i['applicant_vacancy__applicant'],
-                                                  applicant_vacancy__vacancy=i['applicant_vacancy__vacancy'],
-                                                  applicant_vacancy_status__name__contains='Резерв')\
-                        .values('applicant_vacancy__applicant__first_name',
-                              'applicant_vacancy__applicant__last_name',
-                              'applicant_vacancy__applicant__middle_name',
-                              'applicant_vacancy__vacancy__head__name',
-                              'applicant_vacancy__vacancy__published_at',
-                              'date'
-                            )
+                    # выборка всех статусов по вакансии с определённого источника за определённый период
+                    '''vacancy_info = vacancy_sources.filter(source=source_obj,
+                                                          date_created__month=period[0],
+                                                          date_created__year=period[1]
+                    )'''
+                    # общее количество заявок по вакансии из данного источника ()
+                    try:
+                        total_count = result_status.distinct('applicant_vacancy__applicant').count()
+                    except:
+                        # для sqlite3
+                        total_count = result_status.count()
+
+                    # если нет заявок, то дальнейшую выборку не производим
+                    #if total_count != 0:
+                    # Добавляем общее количество заявок с данного источника
+                    result_counter.append([total_count, style])
+
+                    # 1-е собеседование
+                    # Приглашены
+                    first_interview = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование запланировано').count()
+                    result_counter.append([first_interview, style])
+                    # Пришли
+                    first_went = result_status.filter(applicant_vacancy_status__name__contains='1-е собеседование состоялось').count()
+                    result_counter.append([first_went, style])
+
+                    # 2-е собеседование
+                    # Приглашены
+                    second_interview = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование запланировано').count()
+                    result_counter.append([second_interview, style])
+                    # Пришли
+                    second_went = result_status.filter(applicant_vacancy_status__name__contains='2-е собеседование состоялось').count()
+                    result_counter.append([second_went, style])
+
+                    # Дополнительное собеседование
+                    # Приглашены
+                    ext_interview = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование запланировано').count()
+                    result_counter.append([ext_interview, style])
+                    # Пришли
+                    ext_went = result_status.filter(applicant_vacancy_status__name__contains='Дополнительное собеседование состоялось').count()
+                    result_counter.append([ext_went, style])
+                    '''else:
+                        result_counter = [[source_name, style]] + [[0, style]] * 7'''
 
 
+                    # Приглашены
+                    buf = result_status.filter(applicant_vacancy_status__name__contains='Предложение кандидату').count()
+                    result_counter.append([buf, style])
 
-                # Формирование сноски с информацией о людях из резерва                                                                              )
+                    # Отказались/не вышли
+                    rejection = result_status.filter(Q(applicant_vacancy_status__name__contains='Самоотказ') |
+                                                     Q(applicant_vacancy_status__name__contains='Предложение отклонено') |
+                                                     Q(applicant_vacancy_status__name__contains='Не вышли')
+                    ).values('note')
 
-                if len(reserve) != 0:
-                    result_counter.append([went_to_work.count(), style + color_cell])
-                    print 'Reserve', len(reserve), reserve.count(), reserve
-                    for r in reserve:
-                        reserve_info_list.append(['%s, %s, рук. %s - резерв с %s - %s %s %s' % (vacancy.position.name.encode("utf-8"),
-                                                              source_name.encode("utf-8"),
-                                                               r['applicant_vacancy__vacancy__head__name'].encode("utf-8"),
-                                                              r['date'].date(),
-                                                              r['applicant_vacancy__applicant__first_name'].encode("utf-8"),
-                                                               r['applicant_vacancy__applicant__last_name'].encode("utf-8"),
-                                                               r['applicant_vacancy__applicant__middle_name'].encode("utf-8")
-                                                )
-                        ])
-                        reserve_count += 1
-                else:
-                    result_counter.append([went_to_work.count(), style])
+                    rejection_count = rejection.count()
+                    result_counter.append([rejection_count, style])
 
-                # -----------------------------------------------------------------------
+                    # сохранение причин отказа от работы
+                    for r in rejection:
+                        rejection_list.append([r['note']])
 
-                '''
-                    Прошли первую неделю/работают на ИС
-                '''
-                result_counter.append([
-                    result_status.filter(Q(applicant_vacancy_status__name__contains='Испытательный срок') |
-                                    Q(applicant_vacancy_status__name__contains='Прошли первую рабочую неделю')
-
-                    ).count(),
-                    style
-                    ]
-                )
+                    # Думают
+                    result_counter.append([
+                        result_status.filter(applicant_vacancy_status__name__contains='Сделано предложение').count(),
+                        style
+                    ])
+                    '''
+                        Вышли
+                    '''
+                    # люди, которые вышли на работу
+                    went_to_work = result_status.filter(applicant_vacancy_status__name__contains='Вышел')
+                    # выборка людей, которые вышли на работу с резерва
+                    applicants = went_to_work.values('applicant_vacancy__applicant', 'applicant_vacancy__vacancy')
+                    reserve = []
+                    for i in applicants:
+                        reserve = result_status.filter(applicant_vacancy__applicant=i['applicant_vacancy__applicant'],
+                                                      applicant_vacancy__vacancy=i['applicant_vacancy__vacancy'],
+                                                      applicant_vacancy_status__name__contains='Резерв')\
+                            .values('applicant_vacancy__applicant__first_name',
+                                  'applicant_vacancy__applicant__last_name',
+                                  'applicant_vacancy__applicant__middle_name',
+                                  'applicant_vacancy__vacancy__head__name',
+                                  'applicant_vacancy__vacancy__published_at',
+                                  'date'
+                                )
 
 
 
-                for count, rs in enumerate(result_counter[1:]):
-                    total_sums[count][0] += rs[0]
+                    # Формирование сноски с информацией о людях из резерва                                                                              )
 
-                gp.writeValues(sheet, row_start, column_start+2, result_counter)
-                row_start += 1
+                    if len(reserve) != 0:
+                        result_counter.append([went_to_work.count(), style + color_cell])
+                        print 'Reserve', len(reserve), reserve.count(), reserve
+                        for r in reserve:
+                            reserve_info_list.append(['%s, %s, рук. %s - резерв с %s - %s %s %s' % (vacancy.position.name.encode("utf-8"),
+                                                                  source_name.encode("utf-8"),
+                                                                   r['applicant_vacancy__vacancy__head__name'].encode("utf-8"),
+                                                                  r['date'].date(),
+                                                                  r['applicant_vacancy__applicant__first_name'].encode("utf-8"),
+                                                                   r['applicant_vacancy__applicant__last_name'].encode("utf-8"),
+                                                                   r['applicant_vacancy__applicant__middle_name'].encode("utf-8")
+                                                    )
+                            ])
+                            reserve_count += 1
+                    else:
+                        result_counter.append([went_to_work.count(), style])
+
+                    # -----------------------------------------------------------------------
+
+                    '''
+                        Прошли первую неделю/работают на ИС
+                    '''
+                    result_counter.append([
+                        result_status.filter(Q(applicant_vacancy_status__name__contains='Испытательный срок') |
+                                        Q(applicant_vacancy_status__name__contains='Прошли первую рабочую неделю')
+
+                        ).count(),
+                        style
+                        ]
+                    )
+
+
+
+                    for count, rs in enumerate(result_counter[1:]):
+                        total_sums[count][0] += rs[0]
+
+                    gp.writeValues(sheet, row_start, column_start+2, result_counter)
+                    row_start += 1
 
 
         gp.writeMerge(sheet, row_start, row_start, 0, 2, u'Итого', total_title_style)
@@ -834,38 +846,55 @@ class VacancyReportGenerateAjax(View, DateRange):
         count_opened_vacancues = 0
         positions = Position.objects.all()
 
+        print 'REPORT3', 1
         # выборка открытых вакансий
+
         for position in positions:
             vacancies = Vacancy.objects.filter(position=position)
             count_vacancies = 0
 
             buf_row_start = row_start
+
             for vacancy in vacancies:
                 vacancy_statuses = VacancyStatusHistory.objects.filter(vacancy=vacancy)
+                print vacancy_statuses
                 closed_vacancy = vacancy_statuses.filter(status__name__contains='Закрыта')
+                print 'REPORT3', 2
+
                 if closed_vacancy.count() == 0:
-                    opened = vacancy_statuses.filter(Q(status__name__contains='Открыта') | Q(status__name__contains='Возобновлена')).latest('status')
-                    stay = vacancy_statuses.filter(status__name__contains='Приостановлена')
-                    if stay.count():
-                        stay_obj = stay.latest('vacancy')
-                        stay = '%s c\n%s' % (stay_obj.status.name, stay_obj.date_change.strftime('%d-%m-%Y'))
-                    else:
-                        stay = '-'
+                    try:
+                        opened = vacancy_statuses.filter(Q(status__name__contains='Открыта') | Q(status__name__contains='Возобновлена')).latest('status')
+                        print 'REPORT3', 2.5
 
-                    result = [
-                        '1',
-                        '%s c\n%s' % (opened.status.name, opened.date_change.strftime('%d-%m-%Y')),
-                        stay,
-                        vacancy.head.name
-                    ]
-                    count_opened_vacancues += 1
+                        stay = vacancy_statuses.filter(status__name__contains='Приостановлена')
 
-                    for count, r in enumerate(result):
-                        gp.writeMerge(sheet, row_start, row_start, count+2, count+2, r, style_horiz)
 
-                    row_start += 1
+                        print 'REPORT3', 3
+                        if stay:
+                            stay_obj = stay.latest('vacancy')
+                            stay = '%s c\n%s' % (stay_obj.status.name, stay_obj.date_change.strftime('%d-%m-%Y'))
+                        else:
+                            stay = '-'
+                        print 'REPORT3', 4
+                        result = [
+                            '1',
+                            '%s c\n%s' % (opened.status.name, opened.date_change.strftime('%d-%m-%Y')),
+                            stay,
+                            vacancy.head.name
+                        ]
+                        count_opened_vacancues += 1
+                        print 'REPORT3', 5
+                        for count, r in enumerate(result):
+                            gp.writeMerge(sheet, row_start, row_start, count+2, count+2, r, style_horiz)
 
-                    gp.autoResizeRowHeight(sheet, row_start, 2)
+                        row_start += 1
+                        print 'REPORT3', 6
+                        gp.autoResizeRowHeight(sheet, row_start, 2)
+
+                    except:
+                        opened = None
+                        stay = None
+
 
             count_vacancy += 1
             position_name = position.name
@@ -941,19 +970,29 @@ class VacancyReportGenerateAjax(View, DateRange):
                                     applicant_name.append([name, style_horiz])
 
                             # запись в файл  кандидатов
+                            print 'NAME', applicant_name
                             row_end = gp.write_column(sheet, row_start, 7, applicant_name)
 
                             for count, r in enumerate(result):
-                                gp.writeMerge(sheet, row_start, row_end-1, count+2, count+2, r, style_horiz)
+                                try:
+                                    gp.writeMerge(sheet, row_start, row_end, count+2, count+2, r, style_horiz)
+                                except:
+                                    pass
+                                print row_start, row_end, count+2, count+2
                             row_start = row_end
 
                             closed_count += 1
 
+
+
                     # если есть закрытые вакансии, то записываем в файл
-                    if row_start_buf <= row_start-1:
+                    #if row_start_buf <= row_start-1:
+                    if closed_count:
                         count_vacancy += 1
-                        gp.writeMerge(sheet, row_start_buf, row_start-1, 0, 0, count_vacancy, style_horiz)
-                        gp.writeMerge(sheet, row_start_buf, row_start-1, 1, 1, position.name, style_horiz)
+                        print 'POSITION', row_start_buf, row_start, 0, 0, position.name, None
+                        gp.writeMerge(sheet, row_start_buf, row_start, 0, 0, count_vacancy, style_horiz)
+                        gp.writeMerge(sheet, row_start_buf, row_start, 1, 1, position.name, style_horiz)
+
 
             # если закрытых вакансий в отделе нет, то и название отдела не записываем
             if closed_count == 0:
@@ -962,11 +1001,11 @@ class VacancyReportGenerateAjax(View, DateRange):
                 gp.writeMerge(sheet, department_row_start, department_row_start, 0, header_len - 1, department.name, header_style_horiz)
 
         # итого
-        gp.writeMerge(sheet, row_start, row_start, 0, 1, 'Закрыто', style_bold)
-        gp.writeMerge(sheet, row_start, row_start, 2, 2, total_vacancies, style_bold)
+        gp.writeMerge(sheet, row_start+1, row_start+1, 0, 1, 'Закрыто', style_bold)
+        gp.writeMerge(sheet, row_start+1, row_start+1, 2, 2, total_vacancies, style_bold)
         # примечание
-        gp.writeMerge(sheet, row_start+2, row_start+2, 1, 1, "ФИО", style_horiz + color_cell)
-        gp.writeMerge(sheet, row_start+2, row_start+2, 2, 2, "- уволен", '')
+        gp.writeMerge(sheet, row_start+3, row_start+3, 1, 1, "ФИО", style_horiz + color_cell)
+        gp.writeMerge(sheet, row_start+3, row_start+3, 2, 2, "- уволен", '')
 
         gp.autoResizeColumnWidth(sheet, 1, 23)
         #gp.autoResizeRowHeight(sheet, 3, 2)

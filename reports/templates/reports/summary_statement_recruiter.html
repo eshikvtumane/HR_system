@@ -4,6 +4,9 @@
 {% block styles %}
     <link rel="stylesheet" type="text/css" href="{% static 'js/selectize/css/selectize.bootstrap3.css' %}" >
     <link rel="stylesheet" type="text/css" href="{% static 'js/jquery-ui-month-picker/css/MonthPicker.css' %}" >
+
+<!-- Стили для datepicker -->
+    <link rel="stylesheet" type="text/css" href="{% static 'js/datetimepicker-master/jquery.datetimepicker.css' %}" >
 {% endblock styles %}
 
 {% block scripts %}
@@ -12,6 +15,9 @@
     <script src="{% static 'js/chosen_init.js' %}"></script>
      -->
     <script src="{% static 'js/selectize/selectize.js' %}"></script>
+
+<!-- Скрипт работы для datepicker -->
+    <script src="{% static 'js/datetimepicker-master/jquery.datetimepicker.js' %}"></script>
 
     <script src="{% static 'applicants/js/add_education_form.js' %}"></script>
 
@@ -54,8 +60,15 @@
                       <div class="col-sm-12">
                           <div>
                               Период
-                              <div>
+                              <!--<div>
                                 {{ form.period }}
+                              </div>-->
+
+                              <div class="col-sm-3">
+                                  с {{ form.date_start }}
+                              </div>
+                              <div class="col-sm-3">
+                                  по {{ form.date_end }}
                               </div>
                           </div>
                       </div>

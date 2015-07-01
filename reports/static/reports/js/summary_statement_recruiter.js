@@ -9,26 +9,36 @@ $(document).ready(function(){
         var control = $select[0].selectize;
         control.clear();
     });
+
+
+    // инициализация календарей
+    $('.datepicker').datetimepicker({
+        lang: 'ru',
+        timepicker: false,
+        format: 'd-m-Y',
+        mask: true
+    });
 });
 // формирование и скачивание отчёта
 $(document).on('submit', 'form#FileDownload', function(e){
-    var period = document.getElementById('period').value;
-    if(period != ''){
+    //var period = document.getElementById('period').value;
+    //if(period != ''){
         if(vacancies){
             $.fileDownload($(this).prop('action'), {
             //preparingMessageHtml: "Подождите, отчёт формируется ...",
             //failMessageHtml: "Ошибка! Попробуйте произвести формировние отчёта позднее.",
             httpMethod: 'GET',
             data: {
-                    'period': $('#period').val(),
+                    'date_start': $('#date_start').val(),
+                    'date_end': $('#date_end').val(),
                     'vacancies': JSON.stringify(vacancies)
                 }
             });
         }
         e.preventDefault();
         return;
-    }
-    document.getElementById('message').innerHTML = 'Выберите период и/или добавьте вакансии';
+    //}
+    //document.getElementById('message').innerHTML = 'Выберите период и/или добавьте вакансии';
     e.preventDefault();
 });
 

@@ -5,10 +5,22 @@ from datetime import datetime
 
 # Create your forms here.
 class SummaryStatementRecruimentForm(forms.Form):
-    period = forms.CharField(widget=forms.TextInput(attrs={
+    '''period = forms.CharField(widget=forms.TextInput(attrs={
         'class': 'date-picker',
         'id': 'period'
+    }))'''
+
+    date_start = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control datepicker',
+        'id': 'date_start'
     }))
+
+    date_end = forms.CharField(widget=forms.TextInput(attrs={
+        'class': 'form-control datepicker',
+        'id': 'date_end'
+    }))
+
+
     position = forms.ModelChoiceField(queryset=Position.objects.all(),
                                      widget=forms.Select(attrs={
                                          'placeholder': 'Выберите должность',

@@ -10,6 +10,67 @@ $(document).ready(function(){
         mask: true
     });
 
+
+
+    // удалить фото
+    $('#delete_photo').click(function(){
+        var src="/media/default.gif"
+
+        $.ajax({
+            type: 'GET',
+            url: '/applicants/delete_photo/',
+            data:{
+                'applicant_id': $('#id').val()
+            },
+            dataType: 'json',
+            success: function(data){
+                var code = data[0];
+                if(code == '200'){
+                    alert('Фото успешно удалено!');
+                    $('#imagePreview').attr('src', src);
+                }
+                else{
+                    alert('Произошла ошибка при удалении фото');
+                    console.log(data);
+                }
+
+            },
+            error: function(data){
+                alert('Произошла ошибка при удалении фото ()');
+                console.log(data);
+            }
+        });
+    });
+
+    // удалить номер телефона
+    $('.phone-delete').click(function(){
+        var $obj = $(this);
+        $.ajax({
+            type: 'GET',
+            url: '/applicants/delete_phone/',
+            data:{
+                'phone_id': $obj.attr('id')
+            },
+            dataType: 'json',
+            success: function(data){
+                var code = data[0];
+                if(code == '200'){
+                    alert('Номер телефона успешно удален');
+                    $obj.parent().remove();
+                }
+                else{
+                    alert('Произошла ошибка при удалении');
+                    console.log(data);
+                }
+
+            },
+            error: function(data){
+                alert('Произошла ошибка при удалении');
+                console.log(data);
+            }
+        });
+    });
+
     $('#birthday_change').change(function(){
         var val = $(this).val();
         if(val != '__-__-____'){

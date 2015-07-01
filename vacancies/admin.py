@@ -5,7 +5,7 @@ from django.contrib import admin
 from .models import Head, Department, VacancyStatus, Vacancy,VacancyStatusHistory, \
     ApplicantVacancy, \
     ApplicantVacancyStatus,\
-    CurrentApplicantVacancyStatus
+    CurrentApplicantVacancyStatus, FormOfPayment
 
 
 # Register your models here.
@@ -41,7 +41,7 @@ class VacancyAdmin(admin.ModelAdmin):
         obj.date_created = datetime.datetime.now()
         obj.save()
         vacancy_status = VacancyStatus.objects.get(name='Открыта')
-        VacancyStatusHistory.objects.create(vacancy=obj,status=vacancy_status)
+        VacancyStatusHistory.objects.create(vacancy=obj,status=vacancy_status, author=request.user)
         return obj
 
 class ApplicantVacancyAdmin(admin.ModelAdmin):
@@ -60,6 +60,11 @@ class  ApplicantVacancyStatusAdmin(admin.ModelAdmin):
 class ApplicantVacancyApplicantVacancyStatusAdmin(admin.ModelAdmin):
     fields = []
 
+
+class FormOfPaymentAdmin(admin.ModelAdmin):
+    fields = []
+    readonly_fields = ('date_change',)
+
 admin.site.register(Department, DepartmentAdmin)
 admin.site.register(VacancyStatus, VacancyStatusAdmin)
 admin.site.register(Vacancy, VacancyAdmin)
@@ -67,4 +72,5 @@ admin.site.register(ApplicantVacancy,ApplicantVacancyAdmin)
 admin.site.register(ApplicantVacancyStatus,ApplicantVacancyStatusAdmin)
 admin.site.register(CurrentApplicantVacancyStatus, ApplicantVacancyApplicantVacancyStatusAdmin)
 admin.site.register(VacancyStatusHistory, VacancyStatusHistoryAdmin)
+admin.site.register(FormOfPayment, FormOfPaymentAdmin)
 

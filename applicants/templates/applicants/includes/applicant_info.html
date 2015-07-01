@@ -53,13 +53,22 @@
                 <div style="margin-bottom: 1ex;">
                     {% for p in phones %}
                         <div>
-                            {{ p.phone|phone_format }}
+                            <div class="col-sm-5">
+                                {{ p.phone|phone_format }}
+                            </div>
+                             <div class="col-sm-2 phone-delete" id="{{ p.id }}">
+                                 <a class="btn btn-warning">
+                                     <i class="fa fa-remove"></i>
+                                 </a>
+                             </div>
                         </div>
+                    {% empty %}
+                        <label>Нет телефонов</label>
                     {% endfor %}
                 </div>
 
 
-                <div class="clone-wrapper">
+                <div style="padding-top: 2ex;" class="clone-wrapper">
                     <div class="toclone col-sm-12" style="display: inline-block;">
                         <div style="display: inline-block;">
                             <div class="col-sm-6" style="display: inline-block;">

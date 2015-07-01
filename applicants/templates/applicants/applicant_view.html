@@ -92,9 +92,13 @@
                 </button>
 
             </div>-->
-            <!--<div style="margin-top: 2ex;">
-                <label>Дата создания:</label> {{ applicant_form.date_created.value }}
-            </div>-->
+            <div style="margin-top: 2ex;">
+                {% if last_status %}
+                    <label>Последний статус: </label>{{ last_status }}
+                {% else %}
+                    <label>Нет статуса</label>
+                {% endif %}
+            </div>
 
           <ol class="breadcrumb">
             <li><a href="#"><i class="fa fa-dashboard"></i> Главная</a></li>
@@ -179,8 +183,8 @@
                     <h2>Вакансии</h2>
                     <table class="table">
                         <tr>
-                            <th class="col-sm-2"></th>
-                            <th class="col-sm-5">Вакансия</th>
+                            <th class="col-sm-2">Предполагаемая вакансия</th>
+                            <th class="col-sm-5">Заявка</th>
                             <th class="col-sm-5">Уровень зарплаты в анкете</th>
                             <th class="col-sm-5">Предлагаемая зарплата</th>
                         </tr>

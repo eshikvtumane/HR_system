@@ -34,6 +34,7 @@ class AddVacancy(View):
 
     def post(self,request):
         try:
+            print 1
             post_data = request.POST.copy()
             post_data['end_date'] = datetime.datetime.strptime(post_data['end_date'],
                                                      '%d-%m-%Y').date()
@@ -55,14 +56,15 @@ class AddVacancy(View):
                 education.save()
                 post_data['education'] = education.id
 
-
+            print 2
             if vacancy_form.is_valid():
+                print 3
                 instance = vacancy_form.save(commit=False)
                 instance.author = request.user
                 instance.last_status = VacancyStatus.objects.get(name='Открыта')
                 vacancy_form.save()
-
-                VacancyStatusHistory.objects.create(vacancy=vacancy_form.instance)
+                print 4
+                VacancyStatusHistory.objects.create(vacancy=vacancy_form.instance, author=request.user)
                 vacancy_id = vacancy_form.instance.id
                 #сохраняем льготы
                 benefits = post_data.get('benfits' or None)
@@ -76,6 +78,7 @@ class AddVacancy(View):
             else:
                 return JsonResponse(vacancy_form.errors,status=400)
         except Exception, e:
+            print 'Error add vacancy', e.message, post_data['form_payment']
             return JsonResponse({'errors':'Во время добавления вакансии произошла ошибка!'})
 
 
@@ -155,7 +158,7 @@ class VacancyEdit(View):
                         for benefit in benefits:
                             VacancyBenefit.objects.create(vacancy=Vacancy.objects.get(id=vacancy.id) ,
                                                           benefit=Benefit.objects.get(id=int( benefit)))
-                VacancyStatusHistory.objects.create(vacancy=vacancy,status=VacancyStatus.objects.get(pk=request.POST['status']))
+                VacancyStatusHistory.objects.create(vacancy=vacancy,status=VacancyStatus.objects.get(pk=request.POST['status']), author=request.user)
                 return JsonResponse( {},status=200)
             return JsonResponse({'errors':vacancy_form.errors},status = 400)
 
@@ -221,8 +224,8 @@ class VacancySearch(View):
         else:
             vacancies = Vacancy.objects.all()
             for vacancy in vacancies:
-                vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
-                vacancies_list.append({'vacancy':vacancy,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})
+                #vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
+                vacancies_list.append({'vacancy':vacancy,'current_status':vacancy.last_status.name,'status_icon':vacancy.last_status.icon_class})
 
 
 

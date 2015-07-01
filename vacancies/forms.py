@@ -3,13 +3,21 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.forms import ModelForm
 from events.models import ApplicantVacancyEvent, Event
-from vacancies.models import Vacancy,Department,VacancyStatus,Head
+from vacancies.models import Vacancy,Department,VacancyStatus,Head, FormOfPayment
 from applicants.models import Position
 
 class VacancyForm(ModelForm):
      class Meta:
         model = Vacancy
         exclude = ['published_at']
+
+        form_payment = forms.ModelChoiceField(queryset=FormOfPayment.objects.all(),
+                                   label=_(u'Форма оплаты'),
+                                   widget=forms.Select(attrs={
+                                     'class':'select' })
+
+                                   )
+
         labels = {
             'salary': _(u'Зарплата'),
             'end_date': _(u'Предполагамый срок закрытия'),
@@ -17,14 +25,13 @@ class VacancyForm(ModelForm):
 
         }
         widgets = {
-            'salary': forms.NumberInput(attrs={
+            'salary': forms.TextInput(attrs={
                 'class': "form-control",
                 'name':'salary',
-                'min': 0,
-                'data-validation': 'number',
-                'data-validation-allowing': 'float',
-                'data-validation-error-msg':"В поле зарплаты должно быть указано число!"
+                'data-validation': 'required',
+                'data-validation-error-msg':"Обязательное поле"
             }),
+
 
             'end_date': forms.DateInput(format="%d-%m-%Y",attrs={
                 'id':'end_date',

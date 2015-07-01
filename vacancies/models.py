@@ -6,12 +6,17 @@ from django.db import models
 import datetime
 from django.utils import timezone
 
+from django.db.models.signals import post_save, pre_save
+
 #####CONSTANTS############
 DEFAULT_VACANCY_STATUS = 1
 DEFAULT_APPLICANT_VACANCY_STATUS = 1
 
 
 #######################
+
+
+
 #Словарь статусов вакансий
 class VacancyStatus(models.Model):
     class Meta:
@@ -51,6 +56,23 @@ class Head(models.Model):
         return self.name
 
 
+class FormOfPayment(models.Model):
+    '''
+        Форма оплаты труда
+    '''
+    class Meta:
+        db_table = 'formsofpayment'
+        verbose_name = 'Форма оплаты'
+        verbose_name_plural = 'Формы оплаты'
+
+    name = models.TextField(verbose_name=u'Форма оплаты')
+    date_change = models.DateTimeField(verbose_name=u'Дата изменения',
+                                    default=timezone.now)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Vacancy(models.Model):
     class Meta:
         db_table = 'Vacancies'
@@ -67,7 +89,8 @@ class Vacancy(models.Model):
         ('1', 'В браке'),
         ('2', 'Холост'),
     )
-    salary = models.FloatField(verbose_name=u"Заработная плата")
+    salary = models.TextField(verbose_name=u"Заработная плата")
+    form_payment = models.ForeignKey('FormOfPayment', verbose_name='Форма оплаты')
     sex =  models.CharField(max_length=1, choices=GENDER_LIST, verbose_name='Пол', null=True, blank=True)
     published_at = models.DateTimeField(verbose_name=u'Дата размещения',
                                     default=timezone.now)
@@ -95,6 +118,8 @@ class Vacancy(models.Model):
     def __unicode__(self):
         return self.position.name + " " + str(self.published_at)
 
+
+
 # Ведение истории по изменению статуса у вакансии
 class VacancyStatusHistory(models.Model):
     class Meta:
@@ -104,6 +129,7 @@ class VacancyStatusHistory(models.Model):
 
     vacancy = models.ForeignKey('Vacancy')
     status = models.ForeignKey('VacancyStatus', default=DEFAULT_VACANCY_STATUS)
+    author = models.ForeignKey(User, verbose_name='Автор')
     date_change = models.DateTimeField(verbose_name=u'Дата изменения',
                                     default=timezone.now)
 
@@ -177,3 +203,10 @@ class VacancyBenefit(models.Model):
     benefit = models.ForeignKey(Benefit)
 
 
+
+'''def insert_initial_data(sender, app, created_models, verbosity, **kwargs):
+    if FormOfPayment in created_models:
+        for name in (u'почасовая'):
+            FormOfPayment.objects.get_or_create(name=name)
+
+pre_save.connect(insert_initial_data)'''

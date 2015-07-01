@@ -300,6 +300,43 @@ class VacancySearchAjax(View):
             return HttpResponse(j, content_type='application/json')
 
 
+
+class PhotoDeleteAjax(View):
+    '''
+        Удаление фото со страницы кандидата
+    '''
+    def get(self, request):
+        if request.is_ajax:
+            try:
+                id = request.GET['applicant_id']
+                applicant = Applicant.objects.get(pk=id)
+                applicant.photo = '/media/default.gif'
+                applicant.save()
+                result = json.dumps(['200'])
+            except Exception, e:
+                result = json.dumps(['500', e.message])
+        else:
+            result = json.dumps(['500', 'Is not JSON'])
+
+        return HttpResponse(result, content_type='application/json')
+
+class PhoneDeleteAjax(View):
+    '''
+        Удаление номера телефона со страницы кандидата
+    '''
+    def get(self, request):
+        if request.is_ajax:
+            try:
+                id = request.GET['phone_id']
+                Phone.objects.get(pk=id).delete()
+                result = json.dumps(['200'])
+            except Exception, e:
+                result = json.dumps(['500', e.message])
+        else:
+            result = json.dumps(['500', 'Is not JSON'])
+
+        return HttpResponse(result, content_type='application/json')
+
 class PaginatorView(View):
     '''
         разбивка результата поиска по страницам
@@ -529,10 +566,19 @@ class ApplicantView(View, SavingModels):
         args['vacancies'] = applicant.applicantvacancy_set.all()
 
         args['educations'] = applicant.applicanteducation_set.all()
-        args['phones'] = Phone.objects.filter(applicant=applicant).values('phone')
+        args['phones'] = Phone.objects.filter(applicant=applicant).values('id', 'phone')
         args['resume'] = Resume.objects.filter(applicant=applicant).values('resume_file', 'date_upload')
         args['portfolio'] = Portfolio.objects.filter(applicant=applicant).values('portfolio_file', 'date_upload')
         args['applicant_id'] = applicant_id
+
+        try:
+            # последний статус кандидата
+            last_status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy__applicant__id=applicant_id).last()
+            print applicant_id, CurrentApplicantVacancyStatus.objects.filter(id=applicant_id), last_status
+            args['last_status'] = '%s - %s' % (last_status.applicant_vacancy_status.name, last_status.applicant_vacancy.vacancy.position.name)
+        except Exception, e:
+            print e.message
+            args['last_status'] = None
 
         args['history_action'] = HistoryChangeApplicantInfo.objects.filter(applicant=applicant)
         args['applicant_vacancy_status'] = ApplicantVacancyStatus.objects.all()

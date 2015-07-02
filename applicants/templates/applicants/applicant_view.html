@@ -51,7 +51,8 @@
 <!-- Инициализация элементов при загрузке страницы -->
     <script src="{% static 'applicants/js/form_init.js' %}"></script>
 
-
+<!-- модальное окно -->
+<script type="text/javascript" src="{% static 'js/easyModal/jquery.easyModal.js' %}"></script>
 <!-- Вывод статусов кандидатов по вакансиям -->
     <script src="{% static 'applicants/js/load_history_status_applicant_vacancy.js' %}"></script>
 <!-- отправка данных на сервер -->
@@ -297,13 +298,19 @@
                                 <th>Тип образования</th>
                                 <th>Специальность</th>
                                 <th>Период обучения</th>
+                                <th></th>
                         </tr>
                         {% for e in educations %}
                         <tbody>
                             <tr>
-                                <td>{{ e.education.type }}</td>
+                                <td>
+                                    {{ e.education.type }}
+                                </td>
                                 <td>{{ e.major.name }}</td>
                                 <td>{{ e.study_start }} ‒ {{ e.study_end|default:'...' }}</td>
+                                <td id="{{ e.id }}" class="education-delete">
+                                    <a class="btn btn-warning"><i class="fa fa-remove"></i></a>
+                                </td>
                             </tr>
                         </tbody>
                         {% endfor %}
@@ -324,7 +331,9 @@
                             <tr>
                                 <td><a href="{{ r.resume_file }}"><img style="height: 32px" src="/media/download.png"></a></td>
                                 <td><i>Дата загрузки:</i> {{ r.date_upload|date }}</td>
-                                <td></td>
+                                <td class="resume-delete" id="{{ r.id }}">
+                                    <a class="btn btn-warning"><i class="fa fa-remove"></i></a>
+                                </td>
                             </tr>
                           {% empty %}
                             <h4>Нет файлов</h4>
@@ -345,7 +354,9 @@
                             <tr>
                                 <td><a href="{{ p.portfolio_file }}"><img style="height: 32px" src="/media/download.png"></a></td>
                                 <td><i>Дата загрузки:</i> {{ p.date_upload|date }}</td>
-                                <td></td>
+                                <td class="portfolio-delete" id="{{ p.id }}">
+                                    <a class="btn btn-warning"><i class="fa fa-remove"></i></a>
+                                </td>
                             </tr>
                           {% empty %}
                             <h4>Нет файлов</h4>

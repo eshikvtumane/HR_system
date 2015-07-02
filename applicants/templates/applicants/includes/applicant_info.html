@@ -1,5 +1,5 @@
 {% load ru_phone_format %}
-<div class="col-sm-12">
+<div class="col-sm-12" xmlns="http://www.w3.org/1999/html">
     <div class="col-sm-8">
           <div class="group-control">
             <label>{{ applicant_form.first_name.label_tag }}</label>
@@ -50,13 +50,26 @@
             <label class="control-label col-sm-2">Телефон:</label>
 
             <div class="col-sm-10" style="margin-top: 1ex;  font-size: 3ex;">
-                <div style="margin-bottom: 1ex;">
+                <div style="margin-bottom: 1ex;" id="number_phones_list">
                     {% for p in phones %}
-                        <div class="col-sm-12">
+                        <div class="col-sm-12 number-phone-box">
+                            <input type="hidden" class="phone-id" id="{{ p.id }}">
                             <div class="col-sm-8">
-                                {{ p.phone|phone_format }}
+                                <label class="phone-number" id="phone_id_{{ p.id }}">{{ p.phone|phone_format }}</label>
                             </div>
-                             <div class="col-sm-2 phone-delete" id="{{ p.id }}">
+
+                            <a href="#" class="col-sm-1 btn btn-primary phone-edit" data-toggle="modal" data-target="#modalPhoneEdit">
+                                <i class="fa fa-edit"></i>
+                            </a>
+
+
+                            <!--<div class="col-sm-2 phone-edit " id="edit_{{ p.id }}">
+                                 <a class="btn btn-primary" class="easy-modal-open" href="#modal1">
+
+                                 </a>
+                             </div>-->
+
+                            <div class="col-sm-2 phone-delete">
                                  <a class="btn btn-warning">
                                      <i class="fa fa-remove"></i>
                                  </a>
@@ -72,7 +85,7 @@
                     <div class="toclone col-sm-12" style="display: inline-block;">
                         <div style="display: inline-block;">
                             <div class="col-sm-6" style="display: inline-block;">
-                                <input type="number" name="phone" class="form-control">
+                                <input type="text" name="phone" class="form-control">
                             </div>
 
                             <div class="col-sm-5">
@@ -85,6 +98,35 @@
                 </div>
             </div>
         </div>
+
+
+
+    <div class="modal fade" id="modalPhoneEdit" tabindex="-1" role="dialog" aria-labelledby="modalPhoneEditLabel" aria-hidden="true">
+        <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+                      <h4>Редактирование номера телефона</h4>
+                  </div>
+                  <div class="modal-body">
+                    <input type="hidden" id="phone_id">
+                    <div>
+                        <input type="text" class="form-control" id="edit_number_phone">
+                    </div>
+                    <div>
+                        <a id="change_phone_number" class="btn btn-success">Изменить номер</a>
+                    </div>
+
+
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                  </div>
+              </div>
+        </div>
+    </div>
 
 
 

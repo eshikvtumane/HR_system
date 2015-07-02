@@ -1,7 +1,8 @@
 #-*- coding:utf-8 -*-
 from django.conf.urls import patterns, include, url
 from views import ApplicantAddView, ApplicantSearchView, VacancySearchAjax, \
-    ApplicantView, ApplicantVacancyStatusAjax, PositionSourceGetAjax, PhotoDeleteAjax, PhoneDeleteAjax
+    ApplicantView, ApplicantVacancyStatusAjax, PositionSourceGetAjax, PhotoDeleteAjax, PhoneDeleteAjax, EducationDeleteAjax, \
+    PortfolioDeleteAjax, ResumeDeleteAjax, ChangePhoneAjax
 
 urlpatterns = patterns('',
 
@@ -24,6 +25,18 @@ urlpatterns = patterns('',
 
     # удаление номера телефона со страницы кандидата
     url(r'^delete_phone/$', PhoneDeleteAjax.as_view()),
+
+    # удаление записи о образовании
+    url(r'^delete_education/$', EducationDeleteAjax.as_view()),
+
+    # удаление портфолио
+    url(r'^delete_portfolio/$', PortfolioDeleteAjax.as_view()),
+
+    # удаление резюме
+    url(r'^delete_resume/$', ResumeDeleteAjax.as_view()),
+
+    # изменение номера телефона
+    url(r'^change_phone/$', ChangePhoneAjax.as_view()),
 
     #url(r'^admin/', include(admin.site.urls)),
 )

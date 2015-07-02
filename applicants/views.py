@@ -60,8 +60,15 @@ class SavingModels():
 
     def savingPhone(self, phones, user):
         try:
+            phone_obj = []
             if phones:
-                phone_obj = [Phone(applicant=user, phone=p) for p in phones if p != '']
+                for p in phones:
+                    if p != '':
+                        # удаление ненужных символов
+                        chars_to_remove = ['(', ')', ' ', '‒'.decode('unicode_escape').encode('ascii','ignore'), '-']
+                        phone = self.replaceLetters(p, chars_to_remove)
+                        phone_obj.append(Phone(applicant=user, phone=phone))
+
                 Phone.objects.bulk_create(phone_obj)
 
             return
@@ -227,6 +234,18 @@ class SavingModels():
             print e.message
             return False'''
 
+    # удаление ненужных символов
+    def replaceLetters(self, word, letters):
+        word = word.encode('utf8')
+        result = ''
+        for letter in word:
+            if letter not in letters:
+                result += letter.decode('unicode_escape').encode('ascii','ignore')
+        return result
+
+    def render(self, request, result_list, total_count=0):
+        return self.paginator(request, result_list)
+
 
 
 
@@ -336,6 +355,94 @@ class PhoneDeleteAjax(View):
             result = json.dumps(['500', 'Is not JSON'])
 
         return HttpResponse(result, content_type='application/json')
+
+
+class EducationDeleteAjax(View):
+    '''
+        Удаление записи об образовании со страницы кандидата
+    '''
+    def get(self, request):
+        if request.is_ajax:
+            try:
+                id = request.GET['edu_id']
+                ApplicantEducation.objects.get(pk=id).delete()
+                result = json.dumps(['200'])
+            except Exception, e:
+                result = json.dumps(['500', e.message])
+        else:
+            result = json.dumps(['500', 'Is not JSON'])
+
+        return HttpResponse(result, content_type='application/json')
+
+class PortfolioDeleteAjax(View):
+    '''
+        Удаление портфолио
+    '''
+    def get(self, request):
+        if request.is_ajax:
+            try:
+                id = request.GET['portfolio_id']
+                Portfolio.objects.get(pk=id).delete()
+                result = json.dumps(['200'])
+            except Exception, e:
+                result = json.dumps(['500', e.message])
+        else:
+            result = json.dumps(['500', 'Is not JSON'])
+
+        return HttpResponse(result, content_type='application/json')
+
+class ResumeDeleteAjax(View):
+    '''
+        Удаление резюме
+    '''
+    def get(self, request):
+        if request.is_ajax:
+            try:
+                id = request.GET['resume_id']
+                Resume.objects.get(pk=id).delete()
+                result = json.dumps(['200'])
+            except Exception, e:
+                result = json.dumps(['500', e.message])
+        else:
+            result = json.dumps(['500', 'Is not JSON'])
+
+        return HttpResponse(result, content_type='application/json')
+
+class ChangePhoneAjax(View):
+    '''
+        Изменение номера телефона
+    '''
+    def get(self, request):
+        if request.is_ajax:
+            try:
+                id = request.GET['id']
+                phone = request.GET['phone']
+                phone_obj = Phone.objects.get(pk=id)
+
+
+                chars_to_remove = ['(', ')', ' ', '‒'.decode('unicode_escape').encode('ascii','ignore'), '-']
+                phone = self.replaceLetters(phone, chars_to_remove)
+
+                print id, phone, phone_obj
+                phone_obj.phone = phone
+                phone_obj.save()
+                print id, phone, phone_obj
+                result = json.dumps(['200'])
+            except Exception, e:
+                result = json.dumps(['500', e.message])
+        else:
+            result = json.dumps(['500', 'Is not JSON'])
+
+        return HttpResponse(result, content_type='application/json')
+
+    # удаление ненужных символов
+    def replaceLetters(self, word, letters):
+        word = word.encode('utf8')
+        result = ''
+        for letter in word:
+            if letter not in letters:
+                result += letter.decode('unicode_escape').encode('ascii','ignore')
+        return result
 
 class PaginatorView(View):
     '''
@@ -567,7 +674,7 @@ class ApplicantView(View, SavingModels):
 
         args['educations'] = applicant.applicanteducation_set.all()
         args['phones'] = Phone.objects.filter(applicant=applicant).values('id', 'phone')
-        args['resume'] = Resume.objects.filter(applicant=applicant).values('resume_file', 'date_upload')
+        args['resume'] = Resume.objects.filter(applicant=applicant).values('id', 'resume_file', 'date_upload')
         args['portfolio'] = Portfolio.objects.filter(applicant=applicant).values('portfolio_file', 'date_upload')
         args['applicant_id'] = applicant_id
 

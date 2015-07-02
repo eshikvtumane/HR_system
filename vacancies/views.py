@@ -97,11 +97,13 @@ class VacancyView(View):
                 last_status = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=app_vacancy).order_by(
                     '-id')[0]
 
-                #добавляем кандидата в массив кандидатов с его текущим статусом по данной вакансии
-                applicants.append({'applicant':app_vacancy.applicant,'status':last_status.applicant_vacancy_status.name})
+                last_status_string = last_status.applicant_vacancy_status.name.encode('utf-8').strip()
+                if last_status_string == 'Резерв':
+                    #добавляем кандидата в массив кандидатов с его текущим статусом по данной вакансии
+                    applicants.append({'applicant':app_vacancy.applicant,'status':last_status.applicant_vacancy_status.name})
 
                 #если кандидат был принят на работу по данной вакансии, то выводим его данные на страницу
-                if last_status.applicant_vacancy_status.name.encode('utf-8').strip() == 'Принят на работу':
+                if last_status_string == 'Принят на работу':
                     applicant_hired = app_vacancy.applicant
             except Exception, e:
                 print e.message

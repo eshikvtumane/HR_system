@@ -478,6 +478,8 @@ class ApplicantSearchView(PaginatorView):
 
     @method_decorator(login_required)
     def get(self, request):
+        applicant_vacancy_list = []
+
         # выбираем случайных кандидатов, если нет данных в запросе
         if not request.GET:
             applicant_vacancy_list = Applicant.objects.all()\
@@ -486,7 +488,6 @@ class ApplicantSearchView(PaginatorView):
                                                 'email', 'photo', 'birthday').order_by('?')[:10]
             # получение телефонов кандидата
             for applicant in applicant_vacancy_list:
-                print 'aaa', applicant
                 phones = Phone.objects.filter(applicant=Applicant.objects.get(pk=applicant['id'])).values('phone')
                 applicant['phones'] = phones
 
@@ -499,6 +500,9 @@ class ApplicantSearchView(PaginatorView):
             salary_add = req.get('salary_add', False)
             employee = req.get('employee', False)
             phone = req.get('phone', False)
+
+            # кандидаты из резерва
+            reserve = request.GET.get('reserve' or None)
 
             applicant_fields = [
                 'first_name',
@@ -519,6 +523,25 @@ class ApplicantSearchView(PaginatorView):
                                                     'first_name', 'middle_name',
                                                     'email', 'photo', 'birthday')
 
+            # если установлена галочка резерв
+            elif reserve:
+                # получаем объект статуса
+                reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Резерв')
+                # получаем объекты вакансий кандидатов
+                applicant_vacancy = ApplicantVacancy.objects.all()
+
+
+                # перебираем
+                for av in applicant_vacancy:
+                    try:
+                        s = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
+                        # получаем последний статус
+                        last_status = s[s.count()-1]
+                        status = last_status.applicant_vacancy_status
+                        if status == reserve_object:
+                            applicant_vacancy_list.append(last_status.applicant_vacancy.applicant)
+                    except:
+                        pass
             else:
                 query_list = {}
                 # ключи для поиска в Applicants
@@ -558,27 +581,8 @@ class ApplicantSearchView(PaginatorView):
                         query_list['salary__gte'] = salary_start
                         query_list['salary__lte'] = salary_end
 
-                    # кандидаты из резерва
-                    reserve = request.GET.get('reserve' or None)
-                    # если установлена галочка резерв
-                    if reserve:
-                        # получаем объект статуса
-                        reserve_object = ApplicantVacancyStatus.objects.get(name__contains='Резерв')
-                        # получаем объекты вакансий кандидатов
-                        applicant_vacancy = ApplicantVacancy.objects.filter(**query_list)
 
-                        # перебираем
-                        for av in applicant_vacancy:
-                            try:
-                                s = CurrentApplicantVacancyStatus.objects.filter(applicant_vacancy=av)
-                                # получаем последний статус
-                                last_status = s[s.count()-1]
-                                status = last_status.applicant_vacancy_status
-                                if status == reserve_object:
-                                    applicant_vacancy_list.append(last_status.applicant_vacancy.applicant)
-                            except:
-                                pass
-                    elif employee:
+                    if employee:
                         del query_list['salary__gte']
                         del query_list['salary__lte']
                         # получаем объект статуса
@@ -629,9 +633,15 @@ class ApplicantSearchView(PaginatorView):
             try:
                 applicant_object = Applicant.objects.get(pk=applicant['id'])
             except:
-                applicant_object = Applicant.objects.get(pk=applicant['applicant'])
+                try:
+                    applicant_object = Applicant.objects.get(pk=applicant['applicant'])
+                except:
+                    applicant_object = Applicant.objects.get(pk=applicant.id)
             phones = Phone.objects.filter(applicant=applicant_object).values('phone')
-            applicant['phones'] = phones
+            try:
+                applicant['phones'] = phones
+            except:
+                applicant.phones = phones
 
 
 
@@ -640,7 +650,10 @@ class ApplicantSearchView(PaginatorView):
             except:
                 status = None
 
-            applicant['status'] = status
+            try:
+                applicant['status'] = status
+            except:
+                applicant.status = status
 
         return self.render(request, applicant_vacancy_list)
 

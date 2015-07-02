@@ -58,6 +58,7 @@ class MainPageView(View):
         # вычисляем средний возраст кандидатов
         args['middle_age'] = self.__calculationMiddleValues(total_age, users_count, zero)
 
+        '''
         vacancies = Vacancy.objects.all()
         vacancies_count = vacancies.count()
         total_salary = 0
@@ -67,11 +68,13 @@ class MainPageView(View):
         # вычисляем среднюю зарплату
         args['middle_salary'] = self.__calculationMiddleValues(total_salary, users_count, zero)
 
+        '''
         applicant_vacancy = ApplicantVacancy.objects.all()
         vacancies_count = applicant_vacancy.count()
         total_salary = 0
         for v in applicant_vacancy:
             total_salary += v.salary
+
 
         # вычисляем среднюю запрашиваемую зарплату
         args['middle_applicant_salary'] = self.__calculationMiddleValues(total_salary, vacancies_count, zero)
@@ -113,7 +116,8 @@ class GlobalSearchView(PaginatorView):
 
             # удаление ненужных символов
             chars_to_remove = ['(', ')', ' ', '‒'.decode('unicode_escape').encode('ascii','ignore'), '-']
-            phone = self.replaceLetters(query, chars_to_remove)
+            #phone = self.replaceLetters(query, chars_to_remove)
+            phone = query
 
             # является ли введённая строка номером телефона
             if re.match(r'\d+', phone):

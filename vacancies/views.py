@@ -220,9 +220,11 @@ class VacancySearch(View):
                         result_vacancies.append(vacancy)
 
             for vacancy in result_vacancies:
-                vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
-                vacancies_list.append({'vacancy':vacancy,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})
-
+                try:
+                    vacancy_status = VacancyStatusHistory.objects.filter(vacancy=vacancy).order_by('-id')[0]
+                    vacancies_list.append({'vacancy':vacancy,'current_status':vacancy_status.status.name,'status_icon':vacancy_status.status.icon_class})
+                except:
+                    vacancies_list.append({'vacancy':vacancy,'current_status':'н/д','status_icon':''})
         else:
             vacancies = Vacancy.objects.all()
             for vacancy in vacancies:
@@ -230,10 +232,10 @@ class VacancySearch(View):
                 vacancies_list.append({'vacancy':vacancy,'current_status':vacancy.last_status.name,'status_icon':vacancy.last_status.icon_class})
 
 
-
+        count_vacancies = len(vacancies_list)
         p = Paginator(vacancies_list,vacancies_per_page,request=request)
         vacancies_list = p.page(page)
-        c = RequestContext(request,{'vacancy_form':vacancy_form,'vacancies_list':vacancies_list})
+        c = RequestContext(request,{'vacancy_form':vacancy_form,'vacancies_list':vacancies_list, 'count_vacancies': count_vacancies})
         return render_to_response(self.template,c)
 
 

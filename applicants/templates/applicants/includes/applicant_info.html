@@ -55,7 +55,8 @@
                         <div class="col-sm-12 number-phone-box">
                             <input type="hidden" class="phone-id" id="{{ p.id }}">
                             <div class="col-sm-8">
-                                <label class="phone-number" id="phone_id_{{ p.id }}">{{ p.phone|phone_format }}</label>
+                                <!--<label class="phone-number" id="phone_id_{{ p.id }}">{{ p.phone|phone_format }}</label>-->
+                                <label class="phone-number" id="phone_id_{{ p.id }}">{{ p.phone }}</label>
                             </div>
 
                             <a href="#" class="col-sm-1 btn btn-primary phone-edit" data-toggle="modal" data-target="#modalPhoneEdit">

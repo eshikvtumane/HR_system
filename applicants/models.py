@@ -73,7 +73,7 @@ class Phone(models.Model):
         verbose_name_plural = 'Телефоны'
 
     applicant = models.ForeignKey('Applicant')
-    phone = models.CharField(verbose_name='Номер телефона', max_length=11)
+    phone = models.CharField(verbose_name='Номер телефона', max_length=20)
 
     def __unicode__(self):
         return str(self.phone)

@@ -93,6 +93,8 @@
               </div><!-- /.форма поиска вакансий -->
                 <h2>Результаты поиска</h2>
 
+                    <label>Всего найдено вакансий: {{ count_vacancies }} шт.</label>
+
                     <div id="search_results">
                         <table id="vacancy_table" class="table tablesorter">
                             <thead >
@@ -119,8 +121,7 @@
                                         <td style="vertical-align: middle; font-size:3ex;"><a target="_blank"
                                                href=" {% url 'vacancies:vacancy_view' vacancy_dict.vacancy.id %}" class="btn btn-success">Подробнее</a></td>
 
-
-                                        </tr>
+                                    </tr>
                                 {% endfor %}
                             </tbody>
                         </table>

@@ -66,7 +66,8 @@ class SavingModels():
                     if p != '':
                         # удаление ненужных символов
                         chars_to_remove = ['(', ')', ' ', '‒'.decode('unicode_escape').encode('ascii','ignore'), '-']
-                        phone = self.replaceLetters(p, chars_to_remove)
+                        phone = p
+                        #self.replaceLetters(p, chars_to_remove)
                         phone_obj.append(Phone(applicant=user, phone=phone))
 
                 Phone.objects.bulk_create(phone_obj)
@@ -421,7 +422,7 @@ class ChangePhoneAjax(View):
 
 
                 chars_to_remove = ['(', ')', ' ', '‒'.decode('unicode_escape').encode('ascii','ignore'), '-']
-                phone = self.replaceLetters(phone, chars_to_remove)
+                #phone = self.replaceLetters(phone, chars_to_remove)
 
                 print id, phone, phone_obj
                 phone_obj.phone = phone
@@ -515,7 +516,7 @@ class ApplicantSearchView(PaginatorView):
             if phone:
                 # удаление ненужных символов
                 chars_to_remove = ['(', ')', ' ', '‒'.decode('unicode_escape').encode('ascii','ignore'), '-']
-                phone = self.replaceLetters(phone, chars_to_remove)
+                #phone = self.replaceLetters(phone, chars_to_remove)
                 applicant_obj = Phone.objects.filter(phone=phone).values('applicant')
 
                 applicant_vacancy_list = Applicant.objects.filter(id=applicant_obj[0]['applicant'])\
